@@ -19,6 +19,7 @@ Motor::Motor(motor_num_t motor_number) : motor_num(motor_number) {
             speed_pin = MOTOR_LEFT_SPEED_PIN;
             direction_pin = MOTOR_LEFT_DIRECTION_PIN;
             ledc_channel = LEDC_CHANNEL_0;
+            inverse_direction = true;
             break;
 
         case MOTOR_RIGHT:
@@ -26,10 +27,12 @@ Motor::Motor(motor_num_t motor_number) : motor_num(motor_number) {
             speed_pin = MOTOR_RIGHT_SPEED_PIN;
             direction_pin = MOTOR_RIGHT_DIRECTION_PIN;
             ledc_channel = LEDC_CHANNEL_1;
+            inverse_direction = false;
             break;
 
         default:
             ESP_LOGE(TAG, "Unable to initialize Motor (ID: %d)", motor_num);
+            inverse_direction = false;
             error = true;
             return;
     }
@@ -64,6 +67,15 @@ Motor::Motor(motor_num_t motor_number) : motor_num(motor_number) {
 
 
 
+// Private Helper: Apply Direction Inverse Factor
+motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) {
+    if (inverse_direction) {
+        return apparent_direction == FORWARD ? BACKWARD : FORWARD;
+    }
+    return apparent_direction;
+}
+
+
 
 // Stop Function
 void Motor::stop() {
@@ -79,13 +91,15 @@ void Motor::setSpeed(uint16_t speed) {
     ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, speed);
     ledc_update_duty(LEDC_SPEED_MODE, ledc_channel);
 
+    saved_speed = speed;
     ESP_LOGI(TAG, "Motor %d speed set to %d", motor_num, speed);
 }
 
 // Set Direction Function
 void Motor::setDirection(motor_direction_t direction) {
-    gpio_set_level(direction_pin, direction == FORWARD ? 1 : 0);
+    gpio_set_level(direction_pin, getActualDirection(direction) == FORWARD ? 1 : 0);
 
+    saved_direction = direction;
     ESP_LOGI(TAG, "Motor %d direction set to %s", motor_num,
              direction == FORWARD ? "FORWARD" : "BACKWARD");
 }

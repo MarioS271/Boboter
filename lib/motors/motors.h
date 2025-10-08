@@ -32,10 +32,13 @@ private:
     gpio_num_t speed_pin;
     gpio_num_t direction_pin;
     ledc_channel_t ledc_channel;
+    bool inverse_direction;
     bool error;
 
     uint16_t saved_speed;
     motor_direction_t saved_direction;
+
+    motor_direction_t getActualDirection(motor_direction_t);
 
 public:
     explicit Motor(motor_num_t motor_number);
