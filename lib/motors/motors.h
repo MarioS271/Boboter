@@ -40,8 +40,7 @@ private:
 public:
     explicit Motor(motor_num_t motor_number);
 
-    void brake();
-    void coast();
+    void stop();
     void setSpeed(uint16_t speed);
     void setDirection(motor_direction_t direction);
 

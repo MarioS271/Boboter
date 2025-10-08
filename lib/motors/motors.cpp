@@ -64,18 +64,13 @@ Motor::Motor(motor_num_t motor_number) : motor_num(motor_number) {
 
 
 
-// Brake Function
-void Motor::brake() {
+
+// Stop Function
+void Motor::stop() {
     setSpeed(0);
 
+    ESP_LOGI(TAG, "Motor %d stopped", motor_num);
 }
-
-// Coast Function
-void Motor::coast() {
-    setSpeed(0);
-}
-
-
 
 // Set Speed Function
 void Motor::setSpeed(uint16_t speed) {
@@ -83,11 +78,16 @@ void Motor::setSpeed(uint16_t speed) {
 
     ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, speed);
     ledc_update_duty(LEDC_SPEED_MODE, ledc_channel);
+
+    ESP_LOGI(TAG, "Motor %d speed set to %d", motor_num, speed);
 }
 
 // Set Direction Function
 void Motor::setDirection(motor_direction_t direction) {
     gpio_set_level(direction_pin, direction == FORWARD ? 1 : 0);
+
+    ESP_LOGI(TAG, "Motor %d direction set to %s", motor_num,
+             direction == FORWARD ? "FORWARD" : "BACKWARD");
 }
 
 
