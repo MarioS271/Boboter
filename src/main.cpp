@@ -32,10 +32,10 @@ extern "C" void app_main() {
             colors[i] = colorArray[esp_random() % numColors];
         }
 
-        leds.setColor(LED_FRONT_LEFT, RED);
-        leds.setColor(LED_FRONT_RIGHT, ORANGE);
-        leds.setColor(LED_BACK_LEFT, YELLOW);
-        leds.setColor(LED_BACK_RIGHT, GREEN);
+        leds.setColor(LED_FRONT_LEFT, colors[0]);
+        leds.setColor(LED_FRONT_RIGHT, colors[1]);
+        leds.setColor(LED_BACK_LEFT, colors[2]);
+        leds.setColor(LED_BACK_RIGHT, colors[3]);
         delay(1000);
     }
 }
