@@ -5,13 +5,19 @@
 #include "motors.h"
 
 #include "esp_log.h"
+#include "delay.h"
 
 static const char* TAG = "class_motor";
 
 // Constructor
-Motor::Motor(motor_num_t motor_number) : motor_num(motor_number) {
-    error = false;
-
+Motor::Motor(motor_num_t motor_number)
+: 
+  target_speed(0),
+  rampTaskHandle(nullptr),
+  motor_num(motor_number),
+  error(false),
+  current_speed(0),
+  current_direction(FORWARD) {
     // Assign correct pin numbers
     switch (motor_num) {
         case MOTOR_LEFT:
@@ -48,13 +54,13 @@ Motor::Motor(motor_num_t motor_number) : motor_num(motor_number) {
 
     // Speed Pin Config
     ledc_timer_config_t ledc_timer_conf = {};
-    ledc_timer_conf.speed_mode = LEDC_LOW_SPEED_MODE;
+    ledc_timer_conf.speed_mode = LEDC_SPEED_MODE;
     ledc_timer_conf.timer_num = LEDC_TIMER_0;
     ledc_timer_conf.duty_resolution = LEDC_RESOLUTION;
     ledc_timer_conf.freq_hz = LEDC_FREQUENCY;
     ledc_timer_conf.clk_cfg = LEDC_AUTO_CLK;
     ledc_timer_config(&ledc_timer_conf);
-
+    
     ledc_channel_config_t ledc_channel_conf = {};
     ledc_channel_conf.gpio_num = speed_pin;
     ledc_channel_conf.speed_mode = LEDC_SPEED_MODE;
@@ -63,23 +69,45 @@ Motor::Motor(motor_num_t motor_number) : motor_num(motor_number) {
     ledc_channel_conf.duty = 0;
     ledc_channel_conf.hpoint = 0;
     ledc_channel_config(&ledc_channel_conf);
+
+    delay(10);
+    xTaskCreate(rampTask, "MotorRampTask", 2048, this, 5, &rampTaskHandle);
 }
 
 
 
-// Private Helper: Apply Direction Inverse Factor
-motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) {
-    if (inverse_direction) {
-        return apparent_direction == FORWARD ? BACKWARD : FORWARD;
+// Private: Ramp Task
+void Motor::rampTask(void* pvParameters) {
+    auto* motor = static_cast<Motor*>(pvParameters);
+
+    while (true) {
+        if (motor->current_speed != motor->target_speed) {
+            int16_t current = static_cast<int16_t>(motor->current_speed);
+            int16_t target = static_cast<int16_t>(motor->target_speed);
+
+            if (current < target) {
+                current += RAMP_STEP;
+                if (current > target) current = target;
+            } else if (current > target) {
+                current -= RAMP_STEP;
+                if (current < target) current = target;
+            }
+
+            current = current > 1023 ? 1023 : current;
+            motor->current_speed = current;
+            ledc_set_duty(LEDC_SPEED_MODE, motor->ledc_channel, static_cast<uint16_t>(current));
+            ledc_update_duty(LEDC_SPEED_MODE, motor->ledc_channel);
+        }
+
+        delay(RAMP_INTERVAL_MS);
     }
-    return apparent_direction;
 }
 
 
 
 // Stop Function
 void Motor::stop() {
-    setSpeed(0);
+    target_speed = 0;
 
     ESP_LOGI(TAG, "Motor %d stopped", motor_num);
 }
@@ -87,19 +115,16 @@ void Motor::stop() {
 // Set Speed Function
 void Motor::setSpeed(uint16_t speed) {
     speed = speed > 1023 ? 1023 : speed;
+    target_speed = speed;
 
-    ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, speed);
-    ledc_update_duty(LEDC_SPEED_MODE, ledc_channel);
-
-    saved_speed = speed;
     ESP_LOGI(TAG, "Motor %d speed set to %d", motor_num, speed);
 }
 
 // Set Direction Function
 void Motor::setDirection(motor_direction_t direction) {
     gpio_set_level(direction_pin, getActualDirection(direction) == FORWARD ? 1 : 0);
+    current_direction = direction;
 
-    saved_direction = direction;
     ESP_LOGI(TAG, "Motor %d direction set to %s", motor_num,
              direction == FORWARD ? "FORWARD" : "BACKWARD");
 }
@@ -108,10 +133,18 @@ void Motor::setDirection(motor_direction_t direction) {
 
 // Get Speed Function
 uint16_t Motor::getSpeed() {
-    return saved_speed;
+    return current_speed;
 }
 
 // Get Direction Function
 motor_direction_t Motor::getDirection() {
-    return saved_direction;
+    return current_direction;
+}
+
+// Get Direction with Inverse Factor included
+motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) {
+    if (inverse_direction) {
+        return apparent_direction == FORWARD ? BACKWARD : FORWARD;
+    }
+    return apparent_direction;
 }

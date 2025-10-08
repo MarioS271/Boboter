@@ -36,13 +36,38 @@ extern "C" void app_main() {
         nullptr          // Task handle (not needed here)
     );
 
+    ESP_LOGI(TAG, "Motortest: vorwärts 2 Sekunden...");
+
     motorLeft.setDirection(FORWARD);
     motorRight.setDirection(FORWARD);
     motorLeft.setSpeed(1023);
     motorRight.setSpeed(1023);
-    delay(500);
+
+    delay(2000);
+
+    ESP_LOGI(TAG, "Stoppe Motoren...");
     motorLeft.stop();
     motorRight.stop();
+
+    delay(1000);
+
+    ESP_LOGI(TAG, "Motortest: rückwärts 2 Sekunden...");
+
+    motorLeft.setDirection(BACKWARD);
+    motorRight.setDirection(BACKWARD);
+    motorLeft.setSpeed(800);
+    motorRight.setSpeed(800);
+
+    delay(2000);
+
+    ESP_LOGI(TAG, "Motor-Test abgeschlossen.");
+    motorLeft.stop();
+    motorRight.stop();
+
+    // Hauptloop
+    while (true) {
+        delay(5000);
+    }
 }
 
 
