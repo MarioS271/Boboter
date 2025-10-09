@@ -13,7 +13,7 @@
 #include "predef_colors.h"
 
 #include "leds.h"
-#include "bumper.h"
+#include "move.h"
 
 using namespace COLORS;
 
@@ -27,16 +27,11 @@ extern "C" void app_main() {
 
     Leds leds = Leds();
 
-    Bumper bumperLeft = Bumper(BUMPER_LEFT);
-    Bumper bumperRight = Bumper(BUMPER_RIGHT);
-
     leds.setStatusLed(true);
     xTaskCreate(ledTask, "LedTask", 2048, &leds, 5, nullptr);
 
     while (true) {
-        bumperLeft.isHit();
-        bumperRight.isHit();
-        delay(200);
+        delay(1000);
     }
 }
 
