@@ -9,6 +9,8 @@
 #include "driver/ledc.h"
 #include "freertos/FreeRTOS.h"
 
+constexpr uint16_t MAX_SPEED_MOTOR = 1023;
+
 enum motor_num_t : uint8_t {
     MOTOR_LEFT = 0,
     MOTOR_RIGHT = 1
@@ -55,7 +57,6 @@ private:
     static void rampTask(void* pvParameters);
 
 public:
-
     explicit Motor(motor_num_t motor_number);
 
     void stop();
