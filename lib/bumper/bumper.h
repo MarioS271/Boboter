@@ -6,8 +6,8 @@
 #include "driver/gpio.h"
 
 enum bumper_num_t : uint8_t {
-    LEFT_BUMPER = 0,
-    RIGHT_BUMPER = 1
+    BUMPER_LEFT = 0,
+    BUMPER_RIGHT = 1
 };
 
 class Bumper {
@@ -22,6 +22,5 @@ private:
 public:
     explicit Bumper(bumper_num_t bumper_number);
 
-    bool leftHit() const;
-    bool rightHit() const;
+    bool isHit() const;
 };

@@ -13,12 +13,12 @@ Bumper::Bumper(bumper_num_t bumper_number)
   error(false)
 {
     switch (bumper_num) {
-        case LEFT_BUMPER:
+        case BUMPER_LEFT:
             ESP_LOGI(TAG, "Initialized Bumper LEFT_BUMPER (ID: %d)", bumper_num);
             bumper_pin = LEFT_BUMPER_PIN;
             break;
 
-        case RIGHT_BUMPER:
+        case BUMPER_RIGHT:
             ESP_LOGI(TAG, "Initialized Bumper RIGHT_BUMPER (ID: %d)", bumper_num);
             bumper_pin = RIGHT_BUMPER_PIN;
             break;
@@ -40,12 +40,9 @@ Bumper::Bumper(bumper_num_t bumper_number)
 
 
 
-// Check if Left Bumper is pressed
-bool Bumper::leftHit() const {
-    return gpio_get_level(bumper_pin);
-}
-
-// Check if Right Bumper is pressed
-bool Bumper::rightHit() const {
-    return gpio_get_level(bumper_pin);
+// Check if Bumper is pressed
+bool Bumper::isHit() const {
+    bool state = !gpio_get_level(bumper_pin);
+    if (state) ESP_LOGD(TAG, "Bumper hit while calling isHit() of %s", bumper_num == BUMPER_LEFT ? "BUMPER_LEFT" : "BUMPER_RIGHT");
+    return state;
 }
