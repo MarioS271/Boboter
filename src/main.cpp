@@ -6,6 +6,8 @@
 #include "esp_random.h"
 #include "freertos/FreeRTOS.h"
 
+#include "flags.h"
+#include "main_function_defs.h"
 #include "delay.h"
 #include "rgb_color.h"
 #include "predef_colors.h"
@@ -17,12 +19,9 @@
 using namespace COLORS;
 
 static const char* TAG = "MAIN";
-constexpr bool ESP_SHOW_DEBUG_LOGS = true;  // Use to enable/disable debug logging
-
-void ledTask(void* pvParameters);
 
 extern "C" void app_main() {
-    esp_log_level_set("*", ESP_SHOW_DEBUG_LOGS ? ESP_LOG_DEBUG : ESP_LOG_INFO);
+    esp_log_level_set("*", SHOW_DEBUG_LOGS ? ESP_LOG_DEBUG : ESP_LOG_INFO);
     ESP_LOGI(TAG, "Hello, World!");
 
     Leds leds = Leds();
@@ -32,16 +31,17 @@ extern "C" void app_main() {
 
     leds.setStatusLed(true);
     xTaskCreate(ledTask, "LedTask", 2048, &leds, 5, nullptr);
-
+    
     // motorLeft.setDirection(FORWARD);
     // motorRight.setDirection(BACKWARD);
-    // motorLeft.setSpeed(700);
-    // motorRight.setSpeed(700);
+    // motorLeft.setSpeed(500);
+    // motorRight.setSpeed(500);
 
     while (true) {
         delay(5000);
     }
 }
+
 
 
 void ledTask(void* pvParameters) {
