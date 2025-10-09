@@ -3,7 +3,6 @@
 // (C) MarioS271 2025
 
 #include "motors.h"
-
 #include "esp_log.h"
 #include "delay.h"
 
@@ -16,7 +15,8 @@ Motor::Motor(motor_num_t motor_number)
   motor_num(motor_number),
   error(false),
   current_speed(0),
-  current_direction(FORWARD) {
+  current_direction(FORWARD)
+{
     switch (motor_num) {
         case MOTOR_LEFT:
             ESP_LOGI(TAG, "Initialized Motor MOTOR_LEFT (ID: %d)", motor_num);

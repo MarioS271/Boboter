@@ -3,7 +3,6 @@
 // (C) MarioS271 2025
 
 #include "leds.h"
-
 #include "esp_log.h"
 
 static const char* TAG = "LEDS";
