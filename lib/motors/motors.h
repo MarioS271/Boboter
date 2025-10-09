@@ -8,7 +8,6 @@
 #include "driver/gpio.h"
 #include "driver/ledc.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
 enum motor_num_t : uint8_t {
     MOTOR_LEFT = 0,
@@ -66,4 +65,6 @@ public:
     uint16_t getSpeed();
     motor_direction_t getDirection();
     motor_direction_t getActualDirection(motor_direction_t);
+
+    bool hasError();
 };

@@ -7,18 +7,16 @@
 #include "esp_log.h"
 #include "delay.h"
 
-static const char* TAG = "class_motor";
+static const char* TAG = "MOTORS";
 
 // Constructor
 Motor::Motor(motor_num_t motor_number)
-: 
-  target_speed(0),
+: target_speed(0),
   rampTaskHandle(nullptr),
   motor_num(motor_number),
   error(false),
   current_speed(0),
   current_direction(FORWARD) {
-    // Assign correct pin numbers
     switch (motor_num) {
         case MOTOR_LEFT:
             ESP_LOGI(TAG, "Initialized Motor MOTOR_LEFT (ID: %d)", motor_num);
@@ -107,25 +105,31 @@ void Motor::rampTask(void* pvParameters) {
 
 // Stop Function
 void Motor::stop() {
+    if (error) return;
+
     target_speed = 0;
 
-    ESP_LOGI(TAG, "Motor %d stopped", motor_num);
+    ESP_LOGD(TAG, "Motor %d stopped", motor_num);
 }
 
 // Set Speed Function
 void Motor::setSpeed(uint16_t speed) {
+    if (error) return;
+
     speed = speed > 1023 ? 1023 : speed;
     target_speed = speed;
 
-    ESP_LOGI(TAG, "Motor %d speed set to %d", motor_num, speed);
+    ESP_LOGD(TAG, "Motor %d speed set to %d", motor_num, speed);
 }
 
 // Set Direction Function
 void Motor::setDirection(motor_direction_t direction) {
+    if (error) return;
+    
     gpio_set_level(direction_pin, getActualDirection(direction) == FORWARD ? 1 : 0);
     current_direction = direction;
 
-    ESP_LOGI(TAG, "Motor %d direction set to %s", motor_num,
+    ESP_LOGD(TAG, "Motor %d direction set to %s", motor_num,
              direction == FORWARD ? "FORWARD" : "BACKWARD");
 }
 
@@ -147,4 +151,11 @@ motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction
         return apparent_direction == FORWARD ? BACKWARD : FORWARD;
     }
     return apparent_direction;
+}
+
+
+
+// Get if Motor has Error
+bool Motor::hasError() {
+    return error;
 }

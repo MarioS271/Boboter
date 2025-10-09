@@ -1,4 +1,4 @@
-// HEX_COLOR_H
+// RGB_COLOR_H
 // Boboter
 // (C) MarioS271 2025
 
@@ -10,4 +10,4 @@ typedef struct {
     uint8_t r;
     uint8_t g;
     uint8_t b;
-} hex_color_t;
+} rgb_color_t;

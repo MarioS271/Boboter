@@ -5,66 +5,39 @@
 #include "esp_log.h"
 #include "esp_random.h"
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
 #include "delay.h"
-#include "hex_color.h"
+#include "rgb_color.h"
 #include "predef_colors.h"
 
 #include "leds.h"
 #include "motors.h"
+#include "ultrasonic.h"
 
 using namespace COLORS;
 
-static const char* TAG = "app_main";
+static const char* TAG = "MAIN";
+constexpr bool ESP_SHOW_DEBUG_LOGS = true;  // Use to enable/disable debug logging
 
 void ledTask(void* pvParameters);
 
 extern "C" void app_main() {
+    esp_log_level_set("*", ESP_SHOW_DEBUG_LOGS ? ESP_LOG_DEBUG : ESP_LOG_INFO);
     ESP_LOGI(TAG, "Hello, World!");
 
     Leds leds = Leds();
     Motor motorLeft = Motor(MOTOR_LEFT);
     Motor motorRight = Motor(MOTOR_RIGHT);
+    Ultrasonic usonic = Ultrasonic();
 
-    xTaskCreate(
-        ledTask,         // Task function
-        "LED Task",      // Task name
-        2048,            // Stack size in words
-        &leds,           // Parameter (pointer to Leds)
-        5,               // Task priority
-        nullptr          // Task handle (not needed here)
-    );
+    leds.setStatusLed(true);
+    xTaskCreate(ledTask, "LedTask", 2048, &leds, 5, nullptr);
 
-    ESP_LOGI(TAG, "Motortest: vorwärts 2 Sekunden...");
+    // motorLeft.setDirection(FORWARD);
+    // motorRight.setDirection(BACKWARD);
+    // motorLeft.setSpeed(700);
+    // motorRight.setSpeed(700);
 
-    motorLeft.setDirection(FORWARD);
-    motorRight.setDirection(FORWARD);
-    motorLeft.setSpeed(1023);
-    motorRight.setSpeed(1023);
-
-    delay(2000);
-
-    ESP_LOGI(TAG, "Stoppe Motoren...");
-    motorLeft.stop();
-    motorRight.stop();
-
-    delay(1000);
-
-    ESP_LOGI(TAG, "Motortest: rückwärts 2 Sekunden...");
-
-    motorLeft.setDirection(BACKWARD);
-    motorRight.setDirection(BACKWARD);
-    motorLeft.setSpeed(800);
-    motorRight.setSpeed(800);
-
-    delay(2000);
-
-    ESP_LOGI(TAG, "Motor-Test abgeschlossen.");
-    motorLeft.stop();
-    motorRight.stop();
-
-    // Hauptloop
     while (true) {
         delay(5000);
     }
@@ -74,9 +47,9 @@ extern "C" void app_main() {
 void ledTask(void* pvParameters) {
     Leds* leds = static_cast<Leds*>(pvParameters);
 
-    hex_color_t colorArray[] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
+    rgb_color_t colorArray[] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
     constexpr int numColors = sizeof(colorArray) / sizeof(colorArray[0]);
-    hex_color_t colors[4] = {};
+    rgb_color_t colors[4] = {};
 
     while (true) {
         for (int i = 0; i < 4; i++) {
