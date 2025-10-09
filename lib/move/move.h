@@ -28,6 +28,8 @@ private:
 
     Ultrasonic usonic;
 
+    void drive(int32_t distance_cm, uint16_t baseSpeed, bool forward);
+
 public:
     explicit Move();
 
