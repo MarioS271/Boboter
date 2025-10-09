@@ -3,7 +3,6 @@
 // (C) MarioS271 2025
 
 #include "encoder.h"
-
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 
@@ -18,7 +17,8 @@ void IRAM_ATTR encoder_isr_handler(void* arg) {
 Encoder::Encoder(encoder_num_t encoder_number)
 : encoder_num(encoder_number),
   error(false),
-  pulse_count(0) {
+  pulse_count(0)
+{
     switch (encoder_num) {
         case ENCODER_LEFT:
             ESP_LOGI(TAG, "Initialized Encoder ENCODER_LEFT (ID: %d)", encoder_num);
@@ -31,9 +31,9 @@ Encoder::Encoder(encoder_num_t encoder_number)
             break;
 
         default:
-            ESP_LOGI(TAG, "Unable to initialize Encoder (ID: %d)", encoder_num);
+            ESP_LOGE(TAG, "Unable to initialize Encoder (ID: %d)", encoder_num);
             error = true;
-            break;
+            return;
     }
 
     gpio_config_t gpio_conf = {};
