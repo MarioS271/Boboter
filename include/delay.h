@@ -4,9 +4,9 @@
 
 #pragma once
 
+#include <cstdint>
 #include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
-inline void delay(unsigned int ms) {
+inline void delay(uint32_t ms) {
     vTaskDelay(pdMS_TO_TICKS(ms));
 }
