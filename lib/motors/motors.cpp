@@ -104,12 +104,31 @@ void Motor::rampTask(void* pvParameters) {
 
 
 // Stop Function
-void Motor::stop() {
+void Motor::stop(bool wait) {
     if (error) return;
 
     target_speed = 0;
 
-    ESP_LOGD(TAG, "Motor %d stopped", motor_num);
+    ESP_LOGD(TAG, "Motor %d stopping", motor_num);
+
+    if (wait) {
+        const uint32_t timeout_ms = 2000;
+        uint32_t waited_ms = 0;
+
+        while (current_speed > RAMP_STEP && waited_ms < timeout_ms) {
+            delay(RAMP_INTERVAL_MS);
+            waited_ms += RAMP_INTERVAL_MS;
+        }
+
+        ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, 0);
+        ledc_update_duty(LEDC_SPEED_MODE, ledc_channel);
+
+        current_speed = 0;
+
+        ESP_LOGD(TAG, "Motor %d fully stopped after %d ms", motor_num, static_cast<int>(waited_ms));
+    } else {
+        ESP_LOGD(TAG, "Motor %d stop() called (non-blocking)", motor_num);
+    }
 }
 
 // Set Speed Function

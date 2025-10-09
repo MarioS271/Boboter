@@ -59,7 +59,7 @@ private:
 public:
     explicit Motor(motor_num_t motor_number);
 
-    void stop();
+    void stop(bool wait = true);
     void setSpeed(uint16_t speed);
     void setDirection(motor_direction_t direction);
 

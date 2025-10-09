@@ -15,8 +15,8 @@ enum encoder_num_t {
 class Encoder {
     friend void IRAM_ATTR encoder_isr_handler(void* arg);
 private:
-    static constexpr gpio_num_t ENCODER_LEFT_PIN = GPIO_NUM_14;
-    static constexpr gpio_num_t ENCODER_RIGHT_PIN = GPIO_NUM_27;
+    static constexpr gpio_num_t ENCODER_LEFT_PIN = GPIO_NUM_27;
+    static constexpr gpio_num_t ENCODER_RIGHT_PIN = GPIO_NUM_14;
 
     encoder_num_t encoder_num;
     gpio_num_t encoder_pin;

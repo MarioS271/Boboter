@@ -26,9 +26,16 @@ extern "C" void app_main() {
     ESP_LOGI(TAG, "Hello, World!");
 
     Leds leds = Leds();
+    Move move = Move();
 
     leds.setStatusLed(true);
     xTaskCreate(ledTask, "LedTask", 2048, &leds, 5, nullptr);
+
+    move.forward(10, MAX_SPEED_MOTOR);
+    delay(500);
+    move.turn(180, 800);
+    delay(500);
+    move.backward(10, MAX_SPEED_MOTOR);
 
     while (true) {
         delay(1000);

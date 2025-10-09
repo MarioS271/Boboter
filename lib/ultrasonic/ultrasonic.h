@@ -13,5 +13,6 @@ private:
 
 public:
     explicit Ultrasonic();
+    
     float measureCm();
 };
