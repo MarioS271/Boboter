@@ -34,8 +34,8 @@ private:
     static constexpr uint32_t LEDC_FREQUENCY = 10000;   // 10 kHz
 
     // Ramp Configuration
-    static constexpr uint16_t RAMP_STEP = 10;
-    static constexpr uint16_t RAMP_INTERVAL_MS = 10;
+    static constexpr uint8_t RAMP_STEP = 20;
+    static constexpr uint8_t RAMP_INTERVAL_MS = 10;
 
     // Ramp Variables
     uint16_t target_speed;
