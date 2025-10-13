@@ -14,6 +14,7 @@
 
 #include "leds.h"
 #include "move.h"
+#include "webui.h"
 
 using namespace COLORS;
 
@@ -28,17 +29,33 @@ extern "C" void app_main() {
     Leds leds = Leds();
     Move move = Move();
 
+    static rgb_color_t ledUL, ledUR, ledLL, ledLR;
+    WebUI webui = WebUI();
+
+    webui.led_upper_left = &ledUL;
+    webui.led_upper_right = &ledUR;
+    webui.led_lower_left = &ledLL;
+    webui.led_lower_right = &ledLR;
+
+    delay(500);
+    // webui.startServer();
+
     leds.setStatusLed(true);
-    xTaskCreate(ledTask, "LedTask", 2048, &leds, 5, nullptr);
+    // xTaskCreate(ledTask, "LedTask", 2048, &leds, 5, nullptr);
 
-    move.forward(20, MAX_SPEED_MOTOR);
-    delay(1000);
-    move.turn(180, 800);
-    delay(1000);
-    move.backward(20, MAX_SPEED_MOTOR);
+    // move.forward(20, MAX_SPEED_MOTOR);
+    // delay(1000);
+    // move.turn(180, 800);
+    // delay(1000);
+    // move.backward(20, MAX_SPEED_MOTOR);
 
+    rgb_color_t* ledArray[4] = { &ledUL, &ledUR, &ledLL, &ledLR };
     while (true) {
-        delay(1000);
+        for (uint8_t i = 0; i < 4; i++) {
+            leds.setColor(static_cast<led_pos_t>(i), *ledArray[i]);
+        }
+        
+        delay(250);
     }
 }
 

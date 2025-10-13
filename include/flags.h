@@ -8,7 +8,7 @@
 //  Use to enable or disable debug logging
 constexpr bool SHOW_DEBUG_LOGS = false;
 
-// ENABLE_SENSOR_TEST_MODE
+// ENABLE_SENSOR_TEST_MODE  (INOP)
 //  This flag decides if the Robot will operate in "Sensor Test Mode",
 //  which tests the robot's sensors and functions
 constexpr bool ENABLE_SENSOR_TEST_MODE = false;
