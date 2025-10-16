@@ -4,9 +4,12 @@
 
 #pragma once
 
+#include <cstdint>
 #include "rgb_color.h"
 
 namespace COLORS {
+    constexpr uint8_t NUM_COLORS = 8;
+
     constexpr rgb_color_t RED = {255, 0, 0};
     constexpr rgb_color_t ORANGE = {255, 160, 0};
     constexpr rgb_color_t YELLOW = {255, 255, 0};

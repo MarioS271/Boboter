@@ -9,7 +9,7 @@
 #include "driver/ledc.h"
 #include "freertos/FreeRTOS.h"
 
-constexpr uint16_t MAX_SPEED_MOTOR = 1023;
+constexpr uint16_t MAX_MOTOR_SPEED = 1023;
 
 enum motor_num_t : uint8_t {
     MOTOR_LEFT = 0,
