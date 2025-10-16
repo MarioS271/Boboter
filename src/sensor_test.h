@@ -25,6 +25,7 @@ void sensorTest(void* pvParameters) {
     static const char* TAG = "ROUTINE:SENSOR_TEST";
 
     Leds leds = Leds();
+    leds.setStatusLed(true);
 
     Motor motorL = Motor(MOTOR_LEFT);
     Motor motorR = Motor(MOTOR_RIGHT);
