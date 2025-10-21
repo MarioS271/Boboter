@@ -6,6 +6,7 @@
 
 #include "esp_log.h"
 #include "delay.h"
+#include "system_context.h"
 
 #include "leds.h"
 #include "rgb_color.h"
@@ -24,24 +25,14 @@ constexpr float MIN_DISPLAY_DISTANCE = 5.0;
 void sensorTest(void* pvParameters) {
     static const char* TAG = "ROUTINE:SENSOR_TEST";
 
-    Leds leds = Leds();
-    leds.setStatusLed(true);
-
-    Motor motorL = Motor(MOTOR_LEFT);
-    Motor motorR = Motor(MOTOR_RIGHT);
-
-    Ultrasonic usonic = Ultrasonic();
-
-    Bumper bumperL = Bumper(BUMPER_LEFT);
-    Bumper bumperR = Bumper(BUMPER_RIGHT);
-
-    ESP_LOGI(TAG, "Initialized all Classes");
+    SystemContext* ctx = static_cast<SystemContext*>(pvParameters);
+    ESP_LOGI(TAG, "Readied SystemContext");
 
     // 1) Iterate through all predefined colors to test the LEDs
     rgb_color_t colorArray[NUM_COLORS] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
     const char* colorNames[NUM_COLORS] = { "RED", "ORANGE", "YELLOW", "GREEN", "CYAN", "BLUE", "MAGENTA", "WHITE"};
     for (int i = 0; i < NUM_COLORS; i++) {
-        leds.setAll(colorArray[i]);
+        ctx->leds.setAll(colorArray[i]);
         ESP_LOGI(TAG, "Set all LEDs to %s", colorNames[i]);
         delay(500);
     }
@@ -49,17 +40,17 @@ void sensorTest(void* pvParameters) {
 
     // 2) Test Motors
     for (int i = 0; i < 2; i++) {
-        motorL.setDirection(static_cast<motor_direction_t>(i));
-        motorR.setDirection(static_cast<motor_direction_t>(i));
+        ctx->motorL.setDirection(static_cast<motor_direction_t>(i));
+        ctx->motorR.setDirection(static_cast<motor_direction_t>(i));
 
-        motorL.setSpeed(MAX_MOTOR_SPEED);
-        motorR.setSpeed(MAX_MOTOR_SPEED);
+        ctx->motorL.setSpeed(MAX_MOTOR_SPEED);
+        ctx->motorR.setSpeed(MAX_MOTOR_SPEED);
 
         ESP_LOGI(TAG, "Started both Motors %s with speed MAX_MOTOR_SPEED (%d)", i == 0 ? "FORWARD" : "BACKWARD", MAX_MOTOR_SPEED);
         delay(2000);
 
-        motorL.stop(false);
-        motorR.stop();
+        ctx->motorL.stop(false);
+        ctx->motorR.stop();
 
         ESP_LOGI(TAG, "Stopped both Motors");
         delay(1000);
@@ -67,26 +58,26 @@ void sensorTest(void* pvParameters) {
     delay(1000);
 
     // 3) Sensor Testing Mode
-    leds.allOff();
+    ctx->leds.allOff();
     while (true) {
-        if (bumperL.isHit()) {
-            leds.setColor(LED_FRONT_LEFT, WHITE);
+        if (ctx->bumperL.isHit()) {
+            ctx->leds.setColor(LED_FRONT_LEFT, WHITE);
             ESP_LOGI(TAG, "Bumper_Left has hit something!");
         } else {
-            leds.setOff(LED_FRONT_LEFT);
+            ctx->leds.setOff(LED_FRONT_LEFT);
         }
 
-        if (bumperR.isHit()) {
-            leds.setColor(LED_FRONT_RIGHT, WHITE);
+        if (ctx->bumperR.isHit()) {
+            ctx->leds.setColor(LED_FRONT_RIGHT, WHITE);
             ESP_LOGI(TAG, "Bumper_Right has hit something!");
         } else {
-            leds.setOff(LED_FRONT_RIGHT);
+            ctx->leds.setOff(LED_FRONT_RIGHT);
         }
 
-        float distance = usonic.measureCm();
+        float distance = ctx->usonic.measureCm();
         if (distance > MAX_DISPLAY_DISTANCE || distance <= 0) {
-            leds.setColor(LED_BACK_LEFT, BLUE);
-            leds.setColor(LED_BACK_RIGHT, BLUE);
+            ctx->leds.setColor(LED_BACK_LEFT, BLUE);
+            ctx->leds.setColor(LED_BACK_RIGHT, BLUE);
         } else {
             ESP_LOGI(TAG, "Ultrasonic Sensor Reading: %.2f", distance);
 
@@ -111,8 +102,8 @@ void sensorTest(void* pvParameters) {
                 color.b = (uint8_t)(255 * subT);
             }
 
-            leds.setColor(LED_BACK_LEFT, color);
-            leds.setColor(LED_BACK_RIGHT, color);
+            ctx->leds.setColor(LED_BACK_LEFT, color);
+            ctx->leds.setColor(LED_BACK_RIGHT, color);
         }
         
         delay(200);

@@ -10,14 +10,23 @@
 static const char* TAG = "MOVE";
 
 // Constructor
-Move::Move()
-: motorLeft(MOTOR_LEFT),
-  motorRight(MOTOR_RIGHT),
-  encoderLeft(ENCODER_LEFT),
-  encoderRight(ENCODER_RIGHT),
-  bumperLeft(BUMPER_LEFT),
-  bumperRight(BUMPER_RIGHT),
-  usonic() {};
+Move::Move(Motor& leftMotor,
+           Motor& rightMotor,
+           Encoder& leftEncoder,
+           Encoder& rightEncoder,
+           Bumper& leftBumper,
+           Bumper& rightBumper,
+           Ultrasonic& ultrasonic)
+    : motorLeft(leftMotor),
+      motorRight(rightMotor),
+      encoderLeft(leftEncoder),
+      encoderRight(rightEncoder),
+      bumperLeft(leftBumper),
+      bumperRight(rightBumper),
+      usonic(ultrasonic)
+{
+    ESP_LOGI(TAG, "Move subsystem initialized using external references.");
+}
 
 // Helper Function: Stop all Motors
 void stopMotors(Motor &left, Motor &right) {

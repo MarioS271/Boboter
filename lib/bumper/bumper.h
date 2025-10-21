@@ -2,6 +2,8 @@
 // Boboter
 // (C) MarioS271 2025
 
+#pragma once
+
 #include <cstdint>
 #include "driver/gpio.h"
 

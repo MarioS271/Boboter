@@ -2,19 +2,26 @@
 // Boboter
 // (C) MarioS271 2025
 
-// Libraries
+// Official Libraries
 #include "esp_log.h"
 #include "esp_random.h"
 #include "freertos/FreeRTOS.h"
 
+// Custom Libraries
+#include "leds.h"
+#include "motors.h"
+#include "encoder.h"
+#include "bumper.h"
+#include "ultrasonic.h"
+#include "move.h"
+
 // Headers
 #include "flags.h"
+#include "system_context.h"
 
 // Routines
 #include "sensor_test.h"
 #include "led_task.h"
-
-using namespace COLORS;
 
 static const char* TAG = "MAIN";
 
@@ -24,7 +31,28 @@ extern "C" void app_main() {
     ESP_LOGI(TAG, " === BOBOTER is starting ===");
     ESP_LOGI(TAG, "Hello, World!");
 
-    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, nullptr, 5, nullptr); return; }
+    static Leds leds = Leds();
+    static Motor motorL = Motor(MOTOR_LEFT);
+    static Motor motorR = Motor(MOTOR_RIGHT);
+    static Encoder encoderL = Encoder(ENCODER_LEFT);
+    static Encoder encoderR = Encoder(ENCODER_RIGHT);
+    static Bumper bumperL = Bumper(BUMPER_LEFT);
+    static Bumper bumperR = Bumper(BUMPER_RIGHT);
+    static Ultrasonic usonic = Ultrasonic();
+    static Move move = Move(motorL, motorR, encoderL, encoderR, bumperL, bumperR, usonic);
+
+    ESP_LOGI(TAG, "Created all Objects successfully");
+
+    static SystemContext sysctx = {
+        leds, motorL, motorR,
+        encoderL, encoderR, bumperL,
+        bumperR, usonic, move
+    };
+
+    ESP_LOGI(TAG, "Created SystemContext");
+    ESP_LOGI(TAG, "Starting FreeRTOS Task(s)");
+
+    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, &sysctx, 5, nullptr); return; }
 
     //// WEBSERVER TEST
     // WebUI webui = WebUI();
@@ -49,15 +77,5 @@ extern "C" void app_main() {
         
     //     delay(250);
     // }
-    ////////
-
-    //// MOVE ENGINE TEST
-    // Move move = Move();
-
-    // move.forward(20, MAX_MOTOR_SPEED);
-    // delay(1000);
-    // move.turn(180, 800);
-    // delay(1000);
-    // move.backward(20, MAX_MOTOR_SPEED);
     ////////
 }
