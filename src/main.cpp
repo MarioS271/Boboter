@@ -55,9 +55,6 @@ extern "C" void app_main() {
     if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, &sysctx, 5, nullptr); return; }
 
     //// WEBSERVER TEST
-    // WebUI webui = WebUI();
-    // Leds leds = Leds();
-
     // static rgb_color_t ledUL, ledUR, ledLL, ledLR;
     // WebUI webui = WebUI();
 
