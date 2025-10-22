@@ -52,7 +52,10 @@ extern "C" void app_main() {
     ESP_LOGI(TAG, "Created SystemContext");
     ESP_LOGI(TAG, "Starting FreeRTOS Task(s)");
 
-    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, &sysctx, 5, nullptr); return; }
+    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, &sysctx, 9, nullptr); }
+    else {
+        xTaskCreate(ledTask, "LedTask", 4096, &sysctx, 1, nullptr);
+    }
 
     //// WEBSERVER TEST
     // static rgb_color_t ledUL, ledUR, ledLL, ledLR;

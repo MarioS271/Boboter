@@ -89,11 +89,3 @@ void Leds::allOff() {
     ESP_LOGD(TAG, "Turning all LEDs off");
     setAll({0, 0, 0});
 }
-
-
-
-// Status LED
-void Leds::setStatusLed(bool status) {
-    gpio_set_level(STATUS_LED_PIN, status ? 0 : 1);
-    ESP_LOGD(TAG, "Status LED set to %s", status ? "ON" : "OFF");
-}

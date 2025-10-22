@@ -13,7 +13,8 @@
 using namespace COLORS;
 
 void ledTask(void* pvParameters) {
-    Leds leds = Leds();
+    SystemContext* ctx = static_cast<SystemContext*>(pvParameters);
+    Leds &leds = ctx->leds;
 
     rgb_color_t colorArray[] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
     constexpr int numColors = sizeof(colorArray) / sizeof(colorArray[0]);

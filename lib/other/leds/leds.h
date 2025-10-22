@@ -19,7 +19,6 @@ class Leds {
 private:
     static constexpr gpio_num_t MOSI_PIN = GPIO_NUM_23;
     static constexpr gpio_num_t CLK_PIN = GPIO_NUM_18;
-    static constexpr gpio_num_t STATUS_LED_PIN = GPIO_NUM_5;
 
     void sendBit(bool bit);
     void sendByte(uint8_t byte);
@@ -36,6 +35,4 @@ public:
 
     void setOff(led_pos_t led_pos);
     void allOff();
-
-    void setStatusLed(bool status);
 };
