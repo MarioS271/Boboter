@@ -7,7 +7,7 @@
 #include "esp_log.h"
 #include "delay.h"
 
-static const char* TAG = "MOVE";
+#define TAG "MOVE"
 
 // Constructor
 Move::Move(Motor& leftMotor,

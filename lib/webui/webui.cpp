@@ -11,7 +11,7 @@
 #include "esp_netif.h"
 #include "esp_http_server.h"
 
-static const char* TAG = "WEBUI";
+#define TAG "WEBUI"
 
 // Constructor
 WebUI::WebUI()

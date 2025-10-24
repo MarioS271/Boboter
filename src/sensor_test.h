@@ -17,15 +17,15 @@
 #include "ultrasonic.h"
 #include "bumper.h"
 
+#define TAG "task:SENSOR_TEST"
+
 using namespace COLORS;
 
 constexpr float MAX_DISPLAY_DISTANCE = 100.0;
 constexpr float MIN_DISPLAY_DISTANCE = 5.0;
 
-void sensorTest(void* pvParameters) {
-    static const char* TAG = "ROUTINE:SENSOR_TEST";
-
-    SystemContext* ctx = static_cast<SystemContext*>(pvParameters);
+void sensorTest(void* params) {
+    SystemContext* ctx = static_cast<SystemContext*>(params);
     Leds &leds = ctx->leds;
     Motor &motorL = ctx->motorL;
     Motor &motorR = ctx->motorR;

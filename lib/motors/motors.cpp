@@ -6,7 +6,7 @@
 #include "esp_log.h"
 #include "delay.h"
 
-static const char* TAG = "MOTORS";
+#define TAG "MOTORS"
 
 // Constructor
 Motor::Motor(motor_num_t motor_number)

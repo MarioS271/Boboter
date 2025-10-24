@@ -10,6 +10,7 @@
 #include "bumper.h"
 #include "ultrasonic.h"
 #include "move.h"
+#include "io_shield.h"
 
 typedef struct {
     Leds &leds;
@@ -26,4 +27,6 @@ typedef struct {
     Ultrasonic &usonic;
 
     Move &move;
+
+    IOShield &ioShield;
 } SystemContext;

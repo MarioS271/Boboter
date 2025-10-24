@@ -6,7 +6,7 @@
 #include <cmath>
 #include "esp_log.h"
 
-static const char* TAG = "GYRO";
+#define TAG "GYRO"
 
 Gyro::Gyro() : x(0), y(0), z(0) {}
 

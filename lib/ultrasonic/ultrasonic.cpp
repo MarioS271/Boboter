@@ -10,7 +10,7 @@
 #include "freertos/FreeRTOS.h"
 #include "delay.h"
 
-static const char *TAG = "ULTRASONIC";
+#define TAG "ULTRASONIC"
 
 Ultrasonic::Ultrasonic() {
     gpio_config_t gpio_conf = {};

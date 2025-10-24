@@ -6,14 +6,16 @@
 
 #include "esp_random.h"
 #include "delay.h"
+#include "system_context.h"
+
 #include "leds.h"
 #include "rgb_color.h"
 #include "predef_colors.h"
 
 using namespace COLORS;
 
-void ledTask(void* pvParameters) {
-    SystemContext* ctx = static_cast<SystemContext*>(pvParameters);
+void ledTask(void* params) {
+    SystemContext* ctx = static_cast<SystemContext*>(params);
     Leds &leds = ctx->leds;
 
     rgb_color_t colorArray[] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };

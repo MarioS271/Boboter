@@ -3,6 +3,7 @@
 // (C) MarioS271 2025
 
 // Official Libraries
+#include <cstdint>
 #include "esp_log.h"
 #include "esp_random.h"
 #include "freertos/FreeRTOS.h"
@@ -14,16 +15,20 @@
 #include "bumper.h"
 #include "ultrasonic.h"
 #include "move.h"
+#include "io_shield.h"
 
 // Headers
 #include "flags.h"
 #include "system_context.h"
 
-// Routines
+// Tasks
 #include "sensor_test.h"
 #include "led_task.h"
+#include "io_shield_task.h"
 
-static const char* TAG = "MAIN";
+#define TAG "MAIN"
+
+static constexpr uint16_t STACK_DEPTH = 4096;
 
 extern "C" void app_main() {
     esp_log_level_set("*", SHOW_DEBUG_LOGS ? ESP_LOG_DEBUG : ESP_LOG_INFO);
@@ -40,21 +45,26 @@ extern "C" void app_main() {
     static Bumper bumperR = Bumper(BUMPER_RIGHT);
     static Ultrasonic usonic = Ultrasonic();
     static Move move = Move(motorL, motorR, encoderL, encoderR, bumperL, bumperR, usonic);
+    static IOShield ioShield = IOShield();
 
     ESP_LOGI(TAG, "Created all Objects successfully");
 
     static SystemContext sysctx = {
         leds, motorL, motorR,
         encoderL, encoderR, bumperL,
-        bumperR, usonic, move
+        bumperR, usonic, move,
+        ioShield
     };
 
     ESP_LOGI(TAG, "Created SystemContext");
     ESP_LOGI(TAG, "Starting FreeRTOS Task(s)");
 
-    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, &sysctx, 9, nullptr); }
+    delay(500);
+
+    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", STACK_DEPTH, &sysctx, 9, nullptr); }
     else {
-        xTaskCreate(ledTask, "LedTask", 4096, &sysctx, 1, nullptr);
+        xTaskCreate(ledTask, "LedTask", STACK_DEPTH, &sysctx, 1, nullptr);
+        xTaskCreate(ioShieldTask, "IOShieldTask", STACK_DEPTH, &sysctx, 2, nullptr);
     }
 
     //// WEBSERVER TEST

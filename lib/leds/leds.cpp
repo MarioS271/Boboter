@@ -5,12 +5,12 @@
 #include "leds.h"
 #include "esp_log.h"
 
-static const char* TAG = "LEDS";
+#define TAG "LEDS"
 
 // Constructor
 Leds::Leds() {
     gpio_config_t gpio_conf = {};
-    gpio_conf.pin_bit_mask = (1ULL << MOSI_PIN) | (1ULL << CLK_PIN) | (1ULL << STATUS_LED_PIN);
+    gpio_conf.pin_bit_mask = (1ULL << MOSI_PIN) | (1ULL << CLK_PIN);
     gpio_conf.mode = GPIO_MODE_OUTPUT;
     gpio_conf.pull_up_en = GPIO_PULLUP_DISABLE;
     gpio_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
