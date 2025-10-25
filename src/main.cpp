@@ -61,11 +61,10 @@ extern "C" void app_main() {
 
     delay(500);
 
-    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", STACK_DEPTH, &sysctx, 9, nullptr); }
-    else {
-        xTaskCreate(ledTask, "LedTask", STACK_DEPTH, &sysctx, 1, nullptr);
-        xTaskCreate(ioShieldTask, "IOShieldTask", STACK_DEPTH, &sysctx, 2, nullptr);
-    }
+    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", STACK_DEPTH, &sysctx, 9, nullptr); return; }
+
+    xTaskCreate(ledTask, "LedTask", STACK_DEPTH, &sysctx, 1, nullptr);
+    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", STACK_DEPTH, &sysctx, 2, nullptr); }
 
     //// WEBSERVER TEST
     // static rgb_color_t ledUL, ledUR, ledLL, ledLR;

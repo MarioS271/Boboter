@@ -15,5 +15,7 @@ void ioShieldTask(void* params) {
 
     ioShield.displayWriteText("Hello, World!");
 
-    return;
+    while (true) {
+        delay(1000);
+    }
 }

@@ -5,6 +5,7 @@
 #include "io_shield.h"
 #include <cstring>
 #include "esp_log.h"
+#include "delay.h"
 #include "ssd1306/font8x8_basic.h"
 
 #define TAG "IO_SHIELD"
@@ -17,13 +18,15 @@ IOShield::IOShield() {
         .scl_io_num = GPIO_NUM_22,
         .sda_pullup_en = GPIO_PULLUP_ENABLE,
         .scl_pullup_en = GPIO_PULLUP_ENABLE,
-        .master = {.clk_speed = 400000},
+        .master = {.clk_speed = 100000},  // 100 kHz
         .clk_flags = 0,
     };
     i2c_param_config(DISPLAY_I2C_PORT, &conf);
     i2c_driver_install(DISPLAY_I2C_PORT, conf.mode, 0, 0, 0);
+    delay(100);
 
     ssd1306_init(&dev, DISPLAY_WIDTH, DISPLAY_HEIGHT);
+    delay(50);
     ssd1306_clear_screen(&dev, false);
     ssd1306_show_buffer(&dev);
 
