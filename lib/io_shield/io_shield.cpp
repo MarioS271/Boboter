@@ -6,29 +6,36 @@
 #include <cstring>
 #include "esp_log.h"
 #include "delay.h"
-#include "ssd1306/font8x8_basic.h"
+#include "esp_lcd_panel_io.h"
+#include "esp_lcd_panel_ops.h"
+#include "font8x8_basic.h"
+#include "i2c_utils.h"
 
 #define TAG "IO_SHIELD"
 
 // Constructor
 IOShield::IOShield() {
-    i2c_config_t conf = {
-        .mode = I2C_MODE_MASTER,
-        .sda_io_num = GPIO_NUM_21,
-        .scl_io_num = GPIO_NUM_22,
-        .sda_pullup_en = GPIO_PULLUP_ENABLE,
-        .scl_pullup_en = GPIO_PULLUP_ENABLE,
-        .master = {.clk_speed = 100000},  // 100 kHz
-        .clk_flags = 0,
+    esp_lcd_panel_io_i2c_config_t display_io_conf = {
+        .dev_addr = DISPLAY_I2C_ADDR,
+        .control_phase_bytes = 1,
+        .dc_bit_offset = 6,
+        .lcd_cmd_bits = 8,
+        .lcd_param_bits = 8
     };
-    i2c_param_config(DISPLAY_I2C_PORT, &conf);
-    i2c_driver_install(DISPLAY_I2C_PORT, conf.mode, 0, 0, 0);
-    delay(100);
+    esp_lcd_new_panel_io_i2c(I2C_CONFIG::I2C_PORT, &display_io_conf, &io_handle);
 
-    ssd1306_init(&dev, DISPLAY_WIDTH, DISPLAY_HEIGHT);
-    delay(50);
-    ssd1306_clear_screen(&dev, false);
-    ssd1306_show_buffer(&dev);
+    esp_lcd_panel_ssd1306_config_t display_vendor_conf = { .height = DISPLAY_HEIGHT };
+    esp_lcd_panel_dev_config_t display_panel_conf = {
+        .reset_gpio_num = GPIO_NUM_NC,
+        .color_space = ESP_LCD_COLOR_SPACE_MONOCHROME,
+        .bits_per_pixel = 1,
+        .vendor_config = &display_vendor_conf
+    };
+
+    esp_lcd_new_panel_ssd1306(io_handle, &display_panel_conf, &panel);
+    esp_lcd_panel_init(panel);
+    esp_lcd_panel_disp_on_off(panel, true);
+    esp_lcd_panel_mirror(panel, true, true);
 
     gpio_config_t gpio_conf = {};
     gpio_conf.pin_bit_mask = (1ULL << BUTTON_PIN);
@@ -38,16 +45,13 @@ IOShield::IOShield() {
     gpio_conf.intr_type = GPIO_INTR_DISABLE;
     gpio_config(&gpio_conf);
 
-    cursorX = 0;
-    cursorY = 0;
-
     ESP_LOGI(TAG, "IOShield initialization completed");
 }
 
 // Clear Display
 void IOShield::displayClear() {
-    ssd1306_clear_screen(&dev, false);
-    ssd1306_show_buffer(&dev);
+    memset(displayBuffer, 0, sizeof(displayBuffer));
+    esp_lcd_panel_draw_bitmap(panel, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, displayBuffer);
 
     cursorX = 0;
     cursorY = 0;
@@ -68,16 +72,41 @@ void IOShield::displaySetCursorPos(uint8_t x, uint8_t y) {
 
 // Write Text to Display
 void IOShield::displayWriteText(const char* text) {
-    int page = cursorY / CHAR_HEIGHT;
-    int text_len = strlen(text);
-    if (text_len > 16) text_len = 16; // Max 16 Zeichen pro Page
-
-    ssd1306_display_text(&dev, page, text, text_len, false);
-
-    cursorY += CHAR_HEIGHT;
-    cursorX = 0;
+    if (!text || !panel) return;
     
-    ssd1306_show_buffer(&dev);
+    uint8_t x = cursorX;
+    uint8_t y = cursorY;
+
+    for (size_t i = 0; text[i] != '\0'; i++) {
+        uint8_t c = static_cast<uint8_t>(text[i]);
+        if (c >= 128) c = '?';
+
+        if (x + CHAR_WIDTH > DISPLAY_WIDTH) {
+            x = 0;
+            y += CHAR_HEIGHT;
+        }
+
+        if (y + CHAR_HEIGHT > DISPLAY_HEIGHT) break;
+
+        for (uint8_t col = 0; col < CHAR_WIDTH; ++col) {
+            for (uint8_t row = 0; row < CHAR_HEIGHT; ++row) {
+                uint8_t pixel = (font8x8_basic_tr[c][col] >> row) & 0x01;
+                if (pixel) {
+                    uint16_t px = x + col;
+                    uint16_t py = y + row;
+                    size_t index = (py / 8) * DISPLAY_WIDTH + px;
+                    displayBuffer[index] |= (1 << (py % 8));
+                }
+            }
+        }
+
+        x += CHAR_WIDTH;
+    }
+
+    esp_lcd_panel_draw_bitmap(panel, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, displayBuffer);
+
+    cursorX = x;
+    cursorY = y;
 
     ESP_LOGD(TAG, "Wrote Text \"%s\" to Display", text);
 }

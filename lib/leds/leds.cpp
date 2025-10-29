@@ -4,6 +4,7 @@
 
 #include "leds.h"
 #include "esp_log.h"
+#include "flags.h"
 
 #define TAG "LEDS"
 
@@ -67,25 +68,25 @@ void Leds::setColor(led_pos_t led_pos, rgb_color_t color) {
         return;
     }
     buffer[led_pos] = color;
-    ESP_LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b);
+    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b); }
     update();
 }
 
 // Set All Colors Function
 void Leds::setAll(rgb_color_t color) {
     for (int i = 0; i < 4; i++) buffer[i] = color;
-    ESP_LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b);
+    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b); }
     update();
 }
 
 // Turn Single Off Function
 void Leds::setOff(led_pos_t led_pos) {
-    ESP_LOGD(TAG, "Turning LED %d off", led_pos);
+    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "Turning LED %d off", led_pos); }
     setColor(led_pos, {0, 0, 0});
 }
 
 // Turn All Off Function
 void Leds::allOff() {
-    ESP_LOGD(TAG, "Turning all LEDs off");
+    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "Turning all LEDs off"); }
     setAll({0, 0, 0});
 }

@@ -7,12 +7,11 @@
 #include <cstdint>
 #include "driver/gpio.h"
 #include "driver/i2c.h"
-#include "ssd1306/ssd1306.h"
+#include "esp_lcd_panel_ssd1306.h"
 
 class IOShield {
 private:
-    static constexpr uint8_t DISPLAY_I2C_ADDRESS = 0x3C;
-    static constexpr i2c_port_t DISPLAY_I2C_PORT = I2C_NUM_0;
+    static constexpr uint8_t DISPLAY_I2C_ADDR = 0x3C;
 
     static constexpr gpio_num_t BUTTON_PIN = GPIO_NUM_5;
     static constexpr uint8_t BUTTON_DEBOUNCE = 100;  // ms
@@ -25,7 +24,10 @@ private:
     uint8_t cursorX = 0;
     uint8_t cursorY = 0;
 
-    SSD1306_t dev;
+    esp_lcd_panel_handle_t panel = nullptr;
+    esp_lcd_panel_io_handle_t io_handle = nullptr;
+
+    uint8_t displayBuffer[(DISPLAY_WIDTH * DISPLAY_HEIGHT) / 8] = {0};
 
 public:
     explicit IOShield();

@@ -20,6 +20,7 @@
 // Headers
 #include "flags.h"
 #include "system_context.h"
+#include "i2c_utils.h"
 
 // Tasks
 #include "sensor_test.h"
@@ -28,13 +29,17 @@
 
 #define TAG "MAIN"
 
-static constexpr uint16_t STACK_DEPTH = 4096;
+using namespace I2C_UTILS;
+
 
 extern "C" void app_main() {
     esp_log_level_set("*", SHOW_DEBUG_LOGS ? ESP_LOG_DEBUG : ESP_LOG_INFO);
 
     ESP_LOGI(TAG, " === BOBOTER is starting ===");
     ESP_LOGI(TAG, "Hello, World!");
+
+    init_i2c();
+    scan_i2c_addresses(TAG);
 
     static Leds leds = Leds();
     static Motor motorL = Motor(MOTOR_LEFT);
@@ -58,13 +63,13 @@ extern "C" void app_main() {
 
     ESP_LOGI(TAG, "Created SystemContext");
     ESP_LOGI(TAG, "Starting FreeRTOS Task(s)");
-
     delay(500);
 
-    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", STACK_DEPTH, &sysctx, 9, nullptr); return; }
 
-    xTaskCreate(ledTask, "LedTask", STACK_DEPTH, &sysctx, 1, nullptr);
-    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", STACK_DEPTH, &sysctx, 2, nullptr); }
+    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, &sysctx, 9, nullptr); return; }
+
+    xTaskCreate(ledTask, "LedTask", 4096, &sysctx, 1, nullptr);
+    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", 4096, &sysctx, 2, nullptr); }
 
     //// WEBSERVER TEST
     // static rgb_color_t ledUL, ledUR, ledLL, ledLR;
