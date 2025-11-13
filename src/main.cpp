@@ -14,11 +14,16 @@
 #include "encoder.h"
 #include "bumper.h"
 #include "ultrasonic.h"
+#include "gyro.h"
 #include "move.h"
 #include "io_shield.h"
 
 // Headers
 #include "flags.h"
+#include "constants.h"
+
+// Helpers
+#include "flex_struct.h"
 #include "system_context.h"
 #include "i2c_utils.h"
 
@@ -49,6 +54,7 @@ extern "C" void app_main() {
     static Bumper bumperL = Bumper(BUMPER_LEFT);
     static Bumper bumperR = Bumper(BUMPER_RIGHT);
     static Ultrasonic usonic = Ultrasonic();
+    static Gyro gyro = Gyro();
     static Move move = Move(motorL, motorR, encoderL, encoderR, bumperL, bumperR, usonic);
     static IOShield ioShield = IOShield();
 
@@ -57,8 +63,10 @@ extern "C" void app_main() {
     static SystemContext sysctx = {
         leds, motorL, motorR,
         encoderL, encoderR, bumperL,
-        bumperR, usonic, move,
-        ioShield
+        bumperR, usonic, gyro,
+        move, ioShield,
+
+        FlexStruct(), // IOShieldTask
     };
 
     ESP_LOGI(TAG, "Created SystemContext");
@@ -66,11 +74,12 @@ extern "C" void app_main() {
     delay(500);
 
 
-    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", 4096, &sysctx, 9, nullptr); return; }
+    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", TASK_STACK_DEPTH, &sysctx, 9, nullptr); return; }
 
-    xTaskCreate(ledTask, "LedTask", 4096, &sysctx, 1, nullptr);
-    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", 4096, &sysctx, 2, nullptr); }
+    xTaskCreate(ledTask, "LedTask", TASK_STACK_DEPTH, &sysctx, 1, nullptr);
+    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, 2, nullptr); }
 
+    
     //// WEBSERVER TEST
     // static rgb_color_t ledUL, ledUR, ledLL, ledLR;
     // WebUI webui = WebUI();

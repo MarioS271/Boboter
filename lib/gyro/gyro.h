@@ -6,25 +6,36 @@
 
 #include <cstdint>
 #include "driver/i2c.h"
+#include "freertos/FreeRTOS.h"
 
 class Gyro {
 private:
-    static constexpr uint8_t address = 0x0D;
-    static constexpr i2c_port_t i2c_port = I2C_NUM_0;
+    static constexpr i2c_port_t I2C_PORT = I2C_NUM_0;
+    static constexpr uint8_t I2C_ADDRESS = 0x68;
 
-    int16_t x;
-    int16_t y;
-    int16_t z;
+    float accel_x, accel_y, accel_z;
+    float gyro_x, gyro_y, gyro_z;
 
-    void writeRegister(uint8_t reg, uint8_t value);
-    void readRegisters(uint8_t reg, uint8_t *data, size_t length);
+    float pitch_offset, yaw_offset, roll_offset;
+    float pitch_total, yaw_total, roll_total;
+
+    uint64_t last_update_ms;
+    bool calibrating;
+
+    void writeRegister(uint8_t reg, uint8_t data);
+    void readRegisters(uint8_t reg, uint8_t *data, size_t len);
+
+    uint64_t millis() const { return xTaskGetTickCount() * portTICK_PERIOD_MS; }
 
 public:
     explicit Gyro();
 
-    void read();
+    void calibrate();
+    bool isCalibrating() const { return calibrating; }
 
-    float getPitch();
-    float getYaw();
-    float getRoll();
+    void update(bool ignore_is_calibrating = false);
+
+    float getPitch() const { return pitch_total; }
+    float getYaw() const { return yaw_total; }
+    float getRoll() const { return roll_total; }
 };

@@ -5,6 +5,27 @@
 #pragma once
 
 
+///// MODES /////
+
+// ENABLE_SENSOR_TEST_MODE
+//  This flag decides if the Robot will operate in "Sensor Test Mode",
+//  which tests the robot's sensors and functions
+constexpr bool ENABLE_SENSOR_TEST_MODE = false;
+
+/////////////////
+
+
+
+///// FEATURES /////
+
+// ENABLE_IO_SHIELD
+//  Use to enable or disable the IOShield task
+constexpr bool ENABLE_IO_SHIELD = true;
+
+//////////////////////
+
+
+
 ///// LOGGING /////
 
 // SHOW_DEBUG_LOGS
@@ -16,18 +37,3 @@ constexpr bool SHOW_DEBUG_LOGS = true;
 constexpr bool SHOW_LED_DEBUG_LOGS = false;
 
 ///////////////////
-
-
-
-///// RUN STATES /////
-
-// ENABLE_SENSOR_TEST_MODE
-//  This flag decides if the Robot will operate in "Sensor Test Mode",
-//  which tests the robot's sensors and functions
-constexpr bool ENABLE_SENSOR_TEST_MODE = false;
-
-// ENABLE_IO_SHIELD
-//  Use to enable or disable the IOShield task
-constexpr bool ENABLE_IO_SHIELD = true;
-
-//////////////////////

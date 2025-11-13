@@ -7,6 +7,7 @@
 #include "esp_random.h"
 #include "delay.h"
 #include "system_context.h"
+#include "flex_struct.h"
 
 #include "leds.h"
 #include "rgb_color.h"
@@ -18,13 +19,15 @@ void ledTask(void* params) {
     SystemContext* ctx = static_cast<SystemContext*>(params);
     Leds &leds = ctx->leds;
 
-    rgb_color_t colorArray[] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
-    constexpr int numColors = sizeof(colorArray) / sizeof(colorArray[0]);
+    rgb_color_t colorArray[8] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
     rgb_color_t colors[4] = {};
+
+    leds.setColor(LED_BACK_LEFT, colorArray[esp_random() % NUM_COLORS]);
+    leds.setColor(LED_BACK_RIGHT, colorArray[esp_random() % NUM_COLORS]);
 
     while (true) {
         for (int i = 0; i < 4; i++) {
-            colors[i] = colorArray[esp_random() % numColors];
+            colors[i] = colorArray[esp_random() % NUM_COLORS];
         }
 
         leds.setColor(LED_FRONT_LEFT, colors[0]);

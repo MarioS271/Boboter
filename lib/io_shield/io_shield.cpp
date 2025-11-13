@@ -73,7 +73,7 @@ void IOShield::displaySetCursorPos(uint8_t x, uint8_t y) {
 // Write Text to Display
 void IOShield::displayWriteText(const char* text) {
     if (!text || !panel) return;
-    
+
     uint8_t x = cursorX;
     uint8_t y = cursorY;
 
@@ -91,12 +91,12 @@ void IOShield::displayWriteText(const char* text) {
         for (uint8_t col = 0; col < CHAR_WIDTH; ++col) {
             for (uint8_t row = 0; row < CHAR_HEIGHT; ++row) {
                 uint8_t pixel = (font8x8_basic_tr[c][col] >> row) & 0x01;
-                if (pixel) {
-                    uint16_t px = x + col;
-                    uint16_t py = y + row;
-                    size_t index = (py / 8) * DISPLAY_WIDTH + px;
-                    displayBuffer[index] |= (1 << (py % 8));
-                }
+                size_t index = ( (y + row) / 8 ) * DISPLAY_WIDTH + (x + col);
+
+                if (pixel)
+                    displayBuffer[index] |=  (1 << ((y + row) % 8));
+                else
+                    displayBuffer[index] &= ~(1 << ((y + row) % 8));
             }
         }
 
@@ -110,6 +110,7 @@ void IOShield::displayWriteText(const char* text) {
 
     ESP_LOGD(TAG, "Wrote Text \"%s\" to Display", text);
 }
+
 
 
 

@@ -4,11 +4,13 @@
 
 #pragma once
 
+#include "flex_struct.h"
 #include "leds.h"
 #include "motors.h"
 #include "encoder.h"
 #include "bumper.h"
 #include "ultrasonic.h"
+#include "gyro.h"
 #include "move.h"
 #include "io_shield.h"
 
@@ -26,7 +28,11 @@ typedef struct {
 
     Ultrasonic &usonic;
 
+    Gyro &gyro;
+
     Move &move;
 
     IOShield &ioShield;
+    
+    FlexStruct ioShieldFlex;
 } SystemContext;
