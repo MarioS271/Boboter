@@ -3,7 +3,7 @@
 // (C) MarioS271 2025
 
 #include "encoder.h"
-#include "esp_log.h"
+#include "logger.h"
 #include "freertos/FreeRTOS.h"
 
 static const char* TAG = "ENCODER";
@@ -21,17 +21,17 @@ Encoder::Encoder(encoder_num_t encoder_number)
 {
     switch (encoder_num) {
         case ENCODER_LEFT:
-            ESP_LOGI(TAG, "Initialized Encoder ENCODER_LEFT (ID: %d)", encoder_num);
+            LOGI(TAG, "Initialized Encoder ENCODER_LEFT (ID: %d)", encoder_num);
             encoder_pin = ENCODER_LEFT_PIN;
             break;
 
         case ENCODER_RIGHT:
-            ESP_LOGI(TAG, "Initialized Encoder ENCODER_RIGHT (ID: %d)", encoder_num);
+            LOGI(TAG, "Initialized Encoder ENCODER_RIGHT (ID: %d)", encoder_num);
             encoder_pin = ENCODER_RIGHT_PIN;
             break;
 
         default:
-            ESP_LOGE(TAG, "Unable to initialize Encoder (ID: %d)", encoder_num);
+            LOGE(TAG, "Unable to initialize Encoder (ID: %d)", encoder_num);
             error = true;
             return;
     }

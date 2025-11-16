@@ -19,6 +19,8 @@ private:
     float pitch_offset, yaw_offset, roll_offset;
     float pitch_total, yaw_total, roll_total;
 
+    float yaw_bias;
+
     uint64_t last_update_ms;
     bool calibrating;
 

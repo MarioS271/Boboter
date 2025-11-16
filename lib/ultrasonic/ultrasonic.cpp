@@ -4,7 +4,7 @@
 
 #include "ultrasonic.h"
 
-#include "esp_log.h"
+#include "logger.h"
 #include "esp_timer.h"
 #include <rom/ets_sys.h>
 #include "freertos/FreeRTOS.h"
@@ -25,7 +25,7 @@ Ultrasonic::Ultrasonic() {
     gpio_conf.pin_bit_mask = (1ULL << ECHO_PIN);
     gpio_config(&gpio_conf);
 
-    ESP_LOGI(TAG, "Ultrasonic initialized (Trigger=%d, Echo=%d)", TRIGGER_PIN, ECHO_PIN);
+    LOGI(TAG, "Ultrasonic initialized (Trigger=%d, Echo=%d)", TRIGGER_PIN, ECHO_PIN);
 }
 
 float Ultrasonic::measureCm() {
@@ -52,6 +52,6 @@ float Ultrasonic::measureCm() {
     float duration_us = static_cast<float>(echo_end - echo_start);
     float distance_cm = duration_us / 58.0f; // Speed of sound: 343 m/s
 
-    ESP_LOGD(TAG, "Measured Distance: %.2f cm", distance_cm);
+    LOGD(TAG, "Measured Distance: %.2f cm", distance_cm);
     return distance_cm;
 }

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "esp_log.h"
+#include "logger.h"
 #include "driver/gpio.h"
 #include "driver/i2c.h"
 
@@ -16,39 +16,39 @@ namespace I2C_CONFIG {
     constexpr uint32_t I2C_FREQ = 100000; // Hz
 }
 
-namespace I2C_UTILS {
+inline void init_i2c() {
     using namespace I2C_CONFIG;
 
-    inline void init_i2c() {
-        i2c_config_t i2c_conf = {
-            .mode = I2C_MODE_MASTER,
-            .sda_io_num = SDA_GPIO,
-            .scl_io_num = SCL_GPIO,
-            .sda_pullup_en = GPIO_PULLUP_ENABLE,
-            .scl_pullup_en = GPIO_PULLUP_ENABLE,
-            .master = { .clk_speed = I2C_FREQ },
-            .clk_flags = 0
-        };
-        i2c_param_config(I2C_PORT, &i2c_conf);
-        i2c_driver_install(I2C_PORT, I2C_MODE_MASTER, 0, 0, 0);
-    }
+    i2c_config_t i2c_conf = {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = SDA_GPIO,
+        .scl_io_num = SCL_GPIO,
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .master = { .clk_speed = I2C_FREQ },
+        .clk_flags = 0
+    };
+    i2c_param_config(I2C_PORT, &i2c_conf);
+    i2c_driver_install(I2C_PORT, I2C_MODE_MASTER, 0, 0, 0);
+}
 
-    inline void scan_i2c_addresses(const char* TAG) {
-        ESP_LOGI(TAG, "Scanning I2C bus for device addresses");
+inline void scan_i2c_addresses(const char* TAG) {
+    using namespace I2C_CONFIG;
 
-        for (uint8_t addr = 1; addr < 127; addr++) {
-            i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+    LOGI(TAG, "Scanning I2C bus for device addresses");
 
-            i2c_master_start(cmd);
-            i2c_master_write_byte(cmd, (addr << 1) | I2C_MASTER_WRITE, true);
-            i2c_master_stop(cmd);
+    for (uint8_t addr = 1; addr < 127; addr++) {
+        i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 
-            esp_err_t err = i2c_master_cmd_begin(I2C_PORT, cmd, pdMS_TO_TICKS(50));
-            i2c_cmd_link_delete(cmd);
+        i2c_master_start(cmd);
+        i2c_master_write_byte(cmd, (addr << 1) | I2C_MASTER_WRITE, true);
+        i2c_master_stop(cmd);
 
-            if (err == ESP_OK) {
-                ESP_LOGI(TAG, "(i2c_scan) Device found at 0x%02x", addr);
-            }
+        esp_err_t err = i2c_master_cmd_begin(I2C_PORT, cmd, pdMS_TO_TICKS(50));
+        i2c_cmd_link_delete(cmd);
+
+        if (err == ESP_OK) {
+            LOGI(TAG, "(i2c_scan) Device found at 0x%02x", addr);
         }
     }
 }

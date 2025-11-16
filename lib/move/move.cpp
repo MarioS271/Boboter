@@ -4,7 +4,7 @@
 
 #include "move.h"
 #include <cmath>
-#include "esp_log.h"
+#include "logger.h"
 #include "delay.h"
 
 #define TAG "MOVE"
@@ -25,7 +25,7 @@ Move::Move(Motor& leftMotor,
       bumperRight(rightBumper),
       usonic(ultrasonic)
 {
-    ESP_LOGI(TAG, "Move subsystem initialized using external references.");
+    LOGI(TAG, "Move subsystem initialized using external references.");
 }
 
 // Helper Function: Stop all Motors

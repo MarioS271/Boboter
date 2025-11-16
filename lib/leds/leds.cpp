@@ -3,7 +3,7 @@
 // (C) MarioS271 2025
 
 #include "leds.h"
-#include "esp_log.h"
+#include "logger.h"
 #include "flags.h"
 
 #define TAG "LEDS"
@@ -18,7 +18,7 @@ Leds::Leds() {
     gpio_conf.intr_type = GPIO_INTR_DISABLE;
     gpio_config(&gpio_conf);
 
-    ESP_LOGI(TAG, "LEDs initialized on MOSI: %d, CLK: %d", MOSI_PIN, CLK_PIN);
+    LOGI(TAG, "LEDs initialized on MOSI: %d, CLK: %d", MOSI_PIN, CLK_PIN);
 
     allOff();
 }
@@ -64,29 +64,38 @@ void Leds::update() {
 // Set Single Color Function
 void Leds::setColor(led_pos_t led_pos, rgb_color_t color) {
     if (led_pos >= 4) {
-        ESP_LOGW(TAG, "Invalid LED position: %d", led_pos);
+        LOGW(TAG, "Invalid LED position: %d", led_pos);
         return;
     }
     buffer[led_pos] = color;
-    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b); }
+    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b); }
     update();
 }
 
 // Set All Colors Function
 void Leds::setAll(rgb_color_t color) {
     for (int i = 0; i < 4; i++) buffer[i] = color;
-    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b); }
+    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b); }
     update();
 }
 
 // Turn Single Off Function
 void Leds::setOff(led_pos_t led_pos) {
-    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "Turning LED %d off", led_pos); }
+    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "Turning LED %d off", led_pos); }
     setColor(led_pos, {0, 0, 0});
 }
 
 // Turn All Off Function
 void Leds::allOff() {
-    if (SHOW_LED_DEBUG_LOGS) { ESP_LOGD(TAG, "Turning all LEDs off"); }
+    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "Turning all LEDs off"); }
     setAll({0, 0, 0});
+}
+
+void Leds::getColor(led_pos_t led_pos, rgb_color_t &color) {
+    if (led_pos >= 4) {
+        LOGW(TAG, "Invalid LED position: %d", led_pos);
+        color = { 0, 0, 0 };
+        return;
+    }
+    color = buffer[led_pos];
 }

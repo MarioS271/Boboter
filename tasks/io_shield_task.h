@@ -8,7 +8,10 @@
 #include "system_context.h"
 #include "flex_struct.h"
 
+#include "check_battery.h"
+
 #include "io_shield.h"
+
 
 void ioShieldTask(void* params) {
     SystemContext* ctx = static_cast<SystemContext*>(params);
@@ -21,43 +24,32 @@ void ioShieldTask(void* params) {
 
     gyro.calibrate();
 
+    uint8_t runs = 0;
     while (true) {
         gyro.update();
 
-        char buf[32];
+        char buffer[32];
 
-        snprintf(buf, sizeof(buf), "Pitch: %.1f", gyro.getPitch());
+        snprintf(buffer, sizeof(buffer), "Pitch: %.1f", gyro.getPitch());
         ioShield.displaySetCursorPos(0, 15);
-        ioShield.displayWriteText(buf);
+        ioShield.displayWriteText(buffer);
 
-        snprintf(buf, sizeof(buf), "Yaw: %.1f", gyro.getYaw());
+        snprintf(buffer, sizeof(buffer), "Yaw: %.1f", gyro.getYaw());
         ioShield.displaySetCursorPos(0, 25);
-        ioShield.displayWriteText(buf);
+        ioShield.displayWriteText(buffer);
 
-        snprintf(buf, sizeof(buf), "Roll: %.1f", gyro.getRoll());
+        snprintf(buffer, sizeof(buffer), "Roll: %.1f", gyro.getRoll());
         ioShield.displaySetCursorPos(0, 35);
-        ioShield.displayWriteText(buf);
+        ioShield.displayWriteText(buffer);
 
         delay(250);
+
+        runs++;
+        if (runs > 3) {
+            runs = 0;
+            snprintf(buffer, sizeof(buffer), "Bat: %d%%  ", check_battery_percentage());
+            ioShield.displaySetCursorPos(0, 50);
+            ioShield.displayWriteText(buffer);
+        }
     }
-
-    // ioShield.displaySetCursorPos(0, 10);
-    // ioShield.displayWriteText("Hello, World!");
-
-    // long i = 0;
-    // while (true) {
-    //     i++;
-
-    //     if (i % 100 == 0) {
-    //         char buf[16];
-    //         snprintf(buf, sizeof(buf), "%ld", i / 100);
-
-    //         ioShield.displaySetCursorPos(0, 25);
-    //         ioShield.displayWriteText(buf);
-    //     }
-
-    //     ownFlex.set<bool>("button_pressed", ioShield.getButtonState());
-
-    //     delay(10);
-    // }
 }

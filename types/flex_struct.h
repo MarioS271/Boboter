@@ -7,8 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include "freertos/FreeRTOS.h"
-#include "freertos/semphr.h"
-#include "esp_log.h"
+#include "logger.h"
 
 class FlexStruct {
 private:
@@ -45,9 +44,9 @@ public:
             free(it->second);
         }
 
-        T* ptr = (T*)malloc(sizeof(T));
+        T* ptr = (T*) malloc(sizeof(T));
         if (!ptr) {
-            ESP_LOGE("FlexStruct", "Failed to allocate memory for key '%s'", key.c_str());
+            LOGE("FlexStruct", "Failed to allocate memory for key '%s'", key.c_str());
             xSemaphoreGive(mutex);
             return;
         }

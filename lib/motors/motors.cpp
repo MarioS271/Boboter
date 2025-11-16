@@ -3,7 +3,7 @@
 // (C) MarioS271 2025
 
 #include "motors.h"
-#include "esp_log.h"
+#include "logger.h"
 #include "delay.h"
 
 #define TAG "MOTORS"
@@ -19,7 +19,7 @@ Motor::Motor(motor_num_t motor_number)
 {
     switch (motor_num) {
         case MOTOR_LEFT:
-            ESP_LOGI(TAG, "Initialized Motor MOTOR_LEFT (ID: %d)", motor_num);
+            LOGI(TAG, "Initialized Motor MOTOR_LEFT (ID: %d)", motor_num);
             speed_pin = MOTOR_LEFT_SPEED_PIN;
             direction_pin = MOTOR_LEFT_DIRECTION_PIN;
             ledc_channel = LEDC_CHANNEL_0;
@@ -27,7 +27,7 @@ Motor::Motor(motor_num_t motor_number)
             break;
 
         case MOTOR_RIGHT:
-            ESP_LOGI(TAG, "Initialized Motor MOTOR_RIGHT (ID: %d)", motor_num);
+            LOGI(TAG, "Initialized Motor MOTOR_RIGHT (ID: %d)", motor_num);
             speed_pin = MOTOR_RIGHT_SPEED_PIN;
             direction_pin = MOTOR_RIGHT_DIRECTION_PIN;
             ledc_channel = LEDC_CHANNEL_1;
@@ -35,7 +35,7 @@ Motor::Motor(motor_num_t motor_number)
             break;
 
         default:
-            ESP_LOGE(TAG, "Unable to initialize Motor (ID: %d)", motor_num);
+            LOGE(TAG, "Unable to initialize Motor (ID: %d)", motor_num);
             inverse_direction = false;
             error = true;
             return;
@@ -109,7 +109,7 @@ void Motor::stop(bool wait) {
 
     target_speed = 0;
 
-    ESP_LOGD(TAG, "Motor %d stopping", motor_num);
+    LOGD(TAG, "Motor %d stopping", motor_num);
 
     if (wait) {
         const uint32_t timeout_ms = 2000;
@@ -125,9 +125,9 @@ void Motor::stop(bool wait) {
 
         current_speed = 0;
 
-        ESP_LOGD(TAG, "Motor %d fully stopped after %d ms", motor_num, static_cast<int>(waited_ms));
+        LOGD(TAG, "Motor %d fully stopped after %d ms", motor_num, static_cast<int>(waited_ms));
     } else {
-        ESP_LOGD(TAG, "Motor %d stop() called (non-blocking)", motor_num);
+        LOGD(TAG, "Motor %d stop() called (non-blocking)", motor_num);
     }
 }
 
@@ -138,7 +138,7 @@ void Motor::setSpeed(uint16_t speed) {
     speed = speed > 1023 ? 1023 : speed;
     target_speed = speed;
 
-    ESP_LOGD(TAG, "Motor %d speed set to %d", motor_num, speed);
+    LOGD(TAG, "Motor %d speed set to %d", motor_num, speed);
 }
 
 // Set Direction Function
@@ -148,7 +148,7 @@ void Motor::setDirection(motor_direction_t direction) {
     gpio_set_level(direction_pin, getActualDirection(direction) == FORWARD ? 1 : 0);
     current_direction = direction;
 
-    ESP_LOGD(TAG, "Motor %d direction set to %s", motor_num,
+    LOGD(TAG, "Motor %d direction set to %s", motor_num,
              direction == FORWARD ? "FORWARD" : "BACKWARD");
 }
 

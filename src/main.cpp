@@ -4,11 +4,11 @@
 
 // Official Libraries
 #include <cstdint>
-#include "esp_log.h"
-#include "esp_random.h"
 #include "freertos/FreeRTOS.h"
+#include "esp_random.h"
 
 // Custom Libraries
+#include "logger.h"
 #include "leds.h"
 #include "motors.h"
 #include "encoder.h"
@@ -26,25 +26,27 @@
 #include "flex_struct.h"
 #include "system_context.h"
 #include "i2c_utils.h"
+#include "check_battery.h"
 
 // Tasks
 #include "sensor_test.h"
 #include "led_task.h"
 #include "io_shield_task.h"
+#include "webui_task.h"
 
 #define TAG "MAIN"
-
-using namespace I2C_UTILS;
 
 
 extern "C" void app_main() {
     esp_log_level_set("*", SHOW_DEBUG_LOGS ? ESP_LOG_DEBUG : ESP_LOG_INFO);
 
-    ESP_LOGI(TAG, " === BOBOTER is starting ===");
-    ESP_LOGI(TAG, "Hello, World!");
+    LOGI(TAG, " === BOBOTER is starting ===");
+    LOGI(TAG, "Hello, World!");
 
     init_i2c();
     scan_i2c_addresses(TAG);
+
+    initialize_battery_checker();
 
     static Leds leds = Leds();
     static Motor motorL = Motor(MOTOR_LEFT);
@@ -58,7 +60,7 @@ extern "C" void app_main() {
     static Move move = Move(motorL, motorR, encoderL, encoderR, bumperL, bumperR, usonic);
     static IOShield ioShield = IOShield();
 
-    ESP_LOGI(TAG, "Created all Objects successfully");
+    LOGI(TAG, "Created all Objects successfully");
 
     static SystemContext sysctx = {
         leds, motorL, motorR,
@@ -66,11 +68,12 @@ extern "C" void app_main() {
         bumperR, usonic, gyro,
         move, ioShield,
 
-        FlexStruct(), // IOShieldTask
+        FlexStruct(),  // IOShieldTask
+        FlexStruct(),  // WebUITask
     };
 
-    ESP_LOGI(TAG, "Created SystemContext");
-    ESP_LOGI(TAG, "Starting FreeRTOS Task(s)");
+    LOGI(TAG, "Created SystemContext");
+    LOGI(TAG, "Starting FreeRTOS Task(s)");
     delay(500);
 
 
@@ -78,27 +81,5 @@ extern "C" void app_main() {
 
     xTaskCreate(ledTask, "LedTask", TASK_STACK_DEPTH, &sysctx, 1, nullptr);
     if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, 2, nullptr); }
-
-    
-    //// WEBSERVER TEST
-    // static rgb_color_t ledUL, ledUR, ledLL, ledLR;
-    // WebUI webui = WebUI();
-
-    // webui.led_upper_left = &ledUL;
-    // webui.led_upper_right = &ledUR;
-    // webui.led_lower_left = &ledLL;
-    // webui.led_lower_right = &ledLR;
-
-    // delay(500);
-    // webui.startServer();
-
-    // rgb_color_t* ledArray[4] = { &ledUL, &ledUR, &ledLL, &ledLR };
-    // while (true) {
-    //     for (uint8_t i = 0; i < 4; i++) {
-    //         leds.setColor(static_cast<led_pos_t>(i), *ledArray[i]);
-    //     }
-        
-    //     delay(250);
-    // }
-    ////////
+    if (ENABLE_WEBUI) { xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, 3, nullptr); }
 }

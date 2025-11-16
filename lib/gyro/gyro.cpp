@@ -1,10 +1,6 @@
 // GYRO_CPP
-// Boboter
-// (C) MarioS271 2025
-
-
 #include "gyro.h"
-#include "esp_log.h"
+#include "logger.h"
 #include "delay.h"
 #include <cmath>
 
@@ -19,13 +15,12 @@ Gyro::Gyro()
   gyro_x(0), gyro_y(0), gyro_z(0),
   pitch_offset(0), yaw_offset(0), roll_offset(0),
   pitch_total(0), yaw_total(0), roll_total(0),
-  last_update_ms(0),
-  calibrating(false)
+  yaw_bias(0), last_update_ms(0), calibrating(false)
 {
     writeRegister(0x6B, 0x00); // wake MPU6050
     delay(100);
     last_update_ms = millis();
-    ESP_LOGI(TAG, "Initialized MPU6050 Gyro");
+    LOGI(TAG, "Initialized MPU6050 Gyro");
 }
 
 // Private helpers
@@ -49,7 +44,6 @@ void Gyro::calibrate() {
         uint8_t raw[14];
         readRegisters(0x3B, raw, 14);
 
-        // Convert raw gyro to deg/s
         float gx = static_cast<int16_t>((raw[8] << 8) | raw[9]) / GYRO_SCALE;
         float gy = static_cast<int16_t>((raw[10] << 8) | raw[11]) / GYRO_SCALE;
         float gz = static_cast<int16_t>((raw[12] << 8) | raw[13]) / GYRO_SCALE;
@@ -61,34 +55,37 @@ void Gyro::calibrate() {
         delay(5);
     }
 
+    // Set offsets to zero current readings
     roll_offset  = sum_x / samples;
     pitch_offset = sum_y / samples;
     yaw_offset   = sum_z / samples;
 
+    // Reset total angles
     roll_total = pitch_total = yaw_total = 0;
-    calibrating = false;
+    yaw_bias = 0;
 
-    ESP_LOGI(TAG, "Gyro calibrated: roll=%f pitch=%f yaw=%f", roll_offset, pitch_offset, yaw_offset);
+    calibrating = false;
+    LOGI(TAG, "Gyro calibrated: roll=%f pitch=%f yaw=%f", roll_offset, pitch_offset, yaw_offset);
 }
 
-// Update function with complementary filter
+// Update function with complementary filter and yaw bias correction
 void Gyro::update(bool ignore_is_calibrating) {
     if (calibrating && !ignore_is_calibrating) return;
 
     uint8_t raw[14];
     readRegisters(0x3B, raw, 14);
 
-    // Convert raw accelerometer data to g
+    // Convert accelerometer
     accel_x = static_cast<int16_t>((raw[0] << 8) | raw[1]) / 16384.0f;
     accel_y = static_cast<int16_t>((raw[2] << 8) | raw[3]) / 16384.0f;
     accel_z = static_cast<int16_t>((raw[4] << 8) | raw[5]) / 16384.0f;
 
-    // Convert raw gyro data to deg/s
+    // Convert gyro
     gyro_x = static_cast<int16_t>((raw[8] << 8) | raw[9]) / GYRO_SCALE;
     gyro_y = static_cast<int16_t>((raw[10] << 8) | raw[11]) / GYRO_SCALE;
     gyro_z = static_cast<int16_t>((raw[12] << 8) | raw[13]) / GYRO_SCALE;
 
-    // Compute time delta
+    // Time delta
     uint64_t now = millis();
     float dt = (now - last_update_ms) / 1000.0f;
     last_update_ms = now;
@@ -97,17 +94,19 @@ void Gyro::update(bool ignore_is_calibrating) {
     float pitch_acc = atan2f(accel_y, sqrtf(accel_x*accel_x + accel_z*accel_z)) * 180.0f / M_PI;
     float roll_acc  = atan2f(-accel_x, accel_z) * 180.0f / M_PI;
 
-    // Complementary filter: alpha lower for faster bias correction
-    constexpr float alpha = 0.96f;
+    // Complementary filter for roll/pitch
+    constexpr float alpha = 0.98f;
     roll_total  = alpha * (roll_total + (gyro_x - roll_offset) * dt) + (1.0f - alpha) * roll_acc;
     pitch_total = alpha * (pitch_total + (gyro_y - pitch_offset) * dt) + (1.0f - alpha) * pitch_acc;
 
-    // Yaw: integrate gyro with simple high-pass filter
-    constexpr float yaw_filter = 0.98f; // lower = stronger bias removal
-    float yaw_rate = gyro_z - yaw_offset;
-    yaw_total = yaw_filter * (yaw_total + yaw_rate * dt);
+    // Dynamic yaw bias tracker (works when stationary)
+    constexpr float yaw_bias_alpha = 0.9995f;
+    yaw_bias = yaw_bias_alpha * yaw_bias + (1.0f - yaw_bias_alpha) * (gyro_z - yaw_offset);
 
-    ESP_LOGD(TAG,
+    float yaw_rate = gyro_z - yaw_offset - yaw_bias;
+    yaw_total += yaw_rate * dt;
+
+    LOGD(TAG,
         "Accel: x=%f y=%f z=%f | Gyro: x=%f y=%f z=%f | Roll=%f Pitch=%f Yaw=%f",
         accel_x, accel_y, accel_z,
         gyro_x - roll_offset, gyro_y - pitch_offset, gyro_z - yaw_offset,

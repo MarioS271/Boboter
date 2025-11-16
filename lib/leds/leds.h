@@ -35,4 +35,6 @@ public:
 
     void setOff(led_pos_t led_pos);
     void allOff();
+
+    void getColor(led_pos_t led_pos, rgb_color_t &color);
 };

@@ -3,7 +3,7 @@
 // (C) MarioS271 2025
 
 #include "bumper.h"
-#include "esp_log.h"
+#include "logger.h"
 
 static const char* TAG = "BUMPER";
 
@@ -14,17 +14,17 @@ Bumper::Bumper(bumper_num_t bumper_number)
 {
     switch (bumper_num) {
         case BUMPER_LEFT:
-            ESP_LOGI(TAG, "Initialized Bumper LEFT_BUMPER (ID: %d)", bumper_num);
+            LOGI(TAG, "Initialized Bumper LEFT_BUMPER (ID: %d)", bumper_num);
             bumper_pin = LEFT_BUMPER_PIN;
             break;
 
         case BUMPER_RIGHT:
-            ESP_LOGI(TAG, "Initialized Bumper RIGHT_BUMPER (ID: %d)", bumper_num);
+            LOGI(TAG, "Initialized Bumper RIGHT_BUMPER (ID: %d)", bumper_num);
             bumper_pin = RIGHT_BUMPER_PIN;
             break;
 
         default:
-            ESP_LOGE(TAG, "Unable to initialize Bumper (ID: %d)", bumper_num);
+            LOGE(TAG, "Unable to initialize Bumper (ID: %d)", bumper_num);
             error = true;
             return;
     }
@@ -43,6 +43,6 @@ Bumper::Bumper(bumper_num_t bumper_number)
 // Check if Bumper is pressed
 bool Bumper::isHit() const {
     bool state = !gpio_get_level(bumper_pin);
-    if (state) ESP_LOGD(TAG, "Bumper hit while calling isHit() of %s", bumper_num == BUMPER_LEFT ? "BUMPER_LEFT" : "BUMPER_RIGHT");
+    if (state) LOGD(TAG, "Bumper hit while calling isHit() of %s", bumper_num == BUMPER_LEFT ? "BUMPER_LEFT" : "BUMPER_RIGHT");
     return state;
 }

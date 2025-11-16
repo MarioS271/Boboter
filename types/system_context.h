@@ -16,23 +16,17 @@
 
 typedef struct {
     Leds &leds;
-
     Motor &motorL;
     Motor &motorR;
-
     Encoder &encoderL;
     Encoder &encoderR;
-
     Bumper &bumperL;
     Bumper &bumperR;
-
     Ultrasonic &usonic;
-
     Gyro &gyro;
-
     Move &move;
-
     IOShield &ioShield;
     
     FlexStruct ioShieldFlex;
+    FlexStruct webuiFlex;
 } SystemContext;

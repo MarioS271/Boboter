@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "esp_log.h"
+#include "logger.h"
 #include "delay.h"
 #include "system_context.h"
 
@@ -33,14 +33,14 @@ void sensorTest(void* params) {
     Bumper &bumperR = ctx->bumperR;
     Ultrasonic &usonic = ctx->usonic;
 
-    ESP_LOGI(TAG, "Readied SystemContext and Object References");
+    LOGI(TAG, "Readied SystemContext and Object References");
 
     // 1) Iterate through all predefined colors to test the LEDs
     rgb_color_t colorArray[NUM_COLORS] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
     const char* colorNames[NUM_COLORS] = { "RED", "ORANGE", "YELLOW", "GREEN", "CYAN", "BLUE", "MAGENTA", "WHITE"};
     for (int i = 0; i < NUM_COLORS; i++) {
         leds.setAll(colorArray[i]);
-        ESP_LOGI(TAG, "Set all LEDs to %s", colorNames[i]);
+        LOGI(TAG, "Set all LEDs to %s", colorNames[i]);
         delay(500);
     }
     delay(2000);
@@ -53,13 +53,13 @@ void sensorTest(void* params) {
         motorL.setSpeed(MAX_MOTOR_SPEED);
         motorR.setSpeed(MAX_MOTOR_SPEED);
 
-        ESP_LOGI(TAG, "Started both Motors %s with speed MAX_MOTOR_SPEED (%d)", i == 0 ? "FORWARD" : "BACKWARD", MAX_MOTOR_SPEED);
+        LOGI(TAG, "Started both Motors %s with speed MAX_MOTOR_SPEED (%d)", i == 0 ? "FORWARD" : "BACKWARD", MAX_MOTOR_SPEED);
         delay(2000);
 
         motorL.stop(false);
         motorR.stop();
 
-        ESP_LOGI(TAG, "Stopped both Motors");
+        LOGI(TAG, "Stopped both Motors");
         delay(1000);
     }
     delay(1000);
@@ -69,14 +69,14 @@ void sensorTest(void* params) {
     while (true) {
         if (bumperL.isHit()) {
             leds.setColor(LED_FRONT_LEFT, WHITE);
-            ESP_LOGI(TAG, "Bumper_Left has hit something!");
+            LOGI(TAG, "Bumper_Left has hit something!");
         } else {
             leds.setOff(LED_FRONT_LEFT);
         }
 
         if (bumperR.isHit()) {
             leds.setColor(LED_FRONT_RIGHT, WHITE);
-            ESP_LOGI(TAG, "Bumper_Right has hit something!");
+            LOGI(TAG, "Bumper_Right has hit something!");
         } else {
             leds.setOff(LED_FRONT_RIGHT);
         }
@@ -86,7 +86,7 @@ void sensorTest(void* params) {
             leds.setColor(LED_BACK_LEFT, BLUE);
             leds.setColor(LED_BACK_RIGHT, BLUE);
         } else {
-            ESP_LOGI(TAG, "Ultrasonic Sensor Reading: %.2f", distance);
+            LOGI(TAG, "Ultrasonic Sensor Reading: %.2f", distance);
 
             float t = (distance - MIN_DISPLAY_DISTANCE) / (MAX_DISPLAY_DISTANCE - MIN_DISPLAY_DISTANCE);
             t = t > 1.0 ? 1.0 : (t < 0 ? 0 : t);

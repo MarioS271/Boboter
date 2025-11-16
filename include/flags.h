@@ -22,6 +22,10 @@ constexpr bool ENABLE_SENSOR_TEST_MODE = false;
 //  Use to enable or disable the IOShield task
 constexpr bool ENABLE_IO_SHIELD = true;
 
+// ENABLE_WEBUI
+//  Use to enable or disable the WebUI task
+constexpr bool ENABLE_WEBUI = true;
+
 //////////////////////
 
 

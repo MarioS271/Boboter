@@ -4,7 +4,7 @@
 
 #include "io_shield.h"
 #include <cstring>
-#include "esp_log.h"
+#include "logger.h"
 #include "delay.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_ops.h"
@@ -45,7 +45,7 @@ IOShield::IOShield() {
     gpio_conf.intr_type = GPIO_INTR_DISABLE;
     gpio_config(&gpio_conf);
 
-    ESP_LOGI(TAG, "IOShield initialization completed");
+    LOGI(TAG, "IOShield initialization completed");
 }
 
 // Clear Display
@@ -56,7 +56,7 @@ void IOShield::displayClear() {
     cursorX = 0;
     cursorY = 0;
 
-    ESP_LOGD(TAG, "Cleared Display");
+    LOGD(TAG, "Cleared Display");
 }
 
 // Set Cursor Position
@@ -67,7 +67,7 @@ void IOShield::displaySetCursorPos(uint8_t x, uint8_t y) {
     cursorX = x;
     cursorY = y;
 
-    ESP_LOGD(TAG, "Set Cursor Position on Display to X=%d, Y=%d", x, y);
+    LOGD(TAG, "Set Cursor Position on Display to X=%d, Y=%d", x, y);
 }
 
 // Write Text to Display
@@ -108,7 +108,7 @@ void IOShield::displayWriteText(const char* text) {
     cursorX = x;
     cursorY = y;
 
-    ESP_LOGD(TAG, "Wrote Text \"%s\" to Display", text);
+    LOGD(TAG, "Wrote Text \"%s\" to Display", text);
 }
 
 
@@ -119,7 +119,7 @@ void IOShield::displayWriteText(const char* text) {
 bool IOShield::getButtonState() {
     bool state = gpio_get_level(BUTTON_PIN) == 0;
 
-    if (state) { ESP_LOGD(TAG, "'getButtonState()' called while valid button press detected"); }
+    if (state) { LOGD(TAG, "'getButtonState()' called while valid button press detected"); }
     return state;
 }
 
@@ -136,6 +136,6 @@ bool IOShield::getDebouncedButtonState() {
         return state;
     }
 
-    if (last_state) { ESP_LOGD(TAG, "'getDebouncedButtonState()' called while valid button press detected"); }
+    if (last_state) { LOGD(TAG, "'getDebouncedButtonState()' called while valid button press detected"); }
     return last_state;
 }
