@@ -2,8 +2,8 @@
 // Boboter
 // (C) MarioS271 2025
 
-#include "webui.h"
-#include "webui_constants.h"
+#include "web_ui.h"
+
 #include "logger.h"
 #include <cstring>
 

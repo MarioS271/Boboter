@@ -8,7 +8,9 @@
 #include "system_context.h"
 #include "flex_struct.h"
 
-#include "webui.h"
+#include "web_ui.h"
+
+#define TAG "task:WEBUI"
 
 void webuiTask(void* params) {
     SystemContext* ctx = static_cast<SystemContext*>(params);
@@ -16,5 +18,7 @@ void webuiTask(void* params) {
     
     WebUI webui = WebUI(ctx);
 
-    
+    while (true) {
+        delay(1000);
+    }
 }

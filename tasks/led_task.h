@@ -13,17 +13,21 @@
 #include "rgb_color.h"
 #include "predef_colors.h"
 
-using namespace COLORS;
-
 void ledTask(void* params) {
+    using namespace COLORS;
+
     SystemContext* ctx = static_cast<SystemContext*>(params);
+    FlexStruct &ownFlex = ctx->ledsFlex;
     Leds &leds = ctx->leds;
+
+    ownFlex.set<char*>("mode", "random_blink");
+    ownFlex.set<rgb_color_t>("led_ur", BLACK);
+    ownFlex.set<rgb_color_t>("led_ul", BLACK);
+    ownFlex.set<rgb_color_t>("led_lr", BLACK);
+    ownFlex.set<rgb_color_t>("led_ll", BLACK);
 
     rgb_color_t colorArray[8] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
     rgb_color_t colors[4] = {};
-
-    leds.setColor(LED_BACK_LEFT, colorArray[esp_random() % NUM_COLORS]);
-    leds.setColor(LED_BACK_RIGHT, colorArray[esp_random() % NUM_COLORS]);
 
     while (true) {
         for (int i = 0; i < 4; i++) {

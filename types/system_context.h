@@ -27,6 +27,7 @@ typedef struct {
     Move &move;
     IOShield &ioShield;
     
+    FlexStruct ledsFlex;
     FlexStruct ioShieldFlex;
     FlexStruct webuiFlex;
 } SystemContext;

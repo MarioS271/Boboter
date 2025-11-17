@@ -8,7 +8,9 @@
 #include "rgb_color.h"
 
 namespace COLORS {
-    constexpr uint8_t NUM_COLORS = 8;
+    constexpr uint8_t NUM_COLORS = 8;  // Not including BLACK
+
+    constexpr rgb_color_t BLACK = {0, 0, 0};
 
     constexpr rgb_color_t RED = {255, 0, 0};
     constexpr rgb_color_t ORANGE = {255, 160, 0};

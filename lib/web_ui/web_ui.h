@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include "web_ui_constants.h"
+#include "web_ui_json_strings.h"
+
 #include "esp_http_server.h"
 #include "system_context.h"
 
@@ -13,6 +16,9 @@ private:
     SystemContext* ctx;
     
     esp_err_t registerRoutes();
+
+    esp_err_t registerGetRoutes();
+    esp_err_t registerPostRoutes();
     
 public:
     explicit WebUI(SystemContext* sysctx);

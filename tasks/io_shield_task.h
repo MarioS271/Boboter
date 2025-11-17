@@ -47,7 +47,11 @@ void ioShieldTask(void* params) {
         runs++;
         if (runs > 3) {
             runs = 0;
-            snprintf(buffer, sizeof(buffer), "Bat: %d%%  ", check_battery_percentage());
+
+            uint8_t battery_percent = 0;
+            check_battery_percentage(&battery_percent, nullptr);
+            snprintf(buffer, sizeof(buffer), "Bat: %d%%  ", battery_percent);
+            
             ioShield.displaySetCursorPos(0, 50);
             ioShield.displayWriteText(buffer);
         }

@@ -32,7 +32,7 @@
 #include "sensor_test.h"
 #include "led_task.h"
 #include "io_shield_task.h"
-#include "webui_task.h"
+#include "web_ui_task.h"
 
 #define TAG "MAIN"
 
@@ -68,6 +68,7 @@ extern "C" void app_main() {
         bumperR, usonic, gyro,
         move, ioShield,
 
+        FlexStruct(),  // LedsTask
         FlexStruct(),  // IOShieldTask
         FlexStruct(),  // WebUITask
     };
@@ -80,6 +81,6 @@ extern "C" void app_main() {
     if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", TASK_STACK_DEPTH, &sysctx, 9, nullptr); return; }
 
     xTaskCreate(ledTask, "LedTask", TASK_STACK_DEPTH, &sysctx, 1, nullptr);
-    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, 2, nullptr); }
-    if (ENABLE_WEBUI) { xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, 3, nullptr); }
+    if (ENABLE_WEBUI) { xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, 2, nullptr); }
+    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, 3, nullptr); }
 }

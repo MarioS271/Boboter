@@ -27,7 +27,7 @@ inline void initialize_battery_checker() {
     esp_adc_cal_characterize(ADC_UNIT_1, BAT_ADC_ATTEN, ADC_WIDTH_BIT_12, DEFAULT_VREF, &adc_chars);
 }
 
-uint8_t check_battery_percentage() {
+void check_battery_percentage(uint8_t* percentage, uint16_t* voltage_mv) {
     using namespace CHECK_BATTERY_CONFIG;
 
     uint32_t sum = 0;
@@ -35,19 +35,22 @@ uint8_t check_battery_percentage() {
         sum += adc1_get_raw(BAT_ADC_CHANNEL);
         ets_delay_us(100);
     }
+
     uint32_t avg_raw = sum / NUM_SAMPLES;
     uint32_t mv_adc = esp_adc_cal_raw_to_voltage(avg_raw, &adc_chars);
 
-    constexpr float MULTIPLIER = 1.47f;
-    uint32_t mv = mv_adc * MULTIPLIER;
+    uint16_t mv = static_cast<uint16_t>((mv_adc * 1470) / 1000);
 
-    if (mv >= 4200) return 100;
-    if (mv <= 3000) return 0;
+    if (voltage_mv != nullptr) {
+        *voltage_mv = mv;
+    }
 
-    long pct = map_value(mv, 3000, 4200, 0, 100);
+    if (percentage != nullptr) {
+        int percent = map_value(mv, 3000, 4200, 0, 100);
 
-    if (pct < 0) pct = 0;
-    if (pct > 100) pct = 100;
+        if (percent > 100) percent = 100;
+        if (percent < 0)   percent = 0;
 
-    return pct;
+        *percentage = static_cast<uint8_t>(percent);
+    }
 }
