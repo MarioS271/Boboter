@@ -60,9 +60,9 @@ esp_err_t WebUI::registerGetRoutes() {
 
             char resp[256];
 
-            uint8_t bat_percent = 0;
-            uint16_t bat_voltage = 0;
-            check_battery_percentage(&bat_percent, &bat_voltage);
+            ctx->batteryManager.update();
+            uint8_t bat_percent = ctx->batteryManager.getPercentage();
+            uint16_t bat_voltage = ctx->batteryManager.getVoltageMv();
 
             const char* ip_address = "0.0.0.0";
 
@@ -108,8 +108,7 @@ esp_err_t WebUI::registerGetRoutes() {
                 return ESP_OK;
             }
 
-            rgb_color_t color;
-            leds->getColor(led_pos, color);
+            rgb_color_t color = leds->getColor(led_pos);
 
             char resp[64];
             snprintf(resp, sizeof(resp), "{\"led\":\"%s\",\"r\":%d,\"g\":%d,\"b\":%d}", led_id, color.r, color.g, color.b);

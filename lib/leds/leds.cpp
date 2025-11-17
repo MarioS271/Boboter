@@ -32,25 +32,34 @@ void Leds::setColor(led_pos_t led_pos, rgb_color_t color) {
         LOGW(TAG, "Invalid LED position: %d", led_pos);
         return;
     }
+
     leds[led_pos] = color;
-    LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b);
     update();
+
+    LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b);
+}
+
+void Leds::setOff(led_pos_t led_pos) {
+    if (led_pos >= 4) {
+        LOGW(TAG, "Invalid LED position: %d", led_pos);
+        return;
+    }
+
+    setColor(led_pos, COLORS::OFF);
+
+    LOGD(TAG, "Turning LED %d off", led_pos);
 }
 
 void Leds::setAll(rgb_color_t color) {
     for (int i = 0; i < 4; i++) leds[i] = color;
-    LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b);
     update();
-}
 
-void Leds::setOff(led_pos_t led_pos) {
-    LOGD(TAG, "Turning LED %d off", led_pos);
-    setColor(led_pos, COLORS::OFF);
+    LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b);
 }
 
 void Leds::allOff() {
-    LOGD(TAG, "Turning all LEDs off");
     setAll(COLORS::OFF);
+    LOGD(TAG, "Turning all LEDs off");
 }
 
 rgb_color_t Leds::getColor(led_pos_t led_pos) {

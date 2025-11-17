@@ -16,6 +16,7 @@
 void ioShieldTask(void* params) {
     SystemContext* ctx = static_cast<SystemContext*>(params);
     IOShield &ioShield = ctx->ioShield;
+    BatteryManager &batteryManager = ctx->batteryManager;
     FlexStruct &ownFlex = ctx->ioShieldFlex;
 
     ioShield.displaySetCursorPos(3, 0);
@@ -24,7 +25,14 @@ void ioShieldTask(void* params) {
     ioShield.displaySetCursorPos(0, 15);
     ioShield.displayWriteText("Hello, World!");
 
+    char buffer[32];
     while (true) {
+        batteryManager.update();
+        snprintf(buffer, sizeof(buffer), "Bat: %d%%  ", batteryManager.getPercentage());
+
+        ioShield.displaySetCursorPos(0, 50);
+        ioShield.displayWriteText(buffer);
+
         delay(1000);
     }
 }
