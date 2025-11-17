@@ -7,26 +7,30 @@
 #include "freertos/FreeRTOS.h"
 #include "esp_random.h"
 
+// Headers
+#include "flags.h"
+#include "constants.h"
+
+// Types
+#include "flex_struct.h"
+#include "system_context.h"
+
+// Helpers
+#include "i2c_utils.h"
+
 // Custom Libraries
 #include "logger.h"
+#include "battery.h"
 #include "leds.h"
 #include "motors.h"
 #include "encoder.h"
 #include "bumper.h"
 #include "ultrasonic.h"
 #include "gyro.h"
+#include "linefollower.h"
 #include "move.h"
 #include "io_shield.h"
-
-// Headers
-#include "flags.h"
-#include "constants.h"
-
-// Helpers
-#include "flex_struct.h"
-#include "system_context.h"
-#include "i2c_utils.h"
-#include "check_battery.h"
+#include "web_ui.h"
 
 // Tasks
 #include "sensor_test.h"
@@ -36,17 +40,14 @@
 
 #define TAG "MAIN"
 
-
 extern "C" void app_main() {
-    esp_log_level_set("*", SHOW_DEBUG_LOGS ? ESP_LOG_DEBUG : ESP_LOG_INFO);
-
     LOGI(TAG, " === BOBOTER is starting ===");
     LOGI(TAG, "Hello, World!");
 
     init_i2c();
     scan_i2c_addresses(TAG);
 
-    initialize_battery_checker();
+    static BatteryManager batteryManager = BatteryManager();
 
     static Leds leds = Leds();
     static Motor motorL = Motor(MOTOR_LEFT);
@@ -63,6 +64,8 @@ extern "C" void app_main() {
     LOGI(TAG, "Created all Objects successfully");
 
     static SystemContext sysctx = {
+        batteryManager,
+        
         leds, motorL, motorR,
         encoderL, encoderR, bumperL,
         bumperR, usonic, gyro,

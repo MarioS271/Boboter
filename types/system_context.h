@@ -5,16 +5,23 @@
 #pragma once
 
 #include "flex_struct.h"
-#include "leds.h"
-#include "motors.h"
-#include "encoder.h"
-#include "bumper.h"
-#include "ultrasonic.h"
-#include "gyro.h"
-#include "move.h"
-#include "io_shield.h"
+
+
+class BatteryManager;
+
+class Leds;
+class Motor;
+class Encoder;
+class Bumper;
+class Ultrasonic;
+class Gyro;
+class Move;
+class IOShield;
+
 
 typedef struct {
+    BatteryManager &batteryManager;
+
     Leds &leds;
     Motor &motorL;
     Motor &motorR;

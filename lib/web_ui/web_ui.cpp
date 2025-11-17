@@ -4,13 +4,14 @@
 
 #include "web_ui.h"
 
-#include "logger.h"
 #include <cstring>
+#include "logger.h"
+#include "system_context.h"
 
 #define TAG "WEBUI"
 
 WebUI::WebUI(SystemContext* sysctx)
-: ctx(sysctx), server(nullptr) {}
+: server(nullptr), ctx(sysctx) {}
 
 WebUI::~WebUI() {
     if (server) {

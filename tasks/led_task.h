@@ -21,10 +21,10 @@ void ledTask(void* params) {
     Leds &leds = ctx->leds;
 
     ownFlex.set<char*>("mode", "random_blink");
-    ownFlex.set<rgb_color_t>("led_ur", BLACK);
-    ownFlex.set<rgb_color_t>("led_ul", BLACK);
-    ownFlex.set<rgb_color_t>("led_lr", BLACK);
-    ownFlex.set<rgb_color_t>("led_ll", BLACK);
+    ownFlex.set<rgb_color_t>("led_ur", OFF);
+    ownFlex.set<rgb_color_t>("led_ul", OFF);
+    ownFlex.set<rgb_color_t>("led_lr", OFF);
+    ownFlex.set<rgb_color_t>("led_ll", OFF);
 
     rgb_color_t colorArray[8] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
     rgb_color_t colors[4] = {};

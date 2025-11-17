@@ -8,9 +8,10 @@
 #include "esp_http_server.h"
 #include "flex_struct.h"
 #include "rgb_color.h"
-#include "check_battery.h"
+#include "battery.h"
 #include "logger.h"
 #include "leds.h"
+#include "system_context.h"
 
 #define TAG "WEBUI_ROUTES"
 
@@ -61,11 +62,12 @@ esp_err_t WebUI::registerGetRoutes() {
 
             uint8_t bat_percent = 0;
             uint16_t bat_voltage = 0;
-
             check_battery_percentage(&bat_percent, &bat_voltage);
 
+            const char* ip_address = "0.0.0.0";
+
             snprintf(resp, sizeof(resp), JSON_RESP_GET::SYSTEM_STATUS_RESPONSE,
-                    bat_percent, bat_voltage);
+                    bat_percent, bat_voltage, ip_address);
 
             httpd_resp_set_type(req, "application/json");
             httpd_resp_send(req, resp, HTTPD_RESP_USE_STRLEN);
@@ -119,6 +121,8 @@ esp_err_t WebUI::registerGetRoutes() {
         .user_ctx = &ctx->leds
     };
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &led_get_uri));
+
+    return ESP_OK;
 }
 
 
@@ -148,4 +152,6 @@ esp_err_t WebUI::registerPostRoutes() {
         .user_ctx = &ctx->ledsFlex
     };
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &led_set_uri));
+
+    return ESP_OK;
 }

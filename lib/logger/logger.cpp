@@ -7,9 +7,6 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdarg>
-#include "ansi_colors.h"
-
-using namespace ANSI_COLORS;
 
 void custom_log(esp_log_level_t level,
                 const char* tag,
@@ -31,19 +28,9 @@ void custom_log(esp_log_level_t level,
         default: log_level_char = '?'; break;
     }
 
-    const char* log_level_color = nullptr;
-    switch (level) {
-        case ESP_LOG_ERROR: log_level_color = RED; break;
-        case ESP_LOG_WARN: log_level_color = YELLOW; break;
-        case ESP_LOG_INFO: log_level_color = GREEN; break;
-        case ESP_LOG_DEBUG: log_level_color = CYAN; break;
-        default: log_level_color = WHITE; break;
-    }
-
     char* buffer = nullptr;
-    int len = asprintf(&buffer, "%s%s%c %s%s[%s]:%s %s",
-                                BOLD, log_level_color, log_level_char,
-                                RESET, BOLD, tag, RESET, format);
+    int len = asprintf(&buffer, "%c [%s]: %s\n",
+                                log_level_char, tag, format);
 
     if (len >= 0 && buffer != nullptr) {
         esp_log_writev(level, tag, buffer, args1);

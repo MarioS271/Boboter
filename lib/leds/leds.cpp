@@ -3,12 +3,12 @@
 // (C) MarioS271 2025
 
 #include "leds.h"
+
 #include "logger.h"
-#include "flags.h"
+#include "predef_colors.h"
 
 #define TAG "LEDS"
 
-// Constructor
 Leds::Leds() {
     gpio_config_t gpio_conf = {};
     gpio_conf.pin_bit_mask = (1ULL << MOSI_PIN) | (1ULL << CLK_PIN);
@@ -23,79 +23,40 @@ Leds::Leds() {
     allOff();
 }
 
-
-
-// Private Helper: Send Bit Function
-void Leds::sendBit(bool bit) {
-    gpio_set_level(MOSI_PIN, bit ? 1 : 0);
-    gpio_set_level(CLK_PIN, 1);
-    gpio_set_level(CLK_PIN, 0);
+Leds::~Leds() {
+    allOff();
 }
 
-// Private Helper: Send Byte Function
-void Leds::sendByte(uint8_t byte) {
-    for (int i = 7; i >= 0; i--) {
-        sendBit(byte & (1 << i));
-    }
-}
-
-// Private Helper: Send Frame Function
-void Leds::sendFrame(rgb_color_t color) {
-    sendByte(0b11100000 | (31 & 0x1F)); // 5-bit global brightness
-    sendByte(color.r);
-    sendByte(color.b);
-    sendByte(color.g);
-}
-
-// Private Helper: Update to LEDs Function
-void Leds::update() {
-    // Start frame
-    for (int i = 0; i < 4; i++) sendByte(0x00);
-
-    // LED frames
-    for (int i = 0; i < 4; i++) sendFrame(buffer[i]);
-
-    // End frame: enough 1s/zeros to latch
-    for (int i = 0; i < 4; i++) sendByte(0xFF);
-}
-
-
-
-// Set Single Color Function
 void Leds::setColor(led_pos_t led_pos, rgb_color_t color) {
     if (led_pos >= 4) {
         LOGW(TAG, "Invalid LED position: %d", led_pos);
         return;
     }
-    buffer[led_pos] = color;
-    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b); }
+    leds[led_pos] = color;
+    LOGD(TAG, "LED %d set to R=%d G=%d B=%d", led_pos, color.r, color.g, color.b);
     update();
 }
 
-// Set All Colors Function
 void Leds::setAll(rgb_color_t color) {
-    for (int i = 0; i < 4; i++) buffer[i] = color;
-    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b); }
+    for (int i = 0; i < 4; i++) leds[i] = color;
+    LOGD(TAG, "All LEDs set to R=%d G=%d B=%d", color.r, color.g, color.b);
     update();
 }
 
-// Turn Single Off Function
 void Leds::setOff(led_pos_t led_pos) {
-    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "Turning LED %d off", led_pos); }
-    setColor(led_pos, {0, 0, 0});
+    LOGD(TAG, "Turning LED %d off", led_pos);
+    setColor(led_pos, COLORS::OFF);
 }
 
-// Turn All Off Function
 void Leds::allOff() {
-    if (SHOW_LED_DEBUG_LOGS) { LOGD(TAG, "Turning all LEDs off"); }
-    setAll({0, 0, 0});
+    LOGD(TAG, "Turning all LEDs off");
+    setAll(COLORS::OFF);
 }
 
-void Leds::getColor(led_pos_t led_pos, rgb_color_t &color) {
+rgb_color_t Leds::getColor(led_pos_t led_pos) {
     if (led_pos >= 4) {
         LOGW(TAG, "Invalid LED position: %d", led_pos);
-        color = { 0, 0, 0 };
-        return;
+        return COLORS::OFF;
     }
-    color = buffer[led_pos];
+    return leds[led_pos];
 }

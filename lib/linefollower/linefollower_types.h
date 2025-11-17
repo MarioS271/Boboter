@@ -7,11 +7,11 @@
 #include <cstdint>
 
 enum lf_module_t : uint8_t {
-    RIGHT = 0,
-    LEFT = 1
+    LF_RIGHT = 0,
+    LF_LEFT = 1
 };
 
 enum lf_result_t : uint8_t {
-    WHITE = 0,
-    BLACK = 1
+    LF_WHITE = 0,
+    LF_BLACK = 1
 };

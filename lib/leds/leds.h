@@ -4,16 +4,10 @@
 
 #pragma once
 
-#include <cstdint>
-#include "driver/gpio.h"
-#include "rgb_color.h"
+#include "leds_types.h"
 
-enum led_pos_t : uint8_t {
-    LED_FRONT_LEFT = 0,
-    LED_FRONT_RIGHT = 1,
-    LED_BACK_LEFT = 2,
-    LED_BACK_RIGHT = 3
-};
+#include "rgb_color.h"
+#include "driver/gpio.h"
 
 class Leds {
 private:
@@ -25,16 +19,16 @@ private:
     void sendFrame(rgb_color_t color);
     void update();
 
-    rgb_color_t buffer[4] = {};
+    rgb_color_t leds[4] = {};
 
 public:
-    explicit Leds();
+    Leds();
+    ~Leds();
 
     void setColor(led_pos_t led_pos, rgb_color_t color);
     void setAll(rgb_color_t color);
-
     void setOff(led_pos_t led_pos);
     void allOff();
 
-    void getColor(led_pos_t led_pos, rgb_color_t &color);
+    rgb_color_t getColor(led_pos_t led_pos);
 };
