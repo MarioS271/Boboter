@@ -3,6 +3,7 @@
 // (C) MarioS271 2025
 
 #include "move.h"
+
 #include <cmath>
 #include "logger.h"
 #include "delay.h"
@@ -39,8 +40,8 @@ void Move::drive(int32_t distance_cm, uint16_t speed, bool forward) {
     encoderLeft.resetPulseCount();
     encoderRight.resetPulseCount();
 
-    motorLeft.setDirection(forward ? FORWARD : BACKWARD);
-    motorRight.setDirection(forward ? FORWARD : BACKWARD);
+    motorLeft.setDirection(forward ? M_FORWARD : M_BACKWARD);
+    motorRight.setDirection(forward ? M_FORWARD : M_BACKWARD);
 
     float wheelCircumference = M_PI * WHEEL_DIAMETER_CM;
     int32_t targetPulses = static_cast<int32_t>((distance_cm / wheelCircumference) * PULSES_PER_REV);
@@ -92,11 +93,11 @@ void Move::turn(int16_t angle, uint16_t speed) {
     encoderRight.resetPulseCount();
 
     if (angle > 0) {
-        motorLeft.setDirection(FORWARD);
-        motorRight.setDirection(BACKWARD);
+        motorLeft.setDirection(M_FORWARD);
+        motorRight.setDirection(M_BACKWARD);
     } else {
-        motorLeft.setDirection(BACKWARD);
-        motorRight.setDirection(FORWARD);
+        motorLeft.setDirection(M_BACKWARD);
+        motorRight.setDirection(M_FORWARD);
         angle = -angle;
     }
 

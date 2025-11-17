@@ -6,14 +6,13 @@
 #include "logger.h"
 #include "freertos/FreeRTOS.h"
 
-static const char* TAG = "ENCODER";
+#define TAG "ENCODER"
 
 void IRAM_ATTR encoder_isr_handler(void* arg) {
     Encoder* enc = reinterpret_cast<Encoder*>(arg);
     enc->pulse_count++;
 }
 
-// Constructor
 Encoder::Encoder(encoder_num_t encoder_number)
 : encoder_num(encoder_number),
   error(false),
@@ -36,13 +35,8 @@ Encoder::Encoder(encoder_num_t encoder_number)
             return;
     }
 
-    gpio_config_t gpio_conf = {};
-    gpio_conf.intr_type = GPIO_INTR_POSEDGE;
-    gpio_conf.mode = GPIO_MODE_INPUT;
-    gpio_conf.pin_bit_mask = (1ULL << encoder_pin);
-    gpio_conf.pull_up_en = GPIO_PULLUP_DISABLE;
-    gpio_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-    gpio_config(&gpio_conf);
+    gpio_set_direction(encoder_pin, GPIO_MODE_INPUT);
+    gpio_set_intr_type(encoder_pin, GPIO_INTR_POSEDGE);
 
     static bool isr_service_installed = false;
     if (!isr_service_installed) {
@@ -52,21 +46,14 @@ Encoder::Encoder(encoder_num_t encoder_number)
     gpio_isr_handler_add(encoder_pin, encoder_isr_handler, (void*) this);
 }
 
-
-
-// Getter for Pulse Count
 int32_t Encoder::getPulseCount() {
     return pulse_count;
 }
 
-// Resetter for Pulse Count
 void Encoder::resetPulseCount() {
     pulse_count = 0;
 }
 
-
-
-// Get if Encoder has Error
 bool Encoder::hasError() {
     return error;
 }

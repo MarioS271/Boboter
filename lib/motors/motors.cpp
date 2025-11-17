@@ -8,14 +8,13 @@
 
 #define TAG "MOTORS"
 
-// Constructor
 Motor::Motor(motor_num_t motor_number)
 : target_speed(0),
   rampTaskHandle(nullptr),
   motor_num(motor_number),
   error(false),
   current_speed(0),
-  current_direction(FORWARD)
+  current_direction(M_FORWARD)
 {
     switch (motor_num) {
         case MOTOR_LEFT:
@@ -41,16 +40,8 @@ Motor::Motor(motor_num_t motor_number)
             return;
     }
 
-    // Direction Pin Config
-    gpio_config_t gpio_conf = {};
-    gpio_conf.pin_bit_mask = (1ULL << direction_pin);
-    gpio_conf.mode = GPIO_MODE_OUTPUT;
-    gpio_conf.pull_up_en = GPIO_PULLUP_DISABLE;
-    gpio_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-    gpio_conf.intr_type = GPIO_INTR_DISABLE;
-    gpio_config(&gpio_conf);
+    gpio_set_direction(direction_pin, GPIO_MODE_OUTPUT);
 
-    // Speed Pin Config
     ledc_timer_config_t ledc_timer_conf = {};
     ledc_timer_conf.speed_mode = LEDC_SPEED_MODE;
     ledc_timer_conf.timer_num = LEDC_TIMER_0;
@@ -71,39 +62,16 @@ Motor::Motor(motor_num_t motor_number)
     delay(10);
     xTaskCreate(rampTask, "MotorRampTask", 2048, this, 5, &rampTaskHandle);
 }
-
-
-
-// Private: Ramp Task
-void Motor::rampTask(void* pvParameters) {
-    auto* motor = static_cast<Motor*>(pvParameters);
-
-    while (true) {
-        if (motor->current_speed != motor->target_speed) {
-            int16_t current = static_cast<int16_t>(motor->current_speed);
-            int16_t target = static_cast<int16_t>(motor->target_speed);
-
-            if (current < target) {
-                current += RAMP_STEP;
-                if (current > target) current = target;
-            } else if (current > target) {
-                current -= RAMP_STEP;
-                if (current < target) current = target;
-            }
-
-            current = current > 1023 ? 1023 : current;
-            motor->current_speed = current;
-            ledc_set_duty(LEDC_SPEED_MODE, motor->ledc_channel, static_cast<uint16_t>(current));
-            ledc_update_duty(LEDC_SPEED_MODE, motor->ledc_channel);
-        }
-
-        delay(RAMP_INTERVAL_MS);
+Motor::~Motor() {
+    if (rampTaskHandle != nullptr) {
+        vTaskDelete(rampTaskHandle);
+        rampTaskHandle = nullptr;
     }
+    stop(true);
+    LOGI(TAG, "Motor %d deconstructed", motor_num);
 }
 
 
-
-// Stop Function
 void Motor::stop(bool wait) {
     if (error) return;
 
@@ -131,7 +99,6 @@ void Motor::stop(bool wait) {
     }
 }
 
-// Set Speed Function
 void Motor::setSpeed(uint16_t speed) {
     if (error) return;
 
@@ -141,40 +108,31 @@ void Motor::setSpeed(uint16_t speed) {
     LOGD(TAG, "Motor %d speed set to %d", motor_num, speed);
 }
 
-// Set Direction Function
 void Motor::setDirection(motor_direction_t direction) {
     if (error) return;
     
-    gpio_set_level(direction_pin, getActualDirection(direction) == FORWARD ? 1 : 0);
+    gpio_set_level(direction_pin, getActualDirection(direction) == M_FORWARD ? 1 : 0);
     current_direction = direction;
 
     LOGD(TAG, "Motor %d direction set to %s", motor_num,
-             direction == FORWARD ? "FORWARD" : "BACKWARD");
+             direction == M_FORWARD ? "FORWARD" : "BACKWARD");
 }
 
-
-
-// Get Speed Function
 uint16_t Motor::getSpeed() {
     return current_speed;
 }
 
-// Get Direction Function
 motor_direction_t Motor::getDirection() {
     return current_direction;
 }
 
-// Get Direction with Inverse Factor included
 motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) {
     if (inverse_direction) {
-        return apparent_direction == FORWARD ? BACKWARD : FORWARD;
+        return apparent_direction == M_FORWARD ? M_BACKWARD : M_FORWARD;
     }
     return apparent_direction;
 }
 
-
-
-// Get if Motor has Error
 bool Motor::hasError() {
     return error;
 }
