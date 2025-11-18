@@ -5,12 +5,12 @@
 #include "linefollower.h"
 #include "linefollower_types.h"
 
-#include "rom/ets_sys.h"
 #include "logger.h"
 #include "error.h"
+#include "rom/ets_sys.h"
 
 Linefollower::Linefollower() {
-    ERROR_CHECK(TAG, gpio_set_direction(LF_RIGHT_LEFT_PIN, GPIO_MODE_OUTPUT));
+    ESP_ERROR_CHECK(gpio_set_direction(LF_RIGHT_LEFT_PIN, GPIO_MODE_OUTPUT));
 
     adc_unit = ADC_CONFIG::adc_handle;
     cal_handle = ADC_CONFIG::cal_handle;
@@ -19,33 +19,19 @@ Linefollower::Linefollower() {
         .atten = ADC_CONFIG::ADC_ATTEN,
         .bitwidth = ADC_BITWIDTH_DEFAULT,
     };
-    ERROR_CHECK(TAG, adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
+    ESP_ERROR_CHECK(adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
 
     LOGI(TAG, "Initialized Linefollower");
-
-    if (adc_unit == nullptr) {
-        LOGE(TAG, "ADC Unit Handle is nullptr!!!");
-    }
-    if (cal_handle == nullptr) {
-        LOGW(TAG, "ADc Cal Handle is nullptr");
-    }
 }
 
 lf_result_t Linefollower::get(lf_module_t module) {
     gpio_set_level(LF_RIGHT_LEFT_PIN, module);
-    ets_delay_us(200);
+    ets_delay_us(500);
 
-    int reading = 0;
-    
-    LOGI(TAG, "adc_unit = %p", (void*) adc_unit);
-    LOGI(TAG, "cal_handle = %p", (void*) cal_handle);
-    LOGI(TAG, "reading address = %p", &reading);
+    int reading;
+    ESP_ERROR_CHECK(adc_oneshot_read(adc_unit, ADC_CHANNEL, &reading));
 
-    ERROR_CHECK(TAG, adc_oneshot_read(adc_unit, ADC_CHANNEL, &reading));
-
-    LOGI(TAG, "adc reading (%s, pin state: %s): %d",
-         module == LF_LEFT ? "LF_LEFT" : "LF_RIGHT",
-         gpio_get_level(LF_RIGHT_LEFT_PIN), reading);
+    LOGI(TAG, "adc reading (%s): %d", module == LF_LEFT ? "LF_LEFT" : "LF_RIGHT", reading);
 
     lf_result_t result;
     if (reading < 2047) result = LF_WHITE;

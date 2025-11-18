@@ -10,12 +10,14 @@
 #include "rom/ets_sys.h"
 
 BatteryManager::BatteryManager() {
+    init_adc();
+
     adc_unit = ADC_CONFIG::adc_handle;
     cal_handle = ADC_CONFIG::cal_handle;
 
     adc_oneshot_chan_cfg_t chan_cfg = {
         .atten = ADC_CONFIG::ADC_ATTEN,
-        .bitwidth = ADC_BITWIDTH_DEFAULT,
+        .bitwidth = ADC_CONFIG::ADC_BITWIDTH
     };
     ERROR_CHECK(TAG, adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
 
