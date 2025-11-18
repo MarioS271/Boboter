@@ -22,5 +22,5 @@ Colorsensor::Colorsensor() {
 
 void Colorsensor::setLedState(bool state) {
     gpio_set_level(LED_PIN, state);
-    LOGD(TAG, "Set Color Sensor LED to %s", state ? "true" : "false");
+    LOGI(TAG, "Set Color Sensor LED to %s", state ? "true" : "false");
 }

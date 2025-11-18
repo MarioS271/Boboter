@@ -45,15 +45,3 @@ Encoder::Encoder(encoder_num_t encoder_number)
     }
     gpio_isr_handler_add(encoder_pin, encoder_isr_handler, (void*) this);
 }
-
-int32_t Encoder::getPulseCount() {
-    return pulse_count;
-}
-
-void Encoder::resetPulseCount() {
-    pulse_count = 0;
-}
-
-bool Encoder::hasError() {
-    return error;
-}

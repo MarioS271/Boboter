@@ -5,14 +5,13 @@
 #pragma once
 
 #include <cstdint>
+#include "adc_utils.h"
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_cali.h"
 
 class BatteryManager {
 private:
-    static constexpr adc_unit_t ADC_UNIT = ADC_UNIT_1;
     static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_3;
-    static constexpr adc_atten_t ADC_ATTEN = ADC_ATTEN_DB_12;
     static constexpr uint8_t NUM_SAMPLES = 16;
 
     adc_oneshot_unit_handle_t adc_unit = nullptr;
@@ -23,7 +22,7 @@ private:
 
 public:
     BatteryManager();
-    ~BatteryManager();
+    ~BatteryManager() = default;
 
     void update();
     uint8_t getPercentage() const { return percentage; };

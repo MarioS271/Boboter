@@ -15,6 +15,7 @@ class Encoder;
 class Bumper;
 class Ultrasonic;
 class Gyro;
+class Linefollower;
 class Move;
 class IOShield;
 
@@ -31,6 +32,7 @@ typedef struct {
     Bumper &bumperR;
     Ultrasonic &usonic;
     Gyro &gyro;
+    Linefollower &linefollower;
     Move &move;
     IOShield &ioShield;
     

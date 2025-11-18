@@ -47,9 +47,9 @@ public:
     void setSpeed(uint16_t speed);
     void setDirection(motor_direction_t direction);
 
-    uint16_t getSpeed();
-    motor_direction_t getDirection();
-    motor_direction_t getActualDirection(motor_direction_t);
+    uint16_t getSpeed() const { return current_speed; }
+    motor_direction_t getDirection() const { return current_direction; }
+    motor_direction_t getActualDirection(motor_direction_t) const;
 
-    bool hasError();
+    bool hasError() const { return error; }
 };

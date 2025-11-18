@@ -13,7 +13,8 @@ private:
     
 
 public:
-    explicit Colorsensor();
+    Colorsensor();
+    ~Colorsensor();
 
     void setLedState(bool state);
 };

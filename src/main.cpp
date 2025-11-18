@@ -17,6 +17,7 @@
 
 // Helpers
 #include "i2c_utils.h"
+#include "adc_utils.h"
 
 // Custom Libraries
 #include "logger.h"
@@ -37,6 +38,7 @@
 #include "led_task.h"
 #include "io_shield_task.h"
 #include "web_ui_task.h"
+#include "line_follow_task.h"  //TEMPORARY
 
 #define TAG "MAIN"
 
@@ -44,11 +46,12 @@ extern "C" void app_main() {
     LOGI(TAG, " === BOBOTER is starting ===");
     LOGI(TAG, "Hello, World!");
 
+    init_adc();
+
     init_i2c();
-    scan_i2c_addresses(TAG);
+    scan_i2c_addresses();
 
     static BatteryManager batteryManager = BatteryManager();
-
     static Leds leds = Leds();
     static Motor motorL = Motor(MOTOR_LEFT);
     static Motor motorR = Motor(MOTOR_RIGHT);
@@ -58,6 +61,7 @@ extern "C" void app_main() {
     static Bumper bumperR = Bumper(BUMPER_RIGHT);
     static Ultrasonic usonic = Ultrasonic();
     static Gyro gyro = Gyro();
+    static Linefollower linefollower = Linefollower();
     static Move move = Move(motorL, motorR, encoderL, encoderR, bumperL, bumperR, usonic);
     static IOShield ioShield = IOShield();
 
@@ -65,11 +69,10 @@ extern "C" void app_main() {
 
     static SystemContext sysctx = {
         batteryManager,
-        
         leds, motorL, motorR,
         encoderL, encoderR, bumperL,
         bumperR, usonic, gyro,
-        move, ioShield,
+        linefollower, move, ioShield,
 
         FlexStruct(),  // LedsTask
         FlexStruct(),  // IOShieldTask
@@ -81,9 +84,15 @@ extern "C" void app_main() {
     delay(500);
 
 
-    if (ENABLE_SENSOR_TEST_MODE) { xTaskCreate(sensorTest, "SensorTest", TASK_STACK_DEPTH, &sysctx, 9, nullptr); return; }
+    if (ENABLE_SENSOR_TEST_MODE) {
+        xTaskCreate(sensorTest, "SensorTest", TASK_STACK_DEPTH, &sysctx, SENSOR_TEST_TASK_PRIORITY, nullptr);
+        return;
+    }
 
-    xTaskCreate(ledTask, "LedTask", TASK_STACK_DEPTH, &sysctx, 1, nullptr);
-    if (ENABLE_WEBUI) { xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, 2, nullptr); }
-    if (ENABLE_IO_SHIELD) { xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, 3, nullptr); }
+    xTaskCreate(ledTask, "LedTask", TASK_STACK_DEPTH, &sysctx, LED_TASK_PRIORITY, nullptr);
+    if (ENABLE_WEBUI) xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, WEBUI_TASK_PRIORITY, nullptr);
+    if (ENABLE_IO_SHIELD) xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, IO_SHIELD_TASK_PRIORITY, nullptr);
+
+    // Temporary for "Tag der offenen Tür"
+    xTaskCreate(lineFollowTask, "LineFolowTask", TASK_STACK_DEPTH, &sysctx, 8, nullptr);
 }

@@ -30,7 +30,8 @@ private:
     uint64_t millis() const { return xTaskGetTickCount() * portTICK_PERIOD_MS; }
 
 public:
-    explicit Gyro();
+    Gyro();
+    ~Gyro() = default;
 
     void calibrate();
     bool isCalibrating() const { return calibrating; }

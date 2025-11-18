@@ -23,7 +23,7 @@ private:
 
 public:
     Leds();
-    ~Leds();
+    ~Leds() = default;
 
     void setColor(led_pos_t led_pos, rgb_color_t color);
     void setAll(rgb_color_t color);

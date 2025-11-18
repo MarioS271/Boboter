@@ -29,13 +29,11 @@ Move::Move(Motor& leftMotor,
     LOGI(TAG, "Move subsystem initialized using external references.");
 }
 
-// Helper Function: Stop all Motors
 void stopMotors(Motor &left, Motor &right) {
     left.stop(false);
     right.stop();
 }
 
-// Drive forward or backward with automatic encoder-based correction
 void Move::drive(int32_t distance_cm, uint16_t speed, bool forward) {
     encoderLeft.resetPulseCount();
     encoderRight.resetPulseCount();
@@ -77,17 +75,14 @@ void Move::drive(int32_t distance_cm, uint16_t speed, bool forward) {
     stopMotors(motorLeft, motorRight);
 }
 
-// Forward wrapper
 void Move::forward(uint32_t distance, uint16_t speed) {
     drive(distance, speed, true);
 }
 
-// Backward wrapper
 void Move::backward(uint32_t distance, uint16_t speed) {
     drive(distance, speed, false);
 }
 
-// In-place turn with automatic encoder synchronization
 void Move::turn(int16_t angle, uint16_t speed) {
     encoderLeft.resetPulseCount();
     encoderRight.resetPulseCount();

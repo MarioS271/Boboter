@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include <cstdint>
+#include "font8x8_basic.h"
+
 #include "driver/gpio.h"
 #include "driver/i2c.h"
 #include "esp_lcd_panel_ssd1306.h"
@@ -30,7 +31,8 @@ private:
     uint8_t displayBuffer[(DISPLAY_WIDTH * DISPLAY_HEIGHT) / 8] = {0};
 
 public:
-    explicit IOShield();
+    IOShield();
+    ~IOShield();
 
     void displayWriteText(const char* text);
     void displayClear();

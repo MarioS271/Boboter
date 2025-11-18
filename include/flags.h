@@ -24,20 +24,6 @@ constexpr bool ENABLE_IO_SHIELD = true;
 
 // ENABLE_WEBUI
 //  Use to enable or disable the WebUI task
-constexpr bool ENABLE_WEBUI = true;
+constexpr bool ENABLE_WEBUI = false;
 
 //////////////////////
-
-
-
-///// LOGGING /////
-
-// SHOW_DEBUG_LOGS
-//  Use to enable or disable debug logging
-constexpr bool SHOW_DEBUG_LOGS = true;
-
-// SHOW_LED_DEBUG_LOGS
-//  Additional flag to enable or disable the visibility of LED debug logs
-constexpr bool SHOW_LED_DEBUG_LOGS = false;
-
-///////////////////

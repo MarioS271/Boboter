@@ -4,13 +4,8 @@
 
 #pragma once
 
-#include <cstdint>
+#include "bumper_types.h"
 #include "driver/gpio.h"
-
-enum bumper_num_t : uint8_t {
-    BUMPER_LEFT = 0,
-    BUMPER_RIGHT = 1
-};
 
 class Bumper {
 private:
@@ -23,6 +18,7 @@ private:
 
 public:
     explicit Bumper(bumper_num_t bumper_number);
+    ~Bumper() = default;
 
     bool isHit() const;
 };

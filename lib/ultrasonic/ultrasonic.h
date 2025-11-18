@@ -12,7 +12,8 @@ private:
     static constexpr gpio_num_t ECHO_PIN = GPIO_NUM_26;
 
 public:
-    explicit Ultrasonic();
+    Ultrasonic();
+    ~Ultrasonic() = default;
     
     float measureCm();
 };

@@ -106,7 +106,7 @@ void Gyro::update(bool ignore_is_calibrating) {
     float yaw_rate = gyro_z - yaw_offset - yaw_bias;
     yaw_total += yaw_rate * dt;
 
-    LOGD(TAG,
+    LOGI(TAG,
         "Accel: x=%f y=%f z=%f | Gyro: x=%f y=%f z=%f | Roll=%f Pitch=%f Yaw=%f",
         accel_x, accel_y, accel_z,
         gyro_x - roll_offset, gyro_y - pitch_offset, gyro_z - yaw_offset,

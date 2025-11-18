@@ -3,8 +3,10 @@
 // (C) MarioS271 2025
 
 #include "motors.h"
-#include "logger.h"
+
 #include "delay.h"
+#include "logger.h"
+#include "esp_err.h"
 
 #define TAG "MOTORS"
 
@@ -40,7 +42,7 @@ Motor::Motor(motor_num_t motor_number)
             return;
     }
 
-    gpio_set_direction(direction_pin, GPIO_MODE_OUTPUT);
+    ESP_ERROR_CHECK(gpio_set_direction(direction_pin, GPIO_MODE_OUTPUT));
 
     ledc_timer_config_t ledc_timer_conf = {};
     ledc_timer_conf.speed_mode = LEDC_SPEED_MODE;
@@ -48,7 +50,7 @@ Motor::Motor(motor_num_t motor_number)
     ledc_timer_conf.duty_resolution = LEDC_RESOLUTION;
     ledc_timer_conf.freq_hz = LEDC_FREQUENCY;
     ledc_timer_conf.clk_cfg = LEDC_AUTO_CLK;
-    ledc_timer_config(&ledc_timer_conf);
+    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer_conf));
     
     ledc_channel_config_t ledc_channel_conf = {};
     ledc_channel_conf.gpio_num = speed_pin;
@@ -57,7 +59,7 @@ Motor::Motor(motor_num_t motor_number)
     ledc_channel_conf.timer_sel = LEDC_TIMER_0;
     ledc_channel_conf.duty = 0;
     ledc_channel_conf.hpoint = 0;
-    ledc_channel_config(&ledc_channel_conf);
+    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_conf));
 
     delay(10);
     xTaskCreate(rampTask, "MotorRampTask", 2048, this, 5, &rampTaskHandle);
@@ -68,7 +70,6 @@ Motor::~Motor() {
         rampTaskHandle = nullptr;
     }
     stop(true);
-    LOGI(TAG, "Motor %d deconstructed", motor_num);
 }
 
 
@@ -76,8 +77,6 @@ void Motor::stop(bool wait) {
     if (error) return;
 
     target_speed = 0;
-
-    LOGD(TAG, "Motor %d stopping", motor_num);
 
     if (wait) {
         const uint32_t timeout_ms = 2000;
@@ -88,14 +87,15 @@ void Motor::stop(bool wait) {
             waited_ms += RAMP_INTERVAL_MS;
         }
 
-        ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, 0);
-        ledc_update_duty(LEDC_SPEED_MODE, ledc_channel);
+        esp_err_t duty_set_ret = ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, 0);
+        esp_err_t duty_update_ret = ledc_update_duty(LEDC_SPEED_MODE, ledc_channel);
+
+        if (duty_set_ret != ESP_OK || duty_update_ret != ESP_OK) {
+            LOGE(TAG, "ledc_set_duty or ledc_update_duty failed");
+            return;
+        }
 
         current_speed = 0;
-
-        LOGD(TAG, "Motor %d fully stopped after %d ms", motor_num, static_cast<int>(waited_ms));
-    } else {
-        LOGD(TAG, "Motor %d stop() called (non-blocking)", motor_num);
     }
 }
 
@@ -104,8 +104,6 @@ void Motor::setSpeed(uint16_t speed) {
 
     speed = speed > 1023 ? 1023 : speed;
     target_speed = speed;
-
-    LOGD(TAG, "Motor %d speed set to %d", motor_num, speed);
 }
 
 void Motor::setDirection(motor_direction_t direction) {
@@ -113,26 +111,11 @@ void Motor::setDirection(motor_direction_t direction) {
     
     gpio_set_level(direction_pin, getActualDirection(direction) == M_FORWARD ? 1 : 0);
     current_direction = direction;
-
-    LOGD(TAG, "Motor %d direction set to %s", motor_num,
-             direction == M_FORWARD ? "FORWARD" : "BACKWARD");
 }
 
-uint16_t Motor::getSpeed() {
-    return current_speed;
-}
-
-motor_direction_t Motor::getDirection() {
-    return current_direction;
-}
-
-motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) {
+motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) const {
     if (inverse_direction) {
         return apparent_direction == M_FORWARD ? M_BACKWARD : M_FORWARD;
     }
     return apparent_direction;
-}
-
-bool Motor::hasError() {
-    return error;
 }

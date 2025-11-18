@@ -24,9 +24,10 @@ private:
 
 public:
     explicit Encoder(encoder_num_t encoder_number);
+    ~Encoder() = default;
 
-    int32_t getPulseCount();
-    void resetPulseCount();
-    
-    bool hasError();
+    int32_t getPulseCount() const { return pulse_count; }
+    void resetPulseCount() { pulse_count = 0; }
+
+    bool hasError() const { return error; }
 };
