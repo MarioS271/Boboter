@@ -38,23 +38,23 @@ void lineFollowTask(void* params) {
         uint16_t rightSpeed = BASE_SPEED;
 
         if (left == LF_BLACK && right == LF_WHITE) {
-            LOGI(TAG, "Line left → turning left (L:%d R:%d)", leftSpeed, rightSpeed);
+            // LOGI(TAG, "Line left → turning left (L:%d R:%d)", leftSpeed, rightSpeed);
             leftSpeed = BASE_SPEED / 2;
             rightSpeed = BASE_SPEED;
         }
         else if (left == LF_WHITE && right == LF_BLACK) {
-            LOGI(TAG, "Line right → turning right (L:%d R:%d)", leftSpeed, rightSpeed);
+            // LOGI(TAG, "Line right → turning right (L:%d R:%d)", leftSpeed, rightSpeed);
             leftSpeed = BASE_SPEED;
             rightSpeed = BASE_SPEED / 2;
         }
         else if (left == LF_BLACK && right == LF_BLACK) {
-            LOGI(TAG, "Line centered → moving forward (L:%d R:%d)", leftSpeed, rightSpeed);
+            // LOGI(TAG, "Line centered → moving forward (L:%d R:%d)", leftSpeed, rightSpeed);
             leftSpeed = BASE_SPEED;
             rightSpeed = BASE_SPEED;
         }
         else if (left == LF_WHITE && right == LF_WHITE) {
-            LOGW(TAG, "Line lost → stopping motors");
-            motorL.stop();
+            // LOGW(TAG, "Line lost → stopping motors");
+            motorL.stop(false);
             motorR.stop();
             delay(50);
             continue;
@@ -63,6 +63,6 @@ void lineFollowTask(void* params) {
         motorL.setSpeed(leftSpeed);
         motorR.setSpeed(rightSpeed);
 
-        delay(20);
+        delay(1000);
     }
 }

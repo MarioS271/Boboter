@@ -3,7 +3,7 @@
 // (C) MarioS271 2025
 
 #pragma once
-//#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
 #include "esp_adc/adc_oneshot.h"
 #include "esp_adc/adc_cali.h"
