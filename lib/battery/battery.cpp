@@ -10,8 +10,6 @@
 #include "rom/ets_sys.h"
 
 BatteryManager::BatteryManager() {
-    init_adc();
-
     adc_unit = ADC_CONFIG::adc_handle;
     cal_handle = ADC_CONFIG::cal_handle;
 

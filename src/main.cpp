@@ -49,6 +49,8 @@ extern "C" void app_main() {
     LOGI(TAG, " === BOBOTER is starting ===");
     LOGI(TAG, "Hello, World!");
 
+    init_adc();
+
     init_i2c();
     scan_i2c_addresses();
 
