@@ -12,7 +12,7 @@
 
 class Move {
 private:
-    static constexpr char* TAG = "MOVE";
+    static constexpr const char* TAG = "MOVE";
 
     static constexpr float WHEEL_DIAMETER_CM = 6.45f;   // Durchmesser des Rades
     static constexpr float WHEEL_BASE_CM = 12.65f;   // Distanz zwischen den Mittelpunkten beider Räder

@@ -18,7 +18,7 @@
 #include "bumper.h"
 
 namespace SENSOR_TEST_TASK {
-    constexpr char* TAG = "task:SENSOR_TEST";
+    constexpr const char* TAG = "task:SENSOR_TEST";
     constexpr float MAX_DISPLAY_DISTANCE = 100.0;
     constexpr float MIN_DISPLAY_DISTANCE = 5.0;
 }

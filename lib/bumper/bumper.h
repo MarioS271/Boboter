@@ -9,7 +9,7 @@
 
 class Bumper {
 private:
-    static constexpr char* TAG = "BUMPER";
+    static constexpr const char* TAG = "BUMPER";
     
     static constexpr gpio_num_t LEFT_BUMPER_PIN = GPIO_NUM_35;
     static constexpr gpio_num_t RIGHT_BUMPER_PIN = GPIO_NUM_34;

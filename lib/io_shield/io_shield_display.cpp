@@ -6,16 +6,14 @@
 
 #include <cstring>
 #include "logger.h"
+#include "error.h"
 #include "esp_lcd_panel_io.h"
 #include "esp_lcd_panel_ops.h"
 
 void IOShield::displayClear() {
     memset(displayBuffer, 0, sizeof(displayBuffer));
 
-    esp_err_t err = esp_lcd_panel_draw_bitmap(panel, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, displayBuffer);
-    if (err != ESP_OK) {
-        LOGW(TAG, "Failed to clear IOShield display");
-    }
+    WARN_CHECK(TAG, esp_lcd_panel_draw_bitmap(panel, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, displayBuffer));
 
     cursorX = 0;
     cursorY = 0;
@@ -59,10 +57,7 @@ void IOShield::displayWriteText(const char* text) {
         x += CHAR_WIDTH;
     }
 
-    esp_err_t err = esp_lcd_panel_draw_bitmap(panel, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, displayBuffer);
-    if (err != ESP_OK) {
-        LOGW(TAG, "Failed to draw buffer to IOShield display");
-    }
+    WARN_CHECK(TAG, esp_lcd_panel_draw_bitmap(panel, 0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, displayBuffer));
 
     cursorX = x;
     cursorY = y;

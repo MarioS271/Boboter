@@ -6,7 +6,7 @@
 
 #include "delay.h"
 #include "logger.h"
-#include "esp_err.h"
+#include "error.h"
 
 Motor::Motor(motor_num_t motor_number)
 : target_speed(0),
@@ -40,7 +40,7 @@ Motor::Motor(motor_num_t motor_number)
             return;
     }
 
-    ESP_ERROR_CHECK(gpio_set_direction(direction_pin, GPIO_MODE_OUTPUT));
+    ERROR_CHECK(TAG, gpio_set_direction(direction_pin, GPIO_MODE_OUTPUT));
 
     ledc_timer_config_t ledc_timer_conf = {};
     ledc_timer_conf.speed_mode = LEDC_SPEED_MODE;
@@ -48,7 +48,7 @@ Motor::Motor(motor_num_t motor_number)
     ledc_timer_conf.duty_resolution = LEDC_RESOLUTION;
     ledc_timer_conf.freq_hz = LEDC_FREQUENCY;
     ledc_timer_conf.clk_cfg = LEDC_AUTO_CLK;
-    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer_conf));
+    ERROR_CHECK(TAG, ledc_timer_config(&ledc_timer_conf));
     
     ledc_channel_config_t ledc_channel_conf = {};
     ledc_channel_conf.gpio_num = speed_pin;
@@ -57,7 +57,7 @@ Motor::Motor(motor_num_t motor_number)
     ledc_channel_conf.timer_sel = LEDC_TIMER_0;
     ledc_channel_conf.duty = 0;
     ledc_channel_conf.hpoint = 0;
-    ESP_ERROR_CHECK(ledc_channel_config(&ledc_channel_conf));
+    ERROR_CHECK(TAG, ledc_channel_config(&ledc_channel_conf));
 
     delay(10);
     xTaskCreate(rampTask, "MotorRampTask", 2048, this, 5, &rampTaskHandle);
@@ -85,13 +85,8 @@ void Motor::stop(bool wait) {
             waited_ms += RAMP_INTERVAL_MS;
         }
 
-        esp_err_t duty_set_ret = ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, 0);
-        esp_err_t duty_update_ret = ledc_update_duty(LEDC_SPEED_MODE, ledc_channel);
-
-        if (duty_set_ret != ESP_OK || duty_update_ret != ESP_OK) {
-            LOGE(TAG, "ledc_set_duty or ledc_update_duty failed");
-            return;
-        }
+        WARN_CHECK(TAG, ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, 0));
+        WARN_CHECK(TAG, ledc_update_duty(LEDC_SPEED_MODE, ledc_channel));
 
         current_speed = 0;
     }
@@ -107,7 +102,7 @@ void Motor::setSpeed(uint16_t speed) {
 void Motor::setDirection(motor_direction_t direction) {
     if (error) return;
     
-    gpio_set_level(direction_pin, getActualDirection(direction) == M_FORWARD ? 1 : 0);
+    WARN_CHECK(TAG, gpio_set_level(direction_pin, getActualDirection(direction) == M_FORWARD ? 1 : 0));
     current_direction = direction;
 }
 

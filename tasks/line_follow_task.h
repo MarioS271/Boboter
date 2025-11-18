@@ -14,12 +14,12 @@
 #include "motors.h"
 
 namespace LINEFOLLOW_TASK {
-    constexpr char* TAG = "task:LINEFOLLOWER";
+    constexpr const char* TAG = "task:LINEFOLLOWER";
 }
 
 void lineFollowTask(void* params) {
     using namespace LINEFOLLOW_TASK;
-
+    
     SystemContext* ctx = static_cast<SystemContext*>(params);
     Linefollower &linefollower = ctx->linefollower;
     Motor &motorL = ctx->motorL;

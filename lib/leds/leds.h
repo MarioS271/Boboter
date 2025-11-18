@@ -11,7 +11,7 @@
 
 class Leds {
 private:
-    static constexpr char* TAG = "LEDS";
+    static constexpr const char* TAG = "LEDS";
     
     static constexpr gpio_num_t MOSI_PIN = GPIO_NUM_23;
     static constexpr gpio_num_t CLK_PIN = GPIO_NUM_18;

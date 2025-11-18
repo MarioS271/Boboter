@@ -5,8 +5,8 @@
 #include "battery.h"
 
 #include "logger.h"
+#include "error.h"
 #include "map.h"
-#include "esp_err.h"
 #include "rom/ets_sys.h"
 
 BatteryManager::BatteryManager() {
@@ -17,7 +17,7 @@ BatteryManager::BatteryManager() {
         .atten = ADC_CONFIG::ADC_ATTEN,
         .bitwidth = ADC_BITWIDTH_DEFAULT,
     };
-    ESP_ERROR_CHECK(adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
+    ERROR_CHECK(TAG, adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
 
     LOGI(TAG, "Initialized Battery Manager");
 }
@@ -27,7 +27,7 @@ void BatteryManager::update() {
     
     for (int i = 0; i < NUM_SAMPLES; i++) {
         int raw = 0;
-        ESP_ERROR_CHECK(adc_oneshot_read(adc_unit, ADC_CHANNEL, &raw));
+        ERROR_CHECK(TAG, adc_oneshot_read(adc_unit, ADC_CHANNEL, &raw));
         sum += raw;
         ets_delay_us(500);
     }
@@ -35,7 +35,7 @@ void BatteryManager::update() {
     uint32_t avg_raw = sum / NUM_SAMPLES;
     int mv_adc = 0;
 
-    if (cal_handle) ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cal_handle, avg_raw, &mv_adc));
+    if (cal_handle) ERROR_CHECK(TAG, adc_cali_raw_to_voltage(cal_handle, avg_raw, &mv_adc));
     else mv_adc = (avg_raw * 3300) / 4095;
 
     voltage_mv = static_cast<uint16_t>((mv_adc * 1470) / 1000);

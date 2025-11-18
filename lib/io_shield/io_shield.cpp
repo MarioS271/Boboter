@@ -8,6 +8,7 @@
 
 #include <cstring>
 #include "logger.h"
+#include "error.h"
 #include "delay.h"
 #include "i2c_utils.h"
 #include "esp_lcd_panel_io.h"
@@ -21,8 +22,7 @@ IOShield::IOShield() {
         .lcd_cmd_bits = 8,
         .lcd_param_bits = 8
     };
-    esp_err_t err = esp_lcd_new_panel_io_i2c(I2C_CONFIG::I2C_PORT, &display_io_conf, &io_handle);
-    if (err != ESP_OK) { LOGE(TAG, ""); error = true; }
+    WARN_CHECK(TAG, esp_lcd_new_panel_io_i2c(I2C_CONFIG::I2C_PORT, &display_io_conf, &io_handle));
 
     esp_lcd_panel_ssd1306_config_t display_vendor_conf = { .height = DISPLAY_HEIGHT };
     esp_lcd_panel_dev_config_t display_panel_conf = {
@@ -32,12 +32,12 @@ IOShield::IOShield() {
         .vendor_config = &display_vendor_conf
     };
 
-    ESP_ERROR_CHECK(esp_lcd_new_panel_ssd1306(io_handle, &display_panel_conf, &panel));
-    ESP_ERROR_CHECK(esp_lcd_panel_init(panel));
-    ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel, true));
-    ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel, true, true));
+    WARN_CHECK(TAG, esp_lcd_new_panel_ssd1306(io_handle, &display_panel_conf, &panel));
+    WARN_CHECK(TAG, esp_lcd_panel_init(panel));
+    WARN_CHECK(TAG, esp_lcd_panel_disp_on_off(panel, true));
+    WARN_CHECK(TAG, esp_lcd_panel_mirror(panel, true, true));
 
-    ESP_ERROR_CHECK(gpio_set_direction(BUTTON_PIN, GPIO_MODE_INPUT));
+    WARN_CHECK(TAG, gpio_set_direction(BUTTON_PIN, GPIO_MODE_INPUT));
 
     LOGI(TAG, "Initialized IOShield");
 }

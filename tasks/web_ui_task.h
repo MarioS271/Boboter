@@ -11,7 +11,7 @@
 #include "web_ui.h"
 
 namespace WEB_UI_TASK {
-    constexpr char* TAG = "task:WEB_UI";
+    constexpr const char* TAG = "task:WEB_UI";
 }
 
 void webuiTask(void* params) {

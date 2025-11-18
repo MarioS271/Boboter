@@ -10,7 +10,7 @@
 
 class Gyro {
 private:
-    static constexpr char* TAG = "GYRO";
+    static constexpr const char* TAG = "GYRO";
     
     static constexpr i2c_port_t I2C_PORT = I2C_NUM_0;
     static constexpr uint8_t I2C_ADDRESS = 0x68;

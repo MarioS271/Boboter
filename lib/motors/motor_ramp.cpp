@@ -5,6 +5,7 @@
 #include "motors.h"
 
 #include "delay.h"
+#include "error.h"
 
 void Motor::rampTask(void* params) {
     Motor* motor = static_cast<Motor*>(params);
@@ -24,8 +25,8 @@ void Motor::rampTask(void* params) {
 
             current = current > 1023 ? 1023 : current;
             motor->current_speed = current;
-            ledc_set_duty(LEDC_SPEED_MODE, motor->ledc_channel, static_cast<uint16_t>(current));
-            ledc_update_duty(LEDC_SPEED_MODE, motor->ledc_channel);
+            WARN_CHECK(TAG, ledc_set_duty(LEDC_SPEED_MODE, motor->ledc_channel, static_cast<uint16_t>(current)));
+            WARN_CHECK(TAG, ledc_update_duty(LEDC_SPEED_MODE, motor->ledc_channel));
         }
 
         delay(RAMP_INTERVAL_MS);

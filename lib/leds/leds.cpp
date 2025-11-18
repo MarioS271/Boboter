@@ -5,11 +5,12 @@
 #include "leds.h"
 
 #include "logger.h"
+#include "error.h"
 #include "predef_colors.h"
 
 Leds::Leds() {
-    ESP_ERROR_CHECK(gpio_set_direction(MOSI_PIN, GPIO_MODE_OUTPUT));
-    ESP_ERROR_CHECK(gpio_set_direction(CLK_PIN, GPIO_MODE_OUTPUT));
+    ERROR_CHECK(TAG, gpio_set_direction(MOSI_PIN, GPIO_MODE_OUTPUT));
+    ERROR_CHECK(TAG, gpio_set_direction(CLK_PIN, GPIO_MODE_OUTPUT));
 
     allOff();
 

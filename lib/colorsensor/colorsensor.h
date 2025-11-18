@@ -9,7 +9,7 @@
 
 class Colorsensor {
 private:
-    static constexpr char* TAG = "COLORSENSOR";
+    static constexpr const char* TAG = "COLORSENSOR";
     
     static constexpr gpio_num_t LED_PIN = GPIO_NUM_13;
     

@@ -42,7 +42,7 @@
 
 
 extern "C" void app_main() {
-    constexpr char* TAG = "MAIN";
+    constexpr const char* TAG = "MAIN";
 
     delay(500);
 
@@ -84,8 +84,7 @@ extern "C" void app_main() {
 
     LOGI(TAG, "Created SystemContext");
     LOGI(TAG, "Starting FreeRTOS Task(s)");
-    delay(500);
-
+    
 
     if (ENABLE_SENSOR_TEST_MODE) {
         xTaskCreate(sensorTest, "SensorTest", TASK_STACK_DEPTH, &sysctx, SENSOR_TEST_TASK_PRIORITY, nullptr);
@@ -97,5 +96,5 @@ extern "C" void app_main() {
     if (ENABLE_IO_SHIELD) xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, IO_SHIELD_TASK_PRIORITY, nullptr);
 
     // Temporary for "Tag der offenen Tür"
-    xTaskCreate(lineFollowTask, "LineFolowTask", TASK_STACK_DEPTH, &sysctx, 8, nullptr);
+    xTaskCreate(lineFollowTask, "LineFollowTask", TASK_STACK_DEPTH, &sysctx, 8, nullptr);
 }

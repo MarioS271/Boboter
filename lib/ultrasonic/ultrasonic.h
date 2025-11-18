@@ -8,7 +8,7 @@
 
 class Ultrasonic {
 private:
-    static constexpr char* TAG = "ULTRASONIC";
+    static constexpr const char* TAG = "ULTRASONIC";
 
     static constexpr gpio_num_t TRIGGER_PIN = GPIO_NUM_25;
     static constexpr gpio_num_t ECHO_PIN = GPIO_NUM_26;

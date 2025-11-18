@@ -11,7 +11,7 @@
 
 class BatteryManager {
 private:
-    static constexpr char* TAG = "BATTERY_MANAGER";
+    static constexpr const char* TAG = "BATTERY_MANAGER";
     
     static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_3;
     static constexpr uint8_t NUM_SAMPLES = 16;

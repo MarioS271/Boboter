@@ -6,13 +6,14 @@
 
 #include "delay.h"
 #include "logger.h"
+#include "error.h"
 #include "freertos/FreeRTOS.h"
 #include "rom/ets_sys.h"
 #include "esp_timer.h"
 
 Ultrasonic::Ultrasonic() {
-    gpio_set_direction(TRIGGER_PIN, GPIO_MODE_OUTPUT);
-    gpio_set_direction(ECHO_PIN, GPIO_MODE_INPUT);
+    ERROR_CHECK(TAG, gpio_set_direction(TRIGGER_PIN, GPIO_MODE_OUTPUT));
+    ERROR_CHECK(TAG, gpio_set_direction(ECHO_PIN, GPIO_MODE_INPUT));
 
     LOGI(TAG, "Ultrasonic initialized");
 }

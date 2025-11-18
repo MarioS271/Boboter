@@ -12,7 +12,7 @@
 
 class Motor {
 private:
-    static constexpr char* TAG = "MOTORS";
+    static constexpr const char* TAG = "MOTORS";
 
     static constexpr gpio_num_t MOTOR_LEFT_SPEED_PIN = GPIO_NUM_32;
     static constexpr gpio_num_t MOTOR_LEFT_DIRECTION_PIN = GPIO_NUM_33;
