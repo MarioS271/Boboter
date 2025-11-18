@@ -1,10 +1,9 @@
 // GYRO_CPP
 #include "gyro.h"
-#include "logger.h"
-#include "delay.h"
-#include <cmath>
 
-#define TAG "GYRO"
+#include <cmath>
+#include "delay.h"
+#include "logger.h"
 
 // MPU6050 full-scale gyro = ±250 deg/s → 131 LSB/(°/s)
 constexpr float GYRO_SCALE = 131.0f;
@@ -20,10 +19,9 @@ Gyro::Gyro()
     writeRegister(0x6B, 0x00); // wake MPU6050
     delay(100);
     last_update_ms = millis();
-    LOGI(TAG, "Initialized MPU6050 Gyro");
+    LOGI(TAG, "Initialized Gyro");
 }
 
-// Private helpers
 void Gyro::writeRegister(uint8_t reg, uint8_t data) {
     uint8_t buf[2] = { reg, data };
     i2c_master_write_to_device(I2C_PORT, I2C_ADDRESS, buf, 2, pdMS_TO_TICKS(100));

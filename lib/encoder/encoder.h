@@ -13,6 +13,8 @@ class Encoder {
     friend void IRAM_ATTR encoder_isr_handler(void* arg);
 
 private:
+    static constexpr char* TAG = "ENCODER";
+    
     static constexpr gpio_num_t ENCODER_LEFT_PIN = GPIO_NUM_27;
     static constexpr gpio_num_t ENCODER_RIGHT_PIN = GPIO_NUM_14;
 

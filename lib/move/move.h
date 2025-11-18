@@ -12,6 +12,8 @@
 
 class Move {
 private:
+    static constexpr char* TAG = "MOVE";
+
     static constexpr float WHEEL_DIAMETER_CM = 6.45f;   // Durchmesser des Rades
     static constexpr float WHEEL_BASE_CM = 12.65f;   // Distanz zwischen den Mittelpunkten beider Räder
     static constexpr float PULSES_PER_REV = 20.0f;   // Encoder-Pulse pro Radrotation
@@ -35,6 +37,7 @@ public:
                   Bumper& leftBumper,
                   Bumper& rightBumper,
                   Ultrasonic& ultrasonic);
+    ~Move() = default;
 
     void forward(uint32_t distance, uint16_t speed);
     void backward(uint32_t distance, uint16_t speed);

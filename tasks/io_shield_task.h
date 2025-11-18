@@ -12,7 +12,6 @@
 
 #include "io_shield.h"
 
-
 void ioShieldTask(void* params) {
     SystemContext* ctx = static_cast<SystemContext*>(params);
     IOShield &ioShield = ctx->ioShield;

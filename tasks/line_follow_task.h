@@ -13,16 +13,22 @@
 #include "linefollower.h"
 #include "motors.h"
 
-#define TAG "task:LINEFOLLOWER"
+namespace LINEFOLLOW_TASK {
+    constexpr char* TAG = "task:LINEFOLLOWER";
+}
 
 void lineFollowTask(void* params) {
+    using namespace LINEFOLLOW_TASK;
+
     SystemContext* ctx = static_cast<SystemContext*>(params);
     Linefollower &linefollower = ctx->linefollower;
     Motor &motorL = ctx->motorL;
     Motor &motorR = ctx->motorR;
 
-    constexpr uint16_t BASE_SPEED = MAX_MOTOR_SPEED / 4; // Base speed
-    constexpr uint16_t TURN_DELTA = MAX_MOTOR_SPEED / 5; // Speed difference for turning
+    constexpr uint16_t BASE_SPEED = MAX_MOTOR_SPEED / 4;
+
+    motorL.setDirection(M_FORWARD);
+    motorR.setDirection(M_FORWARD);
 
     while (true) {
         lf_result_t left = linefollower.get(LF_LEFT);
@@ -32,29 +38,27 @@ void lineFollowTask(void* params) {
         uint16_t rightSpeed = BASE_SPEED;
 
         if (left == LF_BLACK && right == LF_WHITE) {
-            leftSpeed = BASE_SPEED / 2; // slow left motor
-            rightSpeed = BASE_SPEED;
             LOGI(TAG, "Line left → turning left (L:%d R:%d)", leftSpeed, rightSpeed);
-        } else if (left == LF_WHITE && right == LF_BLACK) {
-            leftSpeed = BASE_SPEED;
-            rightSpeed = BASE_SPEED / 2; // slow right motor
+            leftSpeed = BASE_SPEED / 2;
+            rightSpeed = BASE_SPEED;
+        }
+        else if (left == LF_WHITE && right == LF_BLACK) {
             LOGI(TAG, "Line right → turning right (L:%d R:%d)", leftSpeed, rightSpeed);
-        } else if (left == LF_BLACK && right == LF_BLACK) {
+            leftSpeed = BASE_SPEED;
+            rightSpeed = BASE_SPEED / 2;
+        }
+        else if (left == LF_BLACK && right == LF_BLACK) {
+            LOGI(TAG, "Line centered → moving forward (L:%d R:%d)", leftSpeed, rightSpeed);
             leftSpeed = BASE_SPEED;
             rightSpeed = BASE_SPEED;
-            LOGI(TAG, "Line centered → moving forward (L:%d R:%d)", leftSpeed, rightSpeed);
-        } else if (left == LF_WHITE && right == LF_WHITE) {
-            // Lost line → stop
+        }
+        else if (left == LF_WHITE && right == LF_WHITE) {
             LOGW(TAG, "Line lost → stopping motors");
             motorL.stop();
             motorR.stop();
-            vTaskDelay(pdMS_TO_TICKS(50));
+            delay(50);
             continue;
         }
-
-        // Both motors forward
-        motorL.setDirection(M_FORWARD);
-        motorR.setDirection(M_FORWARD);
 
         motorL.setSpeed(leftSpeed);
         motorR.setSpeed(rightSpeed);

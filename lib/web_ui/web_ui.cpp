@@ -5,10 +5,8 @@
 #include "web_ui.h"
 
 #include <cstring>
-#include "logger.h"
 #include "system_context.h"
-
-#define TAG "WEBUI"
+#include "logger.h"
 
 WebUI::WebUI(SystemContext* sysctx)
 : server(nullptr), ctx(sysctx) {}

@@ -5,8 +5,6 @@
 #include "bumper.h"
 #include "logger.h"
 
-#define TAG "BUMPER"
-
 Bumper::Bumper(bumper_num_t bumper_number)
 : bumper_num(bumper_number),
   error(false)

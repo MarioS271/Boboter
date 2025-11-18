@@ -12,6 +12,8 @@
 
 class IOShield {
 private:
+    static constexpr char* TAG = "IO_SHIELD";
+    
     static constexpr uint8_t DISPLAY_I2C_ADDR = 0x3C;
 
     static constexpr gpio_num_t BUTTON_PIN = GPIO_NUM_5;

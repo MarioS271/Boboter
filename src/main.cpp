@@ -40,9 +40,12 @@
 #include "web_ui_task.h"
 #include "line_follow_task.h"  //TEMPORARY
 
-#define TAG "MAIN"
 
 extern "C" void app_main() {
+    constexpr char* TAG = "MAIN";
+
+    delay(500);
+
     LOGI(TAG, " === BOBOTER is starting ===");
     LOGI(TAG, "Hello, World!");
 

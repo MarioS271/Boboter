@@ -3,14 +3,13 @@
 // (C) MarioS271 2025
 
 #include "encoder.h"
+
 #include "logger.h"
 #include "freertos/FreeRTOS.h"
 
-#define TAG "ENCODER"
-
 void IRAM_ATTR encoder_isr_handler(void* arg) {
     Encoder* enc = reinterpret_cast<Encoder*>(arg);
-    enc->pulse_count++;
+    enc->pulse_count += 1;
 }
 
 Encoder::Encoder(encoder_num_t encoder_number)

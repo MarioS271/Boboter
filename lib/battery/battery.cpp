@@ -4,9 +4,10 @@
 
 #include "battery.h"
 
+#include "logger.h"
+#include "map.h"
 #include "esp_err.h"
 #include "rom/ets_sys.h"
-#include "map.h"
 
 BatteryManager::BatteryManager() {
     adc_unit = ADC_CONFIG::adc_handle;
@@ -17,6 +18,8 @@ BatteryManager::BatteryManager() {
         .bitwidth = ADC_BITWIDTH_DEFAULT,
     };
     ESP_ERROR_CHECK(adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
+
+    LOGI(TAG, "Initialized Battery Manager");
 }
 
 void BatteryManager::update() {

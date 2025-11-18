@@ -20,7 +20,9 @@ void ledTask(void* params) {
     FlexStruct &ownFlex = ctx->ledsFlex;
     Leds &leds = ctx->leds;
 
-    ownFlex.set<char*>("mode", "random_blink");
+    static char mode_str[32] = "random_blink";
+    ownFlex.set<char*>("mode", mode_str);
+    
     ownFlex.set<rgb_color_t>("led_ur", OFF);
     ownFlex.set<rgb_color_t>("led_ul", OFF);
     ownFlex.set<rgb_color_t>("led_lr", OFF);

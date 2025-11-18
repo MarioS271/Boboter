@@ -12,6 +12,8 @@
 
 class WebUI {
 private:
+    static constexpr char* TAG = "WEB_UI";
+
     httpd_handle_t server;
     SystemContext* ctx;
     

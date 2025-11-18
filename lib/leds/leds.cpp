@@ -7,8 +7,6 @@
 #include "logger.h"
 #include "predef_colors.h"
 
-#define TAG "LEDS"
-
 Leds::Leds() {
     ESP_ERROR_CHECK(gpio_set_direction(MOSI_PIN, GPIO_MODE_OUTPUT));
     ESP_ERROR_CHECK(gpio_set_direction(CLK_PIN, GPIO_MODE_OUTPUT));

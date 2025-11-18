@@ -13,6 +13,8 @@
 
 class Linefollower {
 private:
+    static constexpr char* TAG = "LINEFOLLOWER";
+
     static constexpr gpio_num_t LF_RIGHT_LEFT_PIN = GPIO_NUM_12;
     static constexpr gpio_num_t LINEFOLLOWER_PIN = GPIO_NUM_36;
 

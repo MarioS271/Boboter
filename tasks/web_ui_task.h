@@ -10,9 +10,13 @@
 
 #include "web_ui.h"
 
-#define TAG "task:WEBUI"
+namespace WEB_UI_TASK {
+    constexpr char* TAG = "task:WEB_UI";
+}
 
 void webuiTask(void* params) {
+    using namespace WEB_UI_TASK;
+
     SystemContext* ctx = static_cast<SystemContext*>(params);
     FlexStruct &ownFlex = ctx->webuiFlex;
     

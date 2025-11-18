@@ -2,8 +2,6 @@
 // Boboter
 // (C) MarioS271 2025
 
-#pragma once
-
 #include "io_shield.h"
 #include "freertos/task.h"
 

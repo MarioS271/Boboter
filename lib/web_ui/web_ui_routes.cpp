@@ -13,8 +13,6 @@
 #include "leds.h"
 #include "system_context.h"
 
-#define TAG "WEBUI_ROUTES"
-
 esp_err_t WebUI::registerRoutes() {
     /**
      * Root URI

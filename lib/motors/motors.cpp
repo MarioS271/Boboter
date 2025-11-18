@@ -8,8 +8,6 @@
 #include "logger.h"
 #include "esp_err.h"
 
-#define TAG "MOTORS"
-
 Motor::Motor(motor_num_t motor_number)
 : target_speed(0),
   rampTaskHandle(nullptr),

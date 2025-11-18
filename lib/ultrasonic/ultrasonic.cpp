@@ -10,13 +10,11 @@
 #include "rom/ets_sys.h"
 #include "esp_timer.h"
 
-#define TAG "ULTRASONIC"
-
 Ultrasonic::Ultrasonic() {
     gpio_set_direction(TRIGGER_PIN, GPIO_MODE_OUTPUT);
     gpio_set_direction(ECHO_PIN, GPIO_MODE_INPUT);
 
-    LOGI(TAG, "Ultrasonic initialized (Trigger: %d, Echo: %d)", TRIGGER_PIN, ECHO_PIN);
+    LOGI(TAG, "Ultrasonic initialized");
 }
 
 float Ultrasonic::measureCm() {

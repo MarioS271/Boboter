@@ -8,9 +8,6 @@
 #include "logger.h"
 #include "delay.h"
 
-#define TAG "MOVE"
-
-// Constructor
 Move::Move(Motor& leftMotor,
            Motor& rightMotor,
            Encoder& leftEncoder,
@@ -18,13 +15,13 @@ Move::Move(Motor& leftMotor,
            Bumper& leftBumper,
            Bumper& rightBumper,
            Ultrasonic& ultrasonic)
-    : motorLeft(leftMotor),
-      motorRight(rightMotor),
-      encoderLeft(leftEncoder),
-      encoderRight(rightEncoder),
-      bumperLeft(leftBumper),
-      bumperRight(rightBumper),
-      usonic(ultrasonic)
+: motorLeft(leftMotor),
+  motorRight(rightMotor),
+  encoderLeft(leftEncoder),
+  encoderRight(rightEncoder),
+  bumperLeft(leftBumper),
+  bumperRight(rightBumper),
+  usonic(ultrasonic)
 {
     LOGI(TAG, "Move subsystem initialized using external references.");
 }
