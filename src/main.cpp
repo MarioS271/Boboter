@@ -38,8 +38,7 @@
 #include "led_task.h"
 #include "io_shield_task.h"
 #include "web_ui_task.h"
-#include "line_follow_task.h"  //TEMPORARY
-
+#include "line_follow_task.h"
 
 extern "C" void app_main() {
     constexpr const char* TAG = "MAIN";
@@ -53,6 +52,9 @@ extern "C" void app_main() {
 
     init_i2c();
     scan_i2c_addresses();
+
+    gpio_reset_pin(GPIO_NUM_13);
+    gpio_set_direction(GPIO_NUM_13, GPIO_MODE_OUTPUT);
 
     static BatteryManager batteryManager = BatteryManager();
     static Leds leds = Leds();
@@ -95,6 +97,12 @@ extern "C" void app_main() {
     if (ENABLE_WEBUI) xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, WEBUI_TASK_PRIORITY, nullptr);
     if (ENABLE_IO_SHIELD) xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, IO_SHIELD_TASK_PRIORITY, nullptr);
 
-    // Temporary for "Tag der offenen Tür"
     xTaskCreate(lineFollowTask, "LineFollowTask", TASK_STACK_DEPTH, &sysctx, 8, nullptr);
+
+    while (true) {
+        gpio_set_level(GPIO_NUM_13, 1);
+        delay(1000);
+        gpio_set_level(GPIO_NUM_13, 0);
+        delay(1000);
+    }
 }
