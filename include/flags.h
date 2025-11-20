@@ -24,6 +24,6 @@ constexpr bool ENABLE_IO_SHIELD = true;
 
 // ENABLE_WEBUI
 //  Use to enable or disable the WebUI task
-constexpr bool ENABLE_WEBUI = false;
+constexpr bool ENABLE_WEBUI = true;
 
 //////////////////////

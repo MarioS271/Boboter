@@ -40,6 +40,7 @@ Motor::Motor(motor_num_t motor_number)
             return;
     }
 
+    ERROR_CHECK(TAG, gpio_reset_pin(direction_pin));
     ERROR_CHECK(TAG, gpio_set_direction(direction_pin, GPIO_MODE_OUTPUT));
 
     ledc_timer_config_t ledc_timer_conf = {};
@@ -95,20 +96,18 @@ void Motor::stop(bool wait) {
 void Motor::setSpeed(uint16_t speed) {
     if (error) return;
 
-    speed = speed > 1023 ? 1023 : speed;
+    if (speed > MAX_MOTOR_SPEED) speed = MAX_MOTOR_SPEED;
     target_speed = speed;
 }
 
 void Motor::setDirection(motor_direction_t direction) {
     if (error) return;
-    
+
     WARN_CHECK(TAG, gpio_set_level(direction_pin, getActualDirection(direction) == M_FORWARD ? 1 : 0));
     current_direction = direction;
 }
 
 motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) const {
-    if (inverse_direction) {
-        return apparent_direction == M_FORWARD ? M_BACKWARD : M_FORWARD;
-    }
+    if (inverse_direction) return apparent_direction == M_FORWARD ? M_BACKWARD : M_FORWARD;
     return apparent_direction;
 }

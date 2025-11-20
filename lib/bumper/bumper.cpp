@@ -31,6 +31,5 @@ Bumper::Bumper(bumper_num_t bumper_number)
 
 bool Bumper::isHit() const {
     bool state = !gpio_get_level(bumper_pin);
-    if (state) LOGI(TAG, "Bumper hit while calling isHit() of %s", bumper_num == BUMPER_LEFT ? "BUMPER_LEFT" : "BUMPER_RIGHT");
     return state;
 }

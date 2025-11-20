@@ -53,6 +53,8 @@ extern "C" void app_main() {
     LOGI(TAG, " === BOBOTER is starting ===");
     LOGI(TAG, "Hello, World!");
 
+    esp_log_level_set("gpio", ESP_LOG_NONE);
+
     init_adc();
 
     init_i2c();
@@ -102,6 +104,4 @@ extern "C" void app_main() {
     xTaskCreate(ledTask, "LedTask", TASK_STACK_DEPTH, &sysctx, LED_TASK_PRIORITY, nullptr);
     if (ENABLE_WEBUI) xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, WEBUI_TASK_PRIORITY, nullptr);
     if (ENABLE_IO_SHIELD) xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, IO_SHIELD_TASK_PRIORITY, nullptr);
-
-    xTaskCreate(lineFollowTask, "LineFollowTask", TASK_STACK_DEPTH, &sysctx, 8, nullptr);
 }
