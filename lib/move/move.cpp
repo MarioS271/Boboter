@@ -23,7 +23,7 @@ Move::Move(Motor& leftMotor,
   bumperRight(rightBumper),
   usonic(ultrasonic)
 {
-    LOGI(TAG, "Move subsystem initialized using external references.");
+    LOGI(TAG, "Initialized Move");
 }
 
 void stopMotors(Motor &left, Motor &right) {

@@ -14,7 +14,7 @@ Leds::Leds() {
 
     allOff();
 
-    LOGI(TAG, "LEDs initialized on MOSI: %d, CLK: %d", MOSI_PIN, CLK_PIN);
+    LOGI(TAG, "Initialized LEDs");
 }
 
 void Leds::setColor(led_pos_t led_pos, rgb_color_t color) {

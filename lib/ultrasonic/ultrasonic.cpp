@@ -12,10 +12,13 @@
 #include "error.h"
 
 Ultrasonic::Ultrasonic() {
+    ERROR_CHECK(TAG, gpio_reset_pin(TRIGGER_PIN));
     ERROR_CHECK(TAG, gpio_set_direction(TRIGGER_PIN, GPIO_MODE_OUTPUT));
+
+    ERROR_CHECK(TAG, gpio_reset_pin(ECHO_PIN));
     ERROR_CHECK(TAG, gpio_set_direction(ECHO_PIN, GPIO_MODE_INPUT));
 
-    LOGI(TAG, "Ultrasonic initialized");
+    LOGI(TAG, "Initialized Ultrasonic");
 }
 
 float Ultrasonic::measureCm() {
