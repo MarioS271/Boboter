@@ -7,7 +7,6 @@
 
 #include "logger.h"
 #include "error.h"
-#include "rom/ets_sys.h"
 
 Linefollower::Linefollower() {
     ERROR_CHECK(TAG, gpio_reset_pin(LF_RIGHT_LEFT_PIN));
@@ -26,13 +25,12 @@ Linefollower::Linefollower() {
 }
 
 lf_result_t Linefollower::get(lf_module_t module) {
-    WARN_CHECK(TAG, gpio_set_level(LF_RIGHT_LEFT_PIN, static_cast<uint32_t>(module))); 
-    ets_delay_us(500);
-    
+    WARN_CHECK(TAG, gpio_set_level(LF_RIGHT_LEFT_PIN, static_cast<uint32_t>(module)));
+
     int reading;
     ERROR_CHECK(TAG, adc_oneshot_read(adc_unit, ADC_CHANNEL, &reading));
 
-    LOGI(TAG, "adc reading (%s): %d",
+    LOGI(TAG, "adc reading of %s: %d",
         module == LF_LEFT ? "LF_LEFT" : "LF_RIGHT", reading);
 
     lf_result_t result;
