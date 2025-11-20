@@ -5,8 +5,8 @@
 #pragma once
 
 #include <cstdint>
-#include "driver/i2c.h"
-#include "freertos/FreeRTOS.h"
+#include <driver/i2c.h>
+#include <freertos/FreeRTOS.h>
 
 class Gyro {
 private:

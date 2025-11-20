@@ -19,13 +19,13 @@ private:
     static constexpr float PULSES_PER_REV = 20.0f;   // Encoder-Pulse pro Radrotation
     static constexpr float MIN_ALLOWED_OBSTACLE_DISTANCE_CM = 7.0f;   // Kleine zugelassene Distanz zu Ultraschallsensor
 
-    Motor& motorLeft;
-    Motor& motorRight;
-    Encoder& encoderLeft;
-    Encoder& encoderRight;
-    Bumper& bumperLeft;
-    Bumper& bumperRight;
-    Ultrasonic& usonic;
+    Motor &motorLeft;
+    Motor &motorRight;
+    Encoder &encoderLeft;
+    Encoder &encoderRight;
+    Bumper &bumperLeft;
+    Bumper &bumperRight;
+    Ultrasonic &usonic;
 
     void drive(int32_t distance_cm, uint16_t baseSpeed, bool forward);
 

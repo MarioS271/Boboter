@@ -9,8 +9,10 @@
 #include "error.h"
 
 Linefollower::Linefollower() {
+    ERROR_CHECK(TAG, gpio_reset_pin(LINEFOLLOWER_PIN));
     ERROR_CHECK(TAG, gpio_set_direction(LF_RIGHT_LEFT_PIN, GPIO_MODE_OUTPUT));
 
+    ERROR_CHECK(TAG, gpio_reset_pin(LINEFOLLOWER_PIN));
     ERROR_CHECK(TAG, gpio_set_direction(LINEFOLLOWER_PIN, GPIO_MODE_DISABLE));
     ERROR_CHECK(TAG, gpio_set_pull_mode(LINEFOLLOWER_PIN, GPIO_FLOATING));
 

@@ -6,9 +6,9 @@
 
 #include "motors_types.h"
 
-#include "driver/gpio.h"
-#include "driver/ledc.h"
-#include "freertos/FreeRTOS.h"
+#include <freertos/FreeRTOS.h>
+#include <driver/gpio.h>
+#include <driver/ledc.h>
 
 class Motor {
 private:

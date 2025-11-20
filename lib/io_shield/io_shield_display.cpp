@@ -5,10 +5,10 @@
 #include "io_shield.h"
 
 #include <cstring>
+#include <esp_lcd_panel_io.h>
+#include <esp_lcd_panel_ops.h>
 #include "logger.h"
 #include "error.h"
-#include "esp_lcd_panel_io.h"
-#include "esp_lcd_panel_ops.h"
 
 void IOShield::displayClear() {
     memset(displayBuffer, 0, sizeof(displayBuffer));

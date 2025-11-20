@@ -7,12 +7,12 @@
 #include "io_shield.h"
 
 #include <cstring>
-#include "logger.h"
-#include "error.h"
+#include <esp_lcd_panel_io.h>
+#include <esp_lcd_panel_ops.h>
 #include "delay.h"
 #include "i2c_utils.h"
-#include "esp_lcd_panel_io.h"
-#include "esp_lcd_panel_ops.h"
+#include "logger.h"
+#include "error.h"
 
 IOShield::IOShield() {
     esp_lcd_panel_io_i2c_config_t display_io_conf = {
@@ -37,6 +37,7 @@ IOShield::IOShield() {
     WARN_CHECK(TAG, esp_lcd_panel_disp_on_off(panel, true));
     WARN_CHECK(TAG, esp_lcd_panel_mirror(panel, true, true));
 
+    WARN_CHECK(TAG, gpio_reset_pin(BUTTON_PIN));
     WARN_CHECK(TAG, gpio_set_direction(BUTTON_PIN, GPIO_MODE_INPUT));
 
     LOGI(TAG, "Initialized IOShield");

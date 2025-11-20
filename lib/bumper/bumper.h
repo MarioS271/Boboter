@@ -5,7 +5,8 @@
 #pragma once
 
 #include "bumper_types.h"
-#include "driver/gpio.h"
+
+#include <driver/gpio.h>
 
 class Bumper {
 private:

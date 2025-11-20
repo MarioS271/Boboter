@@ -4,14 +4,13 @@
 
 #pragma once
 
-#include "esp_random.h"
+#include <esp_random.h>
 #include "delay.h"
 #include "system_context.h"
 #include "flex_struct.h"
-
-#include "leds.h"
 #include "rgb_color.h"
 #include "predef_colors.h"
+#include "leds.h"
 
 void ledTask(void* params) {
     using namespace COLORS;

@@ -4,12 +4,12 @@
 
 #include "ultrasonic.h"
 
+#include <freertos/FreeRTOS.h>
+#include <rom/ets_sys.h>
+#include <esp_timer.h>
 #include "delay.h"
 #include "logger.h"
 #include "error.h"
-#include "freertos/FreeRTOS.h"
-#include "rom/ets_sys.h"
-#include "esp_timer.h"
 
 Ultrasonic::Ultrasonic() {
     ERROR_CHECK(TAG, gpio_set_direction(TRIGGER_PIN, GPIO_MODE_OUTPUT));

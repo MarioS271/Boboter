@@ -6,8 +6,8 @@
 
 #include "leds_types.h"
 
+#include <driver/gpio.h>
 #include "rgb_color.h"
-#include "driver/gpio.h"
 
 class Leds {
 private:

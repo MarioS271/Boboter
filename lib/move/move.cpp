@@ -5,8 +5,8 @@
 #include "move.h"
 
 #include <cmath>
-#include "logger.h"
 #include "delay.h"
+#include "logger.h"
 
 Move::Move(Motor& leftMotor,
            Motor& rightMotor,

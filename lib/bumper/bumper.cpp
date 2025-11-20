@@ -3,7 +3,9 @@
 // (C) MarioS271 2025
 
 #include "bumper.h"
+
 #include "logger.h"
+#include "error.h"
 
 Bumper::Bumper(bumper_num_t bumper_number)
 : bumper_num(bumper_number),
@@ -26,7 +28,8 @@ Bumper::Bumper(bumper_num_t bumper_number)
             return;
     }
 
-    gpio_set_direction(bumper_pin, GPIO_MODE_INPUT);
+    ERROR_CHECK(TAG, gpio_reset_pin(bumper_pin));
+    ERROR_CHECK(TAG, gpio_set_direction(bumper_pin, GPIO_MODE_INPUT));
 }
 
 bool Bumper::isHit() const {

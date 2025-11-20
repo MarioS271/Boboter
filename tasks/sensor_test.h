@@ -4,14 +4,12 @@
 
 #pragma once
 
-#include "logger.h"
-#include "delay.h"
 #include "system_context.h"
-
-#include "leds.h"
 #include "rgb_color.h"
 #include "predef_colors.h"
-
+#include "delay.h"
+#include "logger.h"
+#include "leds.h"
 #include "motors.h"
 #include "encoder.h"
 #include "ultrasonic.h"

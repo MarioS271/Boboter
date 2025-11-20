@@ -6,7 +6,7 @@
 
 #include <string>
 #include <unordered_map>
-#include "freertos/FreeRTOS.h"
+#include <freertos/FreeRTOS.h>
 #include "logger.h"
 
 class FlexStruct {

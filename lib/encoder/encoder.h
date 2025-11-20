@@ -6,8 +6,8 @@
 
 #include "encoder_types.h"
 
-#include "driver/gpio.h"
-#include "esp_attr.h"
+#include <driver/gpio.h>
+#include <esp_attr.h>
 
 class Encoder {
     friend void IRAM_ATTR encoder_isr_handler(void* arg);

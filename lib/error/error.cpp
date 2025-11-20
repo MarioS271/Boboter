@@ -3,7 +3,6 @@
 // (C) MarioS271 2025
 
 #include "error.h"
-#include "esp_system.h"
 
 void warn_callback(const char* tag,
                    esp_err_t err,

@@ -6,12 +6,10 @@
 
 #include "system_context.h"
 #include "flex_struct.h"
-
 #include "delay.h"
 #include "logger.h"
-
-#include "linefollower.h"
 #include "motors.h"
+#include "linefollower.h"
 
 namespace LINEFOLLOW_TASK {
     constexpr const char* TAG = "task:LINEFOLLOWER";

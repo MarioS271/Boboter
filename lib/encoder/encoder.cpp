@@ -4,8 +4,9 @@
 
 #include "encoder.h"
 
+#include <freertos/FreeRTOS.h>
 #include "logger.h"
-#include "freertos/FreeRTOS.h"
+#include "error.h"
 
 void IRAM_ATTR encoder_isr_handler(void* arg) {
     Encoder* enc = reinterpret_cast<Encoder*>(arg);
@@ -34,13 +35,14 @@ Encoder::Encoder(encoder_num_t encoder_number)
             return;
     }
 
-    gpio_set_direction(encoder_pin, GPIO_MODE_INPUT);
-    gpio_set_intr_type(encoder_pin, GPIO_INTR_POSEDGE);
+    ERROR_CHECK(TAG, gpio_reset_pin(encoder_pin));
+    ERROR_CHECK(TAG, gpio_set_direction(encoder_pin, GPIO_MODE_INPUT));
+    ERROR_CHECK(TAG, gpio_set_intr_type(encoder_pin, GPIO_INTR_POSEDGE));
 
     static bool isr_service_installed = false;
     if (!isr_service_installed) {
-        gpio_install_isr_service(0);
+        ERROR_CHECK(TAG, gpio_install_isr_service(0));
         isr_service_installed = true;
     }
-    gpio_isr_handler_add(encoder_pin, encoder_isr_handler, (void*) this);
+    ERROR_CHECK(TAG, gpio_isr_handler_add(encoder_pin, encoder_isr_handler, (void*) this));
 }

@@ -5,13 +5,13 @@
 #include "web_ui.h"
 
 #include <cstring>
-#include "esp_http_server.h"
+#include <esp_http_server.h>
+#include "system_context.h"
 #include "flex_struct.h"
 #include "rgb_color.h"
-#include "battery.h"
 #include "logger.h"
+#include "battery.h"
 #include "leds.h"
-#include "system_context.h"
 
 esp_err_t WebUI::registerRoutes() {
     /**

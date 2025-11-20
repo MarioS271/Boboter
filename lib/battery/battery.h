@@ -5,14 +5,16 @@
 #pragma once
 
 #include <cstdint>
+#include <driver/gpio.h>
+#include <esp_adc/adc_oneshot.h>
+#include <esp_adc/adc_cali.h>
 #include "adc_utils.h"
-#include "esp_adc/adc_oneshot.h"
-#include "esp_adc/adc_cali.h"
 
 class BatteryManager {
 private:
     static constexpr const char* TAG = "BATTERY_MANAGER";
     
+    static constexpr gpio_num_t ADC_GPIO = GPIO_NUM_39;
     static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_3;
     static constexpr uint8_t NUM_SAMPLES = 16;
 

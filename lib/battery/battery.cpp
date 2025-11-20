@@ -4,12 +4,14 @@
 
 #include "battery.h"
 
+#include <rom/ets_sys.h>
 #include "logger.h"
 #include "error.h"
 #include "map.h"
-#include "rom/ets_sys.h"
 
 BatteryManager::BatteryManager() {
+    ERROR_CHECK(TAG, gpio_reset_pin(ADC_GPIO));
+
     adc_unit = ADC_CONFIG::adc_handle;
     cal_handle = ADC_CONFIG::cal_handle;
 

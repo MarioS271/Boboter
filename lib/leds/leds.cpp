@@ -4,9 +4,9 @@
 
 #include "leds.h"
 
+#include "predef_colors.h"
 #include "logger.h"
 #include "error.h"
-#include "predef_colors.h"
 
 Leds::Leds() {
     ERROR_CHECK(TAG, gpio_set_direction(MOSI_PIN, GPIO_MODE_OUTPUT));
