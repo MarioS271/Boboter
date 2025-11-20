@@ -62,6 +62,7 @@ void ledTask(void* params) {
     uint8_t step_police = 0;
     uint8_t step_warning = 0;
     uint8_t step_battery = 0;
+    uint8_t step_strobe = 0; // For non-blocking strobe
 
     // Last update timestamps (µs)
     uint64_t last_random = 0;
@@ -69,11 +70,12 @@ void ledTask(void* params) {
     uint64_t last_police = 0;
     uint64_t last_warning = 0;
     uint64_t last_battery = 0;
+    uint64_t last_strobe = 0;
 
     // Intervals
-    const uint64_t INTERVAL_RANDOM   = 300000;   // 300 ms
-    const uint64_t INTERVAL_BREATH   = 10000;    // 10 ms
-    const uint64_t INTERVAL_POLICE   = 200000;   // 200 ms
+    const uint64_t INTERVAL_RANDOM   = 300000;    // 300 ms
+    const uint64_t INTERVAL_BREATH   = 10000;     // 10 ms
+    const uint64_t INTERVAL_POLICE   = 200000;    // 200 ms
     const uint64_t INTERVAL_WARNING_ON  = 500000; // 500 ms ON
     const uint64_t INTERVAL_WARNING_OFF = 500000; // 500 ms OFF
     const uint64_t INTERVAL_BATTERY = 1000000;    // 1 s battery update
@@ -83,13 +85,22 @@ void ledTask(void* params) {
     const uint8_t P_MEDIUM = 50;
     const uint8_t P_LOW    = 20;
 
+    // Strobe constants
+    const uint64_t STROBE_PULSE = 40000; // 40 ms
+    const uint64_t GROUP_PAUSE = 400000; // 400 ms
+
     while (true) {
         uint8_t mode = ioShieldFlex.get<int>("leds_mode");
         uint64_t now = esp_timer_get_time();
 
         switch (mode) {
-            // RANDOM BLINK
+            // 0: LEDs OFF
             case 0:
+                leds.setAll(OFF);
+                break;
+
+            // 1: RANDOM BLINK
+            case 1:
                 if (now - last_random >= INTERVAL_RANDOM) {
                     last_random = now;
                     leds.setColor(LED_FRONT_LEFT, colorArray[esp_random() % 8]);
@@ -99,8 +110,8 @@ void ledTask(void* params) {
                 }
                 break;
 
-            // BREATHING
-            case 1:
+            // 2: BREATHING
+            case 2:
                 if (now - last_breath >= INTERVAL_BREATH) {
                     last_breath = now;
                     uint8_t fade = (step_breath < 128) ? step_breath * 2 : (255 - (step_breath - 128) * 2);
@@ -110,8 +121,8 @@ void ledTask(void* params) {
                 }
                 break;
 
-            // POLICE FLASH
-            case 2:
+            // 3: POLICE FLASH
+            case 3:
                 if (now - last_police >= INTERVAL_POLICE) {
                     last_police = now;
                     bool leftBlue = (step_police % 2 == 0);
@@ -125,8 +136,8 @@ void ledTask(void* params) {
                 }
                 break;
 
-            // WARNING FLASHER
-            case 3:
+            // 4: WARNING FLASHER
+            case 4:
                 {
                     bool warning_on = (step_warning % 2 == 0);
                     if ((warning_on && now - last_warning >= INTERVAL_WARNING_ON) ||
@@ -138,8 +149,8 @@ void ledTask(void* params) {
                 }
                 break;
 
-            // BATTERY STATUS
-            case 4:
+            // 5: BATTERY STATUS
+            case 5:
                 if (now - last_battery >= INTERVAL_BATTERY) {
                     last_battery = now;
                     uint8_t percentage = batteryManager.getPercentage();
@@ -167,12 +178,37 @@ void ledTask(void* params) {
                 }
                 break;
 
-            // CAR LIGHTS
-            case 5:
+            // 6: CAR LIGHTS
+            case 6:
                 leds.setColor(LED_FRONT_LEFT, WHITE);
                 leds.setColor(LED_FRONT_RIGHT, WHITE);
                 leds.setColor(LED_BACK_LEFT, RED);
                 leds.setColor(LED_BACK_RIGHT, RED);
+                break;
+
+            // 7: NON-BLOCKING FRONT/BACK STROBE
+            case 7:
+                if (now - last_strobe >= STROBE_PULSE) {
+                    last_strobe = now;
+                    bool isFrontPhase = (step_strobe < 8);
+                    bool ledOn = (step_strobe % 2 == 0);
+
+                    // Determine which LEDs to flash
+                    if (isFrontPhase) {
+                        leds.setColor(LED_FRONT_LEFT, ledOn ? BLUE : OFF);
+                        leds.setColor(LED_FRONT_RIGHT, ledOn ? BLUE : OFF);
+                    } else {
+                        leds.setColor(LED_BACK_LEFT, ledOn ? BLUE : OFF);
+                        leds.setColor(LED_BACK_RIGHT, ledOn ? BLUE : OFF);
+                    }
+
+                    // Step counter update
+                    step_strobe++;
+                    if (step_strobe >= 16) { // 8 steps front + 8 steps back
+                        step_strobe = 0;
+                        last_strobe += GROUP_PAUSE; // Add group pause before restarting
+                    }
+                }
                 break;
         }
 

@@ -78,7 +78,7 @@ void ioShieldTask(void* params) {
                 }
                 else {
                     leds_mode++;
-                    if (leds_mode > 5) leds_mode = 0;
+                    if (leds_mode > 7) leds_mode = 0;
                     ownFlex.set<int>("leds_mode", leds_mode);
 
                     snprintf(buffer, sizeof(buffer), "LEDS: %d", leds_mode);
