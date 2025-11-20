@@ -12,6 +12,8 @@ Linefollower::Linefollower() {
     ERROR_CHECK(TAG, gpio_reset_pin(LF_RIGHT_LEFT_PIN));
     ERROR_CHECK(TAG, gpio_set_direction(LF_RIGHT_LEFT_PIN, GPIO_MODE_OUTPUT));
 
+    ERROR_CHECK(TAG, gpio_reset_pin(LINEFOLLOWER_PIN));
+
     adc_unit = ADC_CONFIG::adc_handle;
     cal_handle = ADC_CONFIG::cal_handle;
 
@@ -29,9 +31,6 @@ lf_result_t Linefollower::get(lf_module_t module) {
 
     int reading;
     ERROR_CHECK(TAG, adc_oneshot_read(adc_unit, ADC_CHANNEL, &reading));
-
-    LOGI(TAG, "adc reading of %s: %d",
-        module == LF_LEFT ? "LF_LEFT" : "LF_RIGHT", reading);
 
     lf_result_t result;
     if (reading < 2300) result = LF_WHITE;
