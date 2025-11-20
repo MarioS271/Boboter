@@ -20,6 +20,7 @@ void lineFollowTask(void* params) {
     
     SystemContext* ctx = static_cast<SystemContext*>(params);
     Linefollower &linefollower = ctx->linefollower;
+    Ultrasonic &usonic = ctx->usonic;
     Motor &motorL = ctx->motorL;
     Motor &motorR = ctx->motorR;
 

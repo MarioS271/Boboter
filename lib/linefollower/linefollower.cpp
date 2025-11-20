@@ -9,12 +9,8 @@
 #include "error.h"
 
 Linefollower::Linefollower() {
-    ERROR_CHECK(TAG, gpio_reset_pin(LINEFOLLOWER_PIN));
+    ERROR_CHECK(TAG, gpio_reset_pin(LF_RIGHT_LEFT_PIN));
     ERROR_CHECK(TAG, gpio_set_direction(LF_RIGHT_LEFT_PIN, GPIO_MODE_OUTPUT));
-
-    ERROR_CHECK(TAG, gpio_reset_pin(LINEFOLLOWER_PIN));
-    ERROR_CHECK(TAG, gpio_set_direction(LINEFOLLOWER_PIN, GPIO_MODE_DISABLE));
-    ERROR_CHECK(TAG, gpio_set_pull_mode(LINEFOLLOWER_PIN, GPIO_FLOATING));
 
     adc_unit = ADC_CONFIG::adc_handle;
     cal_handle = ADC_CONFIG::cal_handle;
@@ -37,6 +33,8 @@ lf_result_t Linefollower::get(lf_module_t module) {
     lf_result_t result;
     if (reading < 2300) result = LF_WHITE;
     else result = LF_BLACK;
+
+    LOGI(TAG, "%s: %d (%s)", module == LF_LEFT ? "LF_LEFT" : "LF_RIGHT", reading, result == LF_WHITE ? "LF_WHITE" : "LF_BLACK");
 
     return result;
 }

@@ -16,8 +16,6 @@ private:
     static constexpr const char* TAG = "LINEFOLLOWER";
 
     static constexpr gpio_num_t LF_RIGHT_LEFT_PIN = GPIO_NUM_12;
-    static constexpr gpio_num_t LINEFOLLOWER_PIN = GPIO_NUM_36;
-
     static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_0;
 
     adc_oneshot_unit_handle_t adc_unit = nullptr;
