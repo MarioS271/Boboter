@@ -14,10 +14,10 @@ class Move {
 private:
     static constexpr const char* TAG = "MOVE";
 
-    static constexpr float WHEEL_DIAMETER_CM = 6.45f;   // Durchmesser des Rades
-    static constexpr float WHEEL_BASE_CM = 12.65f;   // Distanz zwischen den Mittelpunkten beider Räder
-    static constexpr float PULSES_PER_REV = 20.0f;   // Encoder-Pulse pro Radrotation
-    static constexpr float MIN_ALLOWED_OBSTACLE_DISTANCE_CM = 7.0f;   // Kleine zugelassene Distanz zu Ultraschallsensor
+    static constexpr float WHEEL_DIAMETER_CM = 6.45f;                   // Durchmesser des Rades
+    static constexpr float WHEEL_BASE_CM = 12.65f;                      // Distanz zwischen den Mittelpunkten beider Räder
+    static constexpr float PULSES_PER_REV = 20.0f;                      // Encoder-Pulse pro Radrotation
+    static constexpr float MIN_ALLOWED_OBSTACLE_DISTANCE_CM = 7.0f;     // Kleine zugelassene Distanz zu Ultraschallsensor
 
     Motor &motorLeft;
     Motor &motorRight;

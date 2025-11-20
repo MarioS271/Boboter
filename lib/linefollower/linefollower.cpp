@@ -34,7 +34,5 @@ lf_result_t Linefollower::get(lf_module_t module) {
     if (reading < 2300) result = LF_WHITE;
     else result = LF_BLACK;
 
-    LOGI(TAG, "%s: %d (%s)", module == LF_LEFT ? "LF_LEFT" : "LF_RIGHT", reading, result == LF_WHITE ? "LF_WHITE" : "LF_BLACK");
-
     return result;
 }
