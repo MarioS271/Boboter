@@ -90,8 +90,6 @@ void ledTask(void* params) {
         switch (mode) {
             // RANDOM BLINK
             case 0:
-                if (mode != 0) break;
-                
                 if (now - last_random >= INTERVAL_RANDOM) {
                     last_random = now;
                     leds.setColor(LED_FRONT_LEFT, colorArray[esp_random() % 8]);
@@ -103,8 +101,6 @@ void ledTask(void* params) {
 
             // BREATHING
             case 1:
-                if (mode != 2) break;
-
                 if (now - last_breath >= INTERVAL_BREATH) {
                     last_breath = now;
                     uint8_t fade = (step_breath < 128) ? step_breath * 2 : (255 - (step_breath - 128) * 2);
@@ -116,8 +112,6 @@ void ledTask(void* params) {
 
             // POLICE FLASH
             case 2:
-                if (mode != 2) break;
-
                 if (now - last_police >= INTERVAL_POLICE) {
                     last_police = now;
                     bool leftBlue = (step_police % 2 == 0);
@@ -134,8 +128,6 @@ void ledTask(void* params) {
             // WARNING FLASHER
             case 3:
                 {
-                    if (mode != 3) break;
-
                     bool warning_on = (step_warning % 2 == 0);
                     if ((warning_on && now - last_warning >= INTERVAL_WARNING_ON) ||
                         (!warning_on && now - last_warning >= INTERVAL_WARNING_OFF)) {
@@ -148,8 +140,6 @@ void ledTask(void* params) {
 
             // BATTERY STATUS
             case 4:
-                if (mode != 4) break;
-
                 if (now - last_battery >= INTERVAL_BATTERY) {
                     last_battery = now;
                     uint8_t percentage = batteryManager.getPercentage();
@@ -179,8 +169,6 @@ void ledTask(void* params) {
 
             // CAR LIGHTS
             case 5:
-                if (mode != 5) break;
-
                 leds.setColor(LED_FRONT_LEFT, WHITE);
                 leds.setColor(LED_FRONT_RIGHT, WHITE);
                 leds.setColor(LED_BACK_LEFT, RED);
