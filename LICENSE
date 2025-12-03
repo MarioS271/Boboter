@@ -11,6 +11,9 @@ compile the Software, subject to the following conditions:
    not be redistributed.
  - The above copyright notice and this permission notice shall be
    included in all copies or substantial portions of the Software.
+ - All people listed in the Doxygen @authors
+   section in any file are hereby granted the same permissions
+   as the copyright holder(s) of this project in that specific file.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
