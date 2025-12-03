@@ -42,7 +42,7 @@ void lineFollowTask(void* params) {
         lf_result_t left = linefollower.get(LF_LEFT);
         lf_result_t right = linefollower.get(LF_RIGHT);
         
-        int16_t error = 0; 
+        int16_t error = 0;
         if (left == LF_BLACK && right == LF_WHITE) {
             error = -1; 
             if (LOGGING_ENABLE) LOGI(TAG, "Line left → Corrigiere nach links");
@@ -56,14 +56,19 @@ void lineFollowTask(void* params) {
             if (LOGGING_ENABLE) LOGI(TAG, "Line centered → Moving forward");
         }
         else if (left == LF_WHITE && right == LF_WHITE) {
-            if (LOGGING_ENABLE) LOGW(TAG, "Line lost → Stopping motors");
-            
-            motorL.stop(false);
-            motorR.stop();
-            delay(100); 
-            continue;
+            if (LOGGING_ENABLE) LOGW(TAG, "Line lost → Rotating left to find line");
+
+            // Rotate left until the line is found
+            motorL.setSpeed(BASE_SPEED / 2);       // Left motor slower
+            motorR.setSpeed(BASE_SPEED);           // Right motor faster
+            motorL.setDirection(M_FORWARD);        // Left motor backward
+            motorR.setDirection(M_BACKWARD);       // Right motor forward
+
+            delay(50);  // Small delay to allow rotation
+            continue;   // Recheck sensors
         }
         
+        // Normal line following logic
         int16_t correction = error * Kp;
 
         int32_t tempLeftSpeed = BASE_SPEED + correction;
@@ -74,9 +79,11 @@ void lineFollowTask(void* params) {
     
         if (LOGGING_ENABLE) LOGI(TAG, "Error: %d, Correction: %d, Speed L:%u R:%u", error, correction, (uint16_t)tempLeftSpeed, (uint16_t)tempRightSpeed);
         
+        motorL.setDirection(M_FORWARD);
+        motorR.setDirection(M_FORWARD);
         motorL.setSpeed((uint16_t) tempLeftSpeed);
         motorR.setSpeed((uint16_t) tempRightSpeed);
 
-        delay(40); 
+        delay(40);
     }
 }

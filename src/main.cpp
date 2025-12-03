@@ -32,6 +32,7 @@
 #include "bumper.h"
 #include "ultrasonic.h"
 #include "gyro.h"
+#include "colorsensor.h"
 #include "linefollower.h"
 #include "move.h"
 #include "io_shield.h"
@@ -77,6 +78,7 @@ extern "C" void app_main() {
     static Linefollower linefollower = Linefollower();
     static Move move = Move(motorL, motorR, encoderL, encoderR, bumperL, bumperR, usonic);
     static IOShield ioShield = IOShield();
+    static Colorsensor colorsensor = Colorsensor();
 
     LOGI(TAG, "Created all Objects successfully");
 
@@ -85,7 +87,8 @@ extern "C" void app_main() {
         leds, motorL, motorR,
         encoderL, encoderR, bumperL,
         bumperR, usonic, gyro,
-        linefollower, move, ioShield,
+        colorsensor, linefollower, move,
+        ioShield,
 
         FlexStruct(),  // LedsTask
         FlexStruct(),  // IOShieldTask
@@ -106,4 +109,14 @@ extern "C" void app_main() {
     if (ENABLE_IO_SHIELD) xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, IO_SHIELD_TASK_PRIORITY, nullptr);
 
     xTaskCreate(lineFollowTask, "LineFollowTask", TASK_STACK_DEPTH, &sysctx, 8, nullptr);
+
+    // rgb_color_t color = { 0, 0, 0 };
+    // colorsensor.enable();
+
+    // while (true) {
+    //     color = colorsensor.readRGB();
+    //     LOGI(TAG, "r: %d, g: %d, b: %d", color.r, color.g, color.b);
+
+    //     delay(500);
+    // }
 }
