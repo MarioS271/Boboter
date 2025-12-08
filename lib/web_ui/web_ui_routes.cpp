@@ -1,19 +1,22 @@
-// WEBUI_ROUTES_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file web_ui_routes.cpp
+ * @authors MarioS271
+ */
 
-#include "web_ui.h"
+#include "web_ui.hpp"
 
 #include <cstring>
 #include <esp_http_server.h>
-#include "system_context.h"
-#include "flex_struct.h"
-#include "rgb_color.h"
-#include "logger.h"
-#include "battery.h"
-#include "leds.h"
+#include "system_context.hpp"
+#include "flex_struct.hpp"
+#include "rgb_color.hpp"
+#include "logger.hpp"
+#include "error.hpp"
+#include "battery.hpp"
+#include "leds.hpp"
 
-esp_err_t WebUI::registerRoutes() {
+esp_err_t WebUI::registerRoutes()
+{
     /**
      * Root URI
      * Serves the main HTML page
@@ -27,23 +30,17 @@ esp_err_t WebUI::registerRoutes() {
         },
         .user_ctx = nullptr
     };
-    ESP_ERROR_CHECK(httpd_register_uri_handler(server, &root_uri));
+    ERROR_CHECK(TAG, httpd_register_uri_handler(server, &root_uri));
 
-    if (registerGetRoutes() != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to register GET routes");
-        return ESP_FAIL;
-    }
-
-    if (registerPostRoutes() != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to register POST routes");
-        return ESP_FAIL;
-    }
+    ERROR_CHECK(TAG, registerGetRoutes());
+    ERROR_CHECK(TAG, registerPostRoutes());
 
     return ESP_OK;
 }
 
 
-esp_err_t WebUI::registerGetRoutes() {
+esp_err_t WebUI::registerGetRoutes()
+{
     /**
      * Get System Status URI
      * Retrieves system status information
@@ -74,7 +71,7 @@ esp_err_t WebUI::registerGetRoutes() {
         },
         .user_ctx = ctx
     };
-    ESP_ERROR_CHECK(httpd_register_uri_handler(server, &get_status_uri));
+    ERROR_CHECK(TAG, httpd_register_uri_handler(server, &get_status_uri));
 
     /**
      * LED Get URI
@@ -93,15 +90,15 @@ esp_err_t WebUI::registerGetRoutes() {
             const char* led_id = uri + strlen("/get/leds/");
 
             led_pos_t led_pos;
-            if (strcmp(led_id, "ul") == 0) {
+            if (strcmp(led_id, "ul") == 0)
                 led_pos = LED_FRONT_LEFT;
-            } else if (strcmp(led_id, "ur") == 0) {
+            else if (strcmp(led_id, "ur") == 0)
                 led_pos = LED_FRONT_RIGHT;
-            } else if (strcmp(led_id, "ll") == 0) {
+            else if (strcmp(led_id, "ll") == 0)
                 led_pos = LED_BACK_LEFT;
-            } else if (strcmp(led_id, "lr") == 0) {
+            else if (strcmp(led_id, "lr") == 0)
                 led_pos = LED_BACK_RIGHT;
-            } else {
+            else{
                 httpd_resp_send_404(req);
                 return ESP_OK;
             }
@@ -117,13 +114,14 @@ esp_err_t WebUI::registerGetRoutes() {
         },
         .user_ctx = &ctx->leds
     };
-    ESP_ERROR_CHECK(httpd_register_uri_handler(server, &led_get_uri));
+    ERROR_CHECK(TAG, httpd_register_uri_handler(server, &led_get_uri));
 
     return ESP_OK;
 }
 
 
-esp_err_t WebUI::registerPostRoutes() {
+esp_err_t WebUI::registerPostRoutes()
+{
     /**
      * LED Set URI
      * Sets LED state
@@ -148,7 +146,7 @@ esp_err_t WebUI::registerPostRoutes() {
         },
         .user_ctx = &ctx->ledsFlex
     };
-    ESP_ERROR_CHECK(httpd_register_uri_handler(server, &led_set_uri));
+    ERROR_CHECK(TAG, httpd_register_uri_handler(server, &led_set_uri));
 
     return ESP_OK;
 }

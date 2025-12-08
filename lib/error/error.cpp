@@ -1,8 +1,9 @@
-// ERROR_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file error.cpp
+ * @authors MarioS271
+ */
 
-#include "error.h"
+#include "error.hpp"
 
 void warn_callback(const char* tag,
                    esp_err_t err,

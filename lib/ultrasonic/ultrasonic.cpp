@@ -1,17 +1,19 @@
-// ULTRASONIC_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file ultrasonic.cpp
+ * @authors MarioS271
+ */
 
-#include "ultrasonic.h"
+#include "ultrasonic.hpp"
 
 #include <freertos/FreeRTOS.h>
 #include <rom/ets_sys.h>
 #include <esp_timer.h>
-#include "delay.h"
-#include "logger.h"
-#include "error.h"
+#include "delay.hpp"
+#include "logger.hpp"
+#include "error.hpp"
 
-Ultrasonic::Ultrasonic() {
+Ultrasonic::Ultrasonic()
+{
     ERROR_CHECK(TAG, gpio_reset_pin(TRIGGER_PIN));
     ERROR_CHECK(TAG, gpio_set_direction(TRIGGER_PIN, GPIO_MODE_OUTPUT));
 
@@ -21,7 +23,8 @@ Ultrasonic::Ultrasonic() {
     LOGI(TAG, "Initialized Ultrasonic");
 }
 
-float Ultrasonic::measureCm() {
+float Ultrasonic::measureCm()
+{
     gpio_set_level(TRIGGER_PIN, 0);
     delay(2);
     gpio_set_level(TRIGGER_PIN, 1);
@@ -29,13 +32,17 @@ float Ultrasonic::measureCm() {
     gpio_set_level(TRIGGER_PIN, 0);
 
     int64_t start = esp_timer_get_time();
-    while (gpio_get_level(ECHO_PIN) == 0) {
-        if (esp_timer_get_time() - start > 30000) return -1;
+    while (gpio_get_level(ECHO_PIN) == 0)
+    {
+        if (esp_timer_get_time() - start > 30000)
+            return -1;
     }
 
     int64_t echo_start = esp_timer_get_time();
-    while (gpio_get_level(ECHO_PIN) == 1) {
-        if (esp_timer_get_time() - echo_start > 30000) return -1;
+    while (gpio_get_level(ECHO_PIN) == 1)
+    {
+        if (esp_timer_get_time() - echo_start > 30000)
+            return -1;
     }
     int64_t echo_end = esp_timer_get_time();
 

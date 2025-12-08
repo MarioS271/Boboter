@@ -1,14 +1,16 @@
-// ENCODER_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file encoder.cpp
+ * @authors MarioS271
+ */
 
-#include "encoder.h"
+#include "encoder.hpp"
 
 #include <freertos/FreeRTOS.h>
-#include "logger.h"
-#include "error.h"
+#include "logger.hpp"
+#include "error.hpp"
 
-void IRAM_ATTR encoder_isr_handler(void* arg) {
+void IRAM_ATTR encoder_isr_handler(void* arg)
+{
     Encoder* enc = reinterpret_cast<Encoder*>(arg);
     enc->pulse_count += 1;
 }
@@ -18,7 +20,8 @@ Encoder::Encoder(encoder_num_t encoder_number)
   error(false),
   pulse_count(0)
 {
-    switch (encoder_num) {
+    switch (encoder_num)
+    {
         case ENCODER_LEFT:
             LOGI(TAG, "Initialized Encoder ENCODER_LEFT (ID: %d)", encoder_num);
             encoder_pin = ENCODER_LEFT_PIN;
@@ -40,7 +43,8 @@ Encoder::Encoder(encoder_num_t encoder_number)
     ERROR_CHECK(TAG, gpio_set_intr_type(encoder_pin, GPIO_INTR_POSEDGE));
 
     static bool isr_service_installed = false;
-    if (!isr_service_installed) {
+    if (!isr_service_installed)
+    {
         ERROR_CHECK(TAG, gpio_install_isr_service(0));
         isr_service_installed = true;
     }

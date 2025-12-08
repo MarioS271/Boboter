@@ -1,24 +1,31 @@
-// MOTOR_RAMP_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file motor_ramp.cpp
+ * @authors MarioS271
+ */
 
-#include "motors.h"
+#include "motors.hpp"
 
-#include "delay.h"
-#include "error.h"
+#include "delay.hpp"
+#include "error.hpp"
 
-void Motor::rampTask(void* params) {
+void Motor::rampTask(void* params)
+{
     Motor* motor = static_cast<Motor*>(params);
 
-    while (true) {
-        if (motor->current_speed != motor->target_speed) {
+    while (true)
+    {
+        if (motor->current_speed != motor->target_speed)
+        {
             int16_t current = static_cast<int16_t>(motor->current_speed);
             int16_t target = static_cast<int16_t>(motor->target_speed);
 
-            if (current < target) {
+            if (current < target)
+            {
                 current += RAMP_STEP;
                 if (current > target) current = target;
-            } else if (current > target) {
+            }
+            else if (current > target)
+            {
                 current -= RAMP_STEP;
                 if (current < target) current = target;
             }

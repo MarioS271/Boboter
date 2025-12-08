@@ -1,9 +1,13 @@
-// GYRO_CPP
-#include "gyro.h"
+/**
+ * @file gyro.cpp
+ * @authors MarioS271
+ */
+
+#include "gyro.hpp"
 
 #include <cmath>
-#include "delay.h"
-#include "logger.h"
+#include "delay.hpp"
+#include "logger.hpp"
 
 // MPU6050 full-scale gyro = ±250 deg/s → 131 LSB/(°/s)
 constexpr float GYRO_SCALE = 131.0f;
@@ -22,23 +26,27 @@ Gyro::Gyro()
     LOGI(TAG, "Initialized Gyro");
 }
 
-void Gyro::writeRegister(uint8_t reg, uint8_t data) {
+void Gyro::writeRegister(uint8_t reg, uint8_t data)
+{
     uint8_t buf[2] = { reg, data };
     i2c_master_write_to_device(I2C_PORT, I2C_ADDRESS, buf, 2, pdMS_TO_TICKS(100));
 }
 
-void Gyro::readRegisters(uint8_t reg, uint8_t *data, size_t len) {
+void Gyro::readRegisters(uint8_t reg, uint8_t *data, size_t len)
+{
     i2c_master_write_read_device(I2C_PORT, I2C_ADDRESS, &reg, 1, data, len, pdMS_TO_TICKS(100));
 }
 
 // Multi-sample calibration
-void Gyro::calibrate() {
+void Gyro::calibrate()
+{
     calibrating = true;
 
     const int samples = 500;
     float sum_x = 0, sum_y = 0, sum_z = 0;
 
-    for (int i = 0; i < samples; i++) {
+    for (int i = 0; i < samples; i++)
+    {
         uint8_t raw[14];
         readRegisters(0x3B, raw, 14);
 
@@ -67,7 +75,8 @@ void Gyro::calibrate() {
 }
 
 // Update function with complementary filter and yaw bias correction
-void Gyro::update(bool ignore_is_calibrating) {
+void Gyro::update(bool ignore_is_calibrating)
+{
     if (calibrating && !ignore_is_calibrating) return;
 
     uint8_t raw[14];

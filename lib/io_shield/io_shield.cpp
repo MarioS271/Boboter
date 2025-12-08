@@ -1,20 +1,22 @@
-// EXT_DISPLAY_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file io_shield.cpp
+ * @authors MarioS271
+ */
 
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 
-#include "io_shield.h"
+#include "io_shield.hpp"
 
 #include <cstring>
 #include <esp_lcd_panel_io.h>
 #include <esp_lcd_panel_ops.h>
-#include "delay.h"
-#include "i2c_utils.h"
-#include "logger.h"
-#include "error.h"
+#include "delay.hpp"
+#include "i2c_utils.hpp"
+#include "logger.hpp"
+#include "error.hpp"
 
-IOShield::IOShield() {
+IOShield::IOShield()
+{
     esp_lcd_panel_io_i2c_config_t display_io_conf = {
         .dev_addr = DISPLAY_I2C_ADDR,
         .control_phase_bytes = 1,
@@ -22,7 +24,7 @@ IOShield::IOShield() {
         .lcd_cmd_bits = 8,
         .lcd_param_bits = 8
     };
-    WARN_CHECK(TAG, esp_lcd_new_panel_io_i2c(I2C_CONFIG::I2C_PORT, &display_io_conf, &io_handle));
+    WARN_CHECK(TAG, esp_lcd_new_panel_io_i2c(I2C_Config::I2C_PORT, &display_io_conf, &io_handle));
 
     esp_lcd_panel_ssd1306_config_t display_vendor_conf = { .height = DISPLAY_HEIGHT };
     esp_lcd_panel_dev_config_t display_panel_conf = {
@@ -43,13 +45,16 @@ IOShield::IOShield() {
     LOGI(TAG, "Initialized IOShield");
 }
 
-IOShield::~IOShield() {
-    if (panel) {
+IOShield::~IOShield()
+{
+    if (panel)
+    {
         esp_lcd_panel_del(panel);
         panel = nullptr;
     }
 
-    if (io_handle) {
+    if (io_handle)
+    {
         esp_lcd_panel_io_del(io_handle);
         io_handle = nullptr;
     }

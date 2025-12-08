@@ -1,6 +1,7 @@
-// MAIN_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file main.cpp
+ * @authors MarioS271
+ */
 
 // Official Libraries
 #include <cstdio>
@@ -11,43 +12,43 @@
 #include <freertos/FreeRTOS.h>
 
 // Headers
-#include "flags.h"
-#include "constants.h"
+#include "flags.hpp"
+#include "constants.hpp"
 
 // Types
-#include "flex_struct.h"
-#include "system_context.h"
+#include "flex_struct.hpp"
+#include "system_context.hpp"
 
 // Helpers
-#include "i2c_utils.h"
-#include "adc_utils.h"
+#include "i2c_utils.hpp"
+#include "adc_utils.hpp"
 
 // Custom Libraries
-#include "logger.h"
-#include "error.h"
-#include "battery.h"
-#include "leds.h"
-#include "motors.h"
-#include "encoder.h"
-#include "bumper.h"
-#include "ultrasonic.h"
-#include "gyro.h"
-#include "colorsensor.h"
-#include "linefollower.h"
-#include "move.h"
-#include "io_shield.h"
-#include "web_ui.h"
+#include "logger.hpp"
+#include "error.hpp"
+#include "battery.hpp"
+#include "leds.hpp"
+#include "motors.hpp"
+#include "encoder.hpp"
+#include "bumper.hpp"
+#include "ultrasonic.hpp"
+#include "gyro.hpp"
+#include "colorsensor.hpp"
+#include "linefollower.hpp"
+#include "move.hpp"
+#include "io_shield.hpp"
+#include "web_ui.hpp"
 
 // Tasks
-#include "sensor_test.h"
-#include "led_task.h"
-#include "io_shield_task.h"
-#include "web_ui_task.h"
-#include "line_follow_task.h"
+#include "sensor_test.hpp"
+#include "led_task.hpp"
+#include "io_shield_task.hpp"
+#include "web_ui_task.hpp"
+#include "line_follow_task.hpp"
 
 
 extern "C" void app_main() {
-    constexpr const char* TAG = "MAIN";
+    using namespace Main;
 
     delay(500);
 
@@ -99,14 +100,17 @@ extern "C" void app_main() {
     LOGI(TAG, "Starting FreeRTOS Task(s)");
     
 
-    if (ENABLE_SENSOR_TEST_MODE) {
+    if (ENABLE_SENSOR_TEST_MODE)
+    {
         xTaskCreate(sensorTest, "SensorTest", TASK_STACK_DEPTH, &sysctx, SENSOR_TEST_TASK_PRIORITY, nullptr);
         return;
     }
 
     xTaskCreate(ledTask, "LedTask", TASK_STACK_DEPTH, &sysctx, LED_TASK_PRIORITY, nullptr);
-    if (ENABLE_WEBUI) xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, WEBUI_TASK_PRIORITY, nullptr);
-    if (ENABLE_IO_SHIELD) xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, IO_SHIELD_TASK_PRIORITY, nullptr);
+    if (ENABLE_WEBUI)
+        xTaskCreate(webuiTask, "WebUITask", TASK_STACK_DEPTH, &sysctx, WEBUI_TASK_PRIORITY, nullptr);
+    if (ENABLE_IO_SHIELD)
+        xTaskCreate(ioShieldTask, "IOShieldTask", TASK_STACK_DEPTH, &sysctx, IO_SHIELD_TASK_PRIORITY, nullptr);
 
     xTaskCreate(lineFollowTask, "LineFollowTask", TASK_STACK_DEPTH, &sysctx, 8, nullptr);
 

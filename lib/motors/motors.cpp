@@ -1,12 +1,13 @@
-// MOTORS_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file motors.cpp
+ * @authors MarioS271
+ */
 
-#include "motors.h"
+#include "motors.hpp"
 
-#include "delay.h"
-#include "logger.h"
-#include "error.h"
+#include "delay.hpp"
+#include "logger.hpp"
+#include "error.hpp"
 
 Motor::Motor(motor_num_t motor_number)
 : target_speed(0),
@@ -16,7 +17,8 @@ Motor::Motor(motor_num_t motor_number)
   current_speed(0),
   current_direction(M_FORWARD)
 {
-    switch (motor_num) {
+    switch (motor_num)
+    {
         case MOTOR_LEFT:
             LOGI(TAG, "Initialized Motor MOTOR_LEFT (ID: %d)", motor_num);
             speed_pin = MOTOR_LEFT_SPEED_PIN;
@@ -63,8 +65,11 @@ Motor::Motor(motor_num_t motor_number)
     delay(10);
     xTaskCreate(rampTask, "MotorRampTask", 2048, this, 5, &rampTaskHandle);
 }
-Motor::~Motor() {
-    if (rampTaskHandle != nullptr) {
+
+Motor::~Motor()
+{
+    if (rampTaskHandle != nullptr)
+    {
         vTaskDelete(rampTaskHandle);
         rampTaskHandle = nullptr;
     }
@@ -72,16 +77,20 @@ Motor::~Motor() {
 }
 
 
-void Motor::stop(bool wait) {
-    if (error) return;
+void Motor::stop(bool wait)
+{
+    if (error)
+        return;
 
     target_speed = 0;
 
-    if (wait) {
+    if (wait)
+    {
         const uint32_t timeout_ms = 2000;
         uint32_t waited_ms = 0;
 
-        while (current_speed > RAMP_STEP && waited_ms < timeout_ms) {
+        while (current_speed > RAMP_STEP && waited_ms < timeout_ms)
+        {
             delay(RAMP_INTERVAL_MS);
             waited_ms += RAMP_INTERVAL_MS;
         }
@@ -93,21 +102,30 @@ void Motor::stop(bool wait) {
     }
 }
 
-void Motor::setSpeed(uint16_t speed) {
-    if (error) return;
+void Motor::setSpeed(uint16_t speed)
+{
+    if (error)
+        return;
 
-    if (speed > MAX_MOTOR_SPEED) speed = MAX_MOTOR_SPEED;
+    if (speed > Motors::MAX_MOTOR_SPEED)
+        speed = Motors::MAX_MOTOR_SPEED;
+
     target_speed = speed;
 }
 
-void Motor::setDirection(motor_direction_t direction) {
-    if (error) return;
+void Motor::setDirection(motor_direction_t direction)
+{
+    if (error)
+        return;
 
     WARN_CHECK(TAG, gpio_set_level(direction_pin, getActualDirection(direction) == M_FORWARD ? 1 : 0));
     current_direction = direction;
 }
 
-motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) const {
-    if (inverse_direction) return apparent_direction == M_FORWARD ? M_BACKWARD : M_FORWARD;
+motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) const
+{
+    if (inverse_direction)
+        return apparent_direction == M_FORWARD ? M_BACKWARD : M_FORWARD;
+
     return apparent_direction;
 }

@@ -1,17 +1,19 @@
-// BUMPER_CPP
-// Boboter
-// (C) MarioS271 2025
+/**
+ * @file bumper.cpp
+ * @authors MarioS271
+ */
 
-#include "bumper.h"
+#include "bumper.hpp"
 
-#include "logger.h"
-#include "error.h"
+#include "logger.hpp"
+#include "error.hpp"
 
 Bumper::Bumper(bumper_num_t bumper_number)
 : bumper_num(bumper_number),
   error(false)
 {
-    switch (bumper_num) {
+    switch (bumper_num)
+    {
         case BUMPER_LEFT:
             LOGI(TAG, "Initialized Bumper LEFT_BUMPER (ID: %d)", bumper_num);
             bumper_pin = LEFT_BUMPER_PIN;
@@ -32,7 +34,8 @@ Bumper::Bumper(bumper_num_t bumper_number)
     ERROR_CHECK(TAG, gpio_set_direction(bumper_pin, GPIO_MODE_INPUT));
 }
 
-bool Bumper::isHit() const {
+bool Bumper::isHit() const
+{
     bool state = !gpio_get_level(bumper_pin);
     return state;
 }
