@@ -1,46 +1,54 @@
 /**
  * @file system_context.hpp
  * @authors MarioS271
- */
+*/
 
 #pragma once
 
-#include "flex_struct.hpp"
+#include "types/flex.hpp"
 
-
-class BatteryManager;
-
-class Leds;
-class Motor;
-class Encoder;
-class Bumper;
-class Ultrasonic;
-class Gyro;
-class Colorsensor;
-class Linefollower;
-class Move;
-class IOShield;
-
-
-typedef struct
-{
-    BatteryManager &batteryManager;
-
-    Leds &leds;
-    Motor &motorL;
-    Motor &motorR;
-    Encoder &encoderL;
-    Encoder &encoderR;
-    Bumper &bumperL;
-    Bumper &bumperR;
-    Ultrasonic &usonic;
-    Gyro &gyro;
-    Colorsensor &colorsensor;
-    Linefollower &linefollower;
-    Move &move;
-    IOShield &ioShield;
+namespace Boboter::Libs {
+    class Battery::Battery;
+    class NeoLeds::NeoLeds;
+    class OtherLeds;
     
-    FlexStruct ledsFlex;
-    FlexStruct ioShieldFlex;
-    FlexStruct webuiFlex;
-} SystemContext;
+    class Motor;
+    class Encoder;
+    class Bumper;
+    
+    class Ultrasonic;
+    class Gyro;
+    class Magnetometer;
+    
+    class Display;
+    class Buzzer;
+    class Button;
+}
+
+namespace Boboter::Types {
+    struct system_context {
+        Boboter::Libs::Battery::Battery& battery;
+        Boboter::Libs::RgbLeds::RgbLeds& rgb_leds;
+        Boboter::Libs::OtherLeds::OtherLeds& other_leds;
+
+        Boboter::Libs::Motor& motorL;
+        Boboter::Libs::Motor& motorR;
+        Boboter::Libs::Encoder& encoderL;
+        Boboter::Libs::Encoder& encoderR;
+        Boboter::Libs::Bumper& bumperL;
+        Boboter::Libs::Bumper& bumperR;
+
+        Boboter::Libs::Ultrasonic& ultrasonic;
+        Boboter::Libs::Gyro& gyro;
+        Boboter::Libs::Magnetometer& magnetometer;
+
+        Boboter::Libs::Display& display;
+        Boboter::Libs::Buzzer& buzzer;
+        Boboter::Libs::Button& button1;
+        Boboter::Libs::Button& button2;
+
+        Boboter::Types::flex ledsFlex;
+        Boboter::Types::flex ioShieldFlex;
+        Boboter::Types::flex webuiFlex;
+    };
+}

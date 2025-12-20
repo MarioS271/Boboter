@@ -10,13 +10,11 @@
 #include "delay.hpp"
 #include "web_ui.hpp"
 
-namespace WebUI_Task 
-{
+namespace WebUI_Task {
     constexpr const char* TAG = "task:WebUI";
 }
 
-void webuiTask(void* params)
-{
+void webuiTask(void* params) {
     using namespace WebUI_Task;
 
     SystemContext* ctx = static_cast<SystemContext*>(params);
@@ -24,8 +22,7 @@ void webuiTask(void* params)
     
     WebUI webui = WebUI(ctx);
 
-    while (true)
-    {
+    while (true) {
         delay(1000);
     }
 }

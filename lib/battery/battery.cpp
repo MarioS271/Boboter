@@ -1,54 +1,66 @@
 /**
  * @file battery.cpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #include "battery.hpp"
 
 #include <rom/ets_sys.h>
-#include "logger.hpp"
-#include "error.hpp"
-#include "map.hpp"
+#include "helpers/map.hpp"
+#include "lib/logger/logger.hpp"
+#include "lib/error/error.hpp"
 
-BatteryManager::BatteryManager()
-{
-    ERROR_CHECK(TAG, gpio_reset_pin(ADC_GPIO));
+namespace Boboter::Libs::Battery {
+    Battery::Battery() {
+        using namespace Config;
+        using namespace Boboter::Libs::Logger;
+        using namespace Boboter::Libs::Error;
 
-    adc_unit = ADC_Config::adc_handle;
-    cal_handle = ADC_Config::cal_handle;
+        namespace ADC_Config = Boboter::Helpers::ADC::Config;
 
-    adc_oneshot_chan_cfg_t chan_cfg = {
-        .atten = ADC_Config::ADC_ATTEN,
-        .bitwidth = ADC_Config::ADC_BITWIDTH
-    };
-    ERROR_CHECK(TAG, adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
+        ERROR_CHECK(TAG, gpio_reset_pin(ADC_GPIO));
 
-    LOGI(TAG, "Initialized Battery Manager");
-}
+        adc_unit = ADC_Config::adc_handle;
+        cal_handle = ADC_Config::cal_handle;
 
-void BatteryManager::update()
-{
-    uint32_t sum = 0;
-    
-    for (int i = 0; i < NUM_SAMPLES; i++)
-    {
-        int raw = 0;
-        ERROR_CHECK(TAG, adc_oneshot_read(adc_unit, ADC_CHANNEL, &raw));
-        sum += raw;
-        ets_delay_us(500);
+        adc_oneshot_chan_cfg_t chan_cfg = {
+            .atten = ADC_Config::ADC_ATTEN,
+            .bitwidth = ADC_Config::ADC_BITWIDTH
+        };
+        ERROR_CHECK(TAG, adc_oneshot_config_channel(adc_unit, ADC_CHANNEL, &chan_cfg));
+
+        LOGI(TAG, "Initialized Battery Manager");
     }
 
-    uint32_t avg_raw = sum / NUM_SAMPLES;
-    int mv_adc = 0;
+    void Battery::update() {
+        using namespace Config;
+        using namespace Boboter::Libs::Error;
 
-    if (cal_handle)
-        ERROR_CHECK(TAG, adc_cali_raw_to_voltage(cal_handle, avg_raw, &mv_adc));
-    else
-        mv_adc = (avg_raw * 3300) / 4095;
+        uint32_t sum = 0;
+        
+        for (uint8_t i = 0; i < NUM_SAMPLES; i++) {
+            int raw = 0;
+            ERROR_CHECK(TAG, adc_oneshot_read(adc_unit, ADC_CHANNEL, &raw));
+            sum += raw;
+            ets_delay_us(500);
+        }
 
-    voltage_mv = static_cast<uint16_t>((mv_adc * 1470) / 1000);
+        uint32_t avg_raw = sum / NUM_SAMPLES;
+        int mv_adc = 0;
 
-    uint8_t pct = map_value(voltage_mv, 3300, 4200, 0, 100);
-    if (pct > 100) pct = 100;
-    percentage = pct;
+        if (cal_handle)
+            ERROR_CHECK(TAG, adc_cali_raw_to_voltage(cal_handle, avg_raw, &mv_adc));
+        else
+            mv_adc = (avg_raw * 3300) / 4095;
+
+        voltage_mv = static_cast<uint16_t>((mv_adc * 1470) / 1000);
+
+        uint8_t pct = Boboter::Helpers::map_value(voltage_mv, 3300, 4200, 0, 100);
+        if (pct > 100)
+            pct = 100;
+
+        percentage = pct;
+    }
 }

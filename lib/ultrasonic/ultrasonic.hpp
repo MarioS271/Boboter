@@ -1,23 +1,33 @@
 /**
  * @file ultrasonic.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
 #include <driver/gpio.h>
 
-class Ultrasonic
-{
-private:
-    static constexpr const char* TAG = "Ultrasonic";
+namespace Boboter::Libs::Ultrasonic {
+    namespace Config {
+        constexpr gpio_num_t TRIGGER_PIN = GPIO_NUM_25;
+        constexpr gpio_num_t ECHO_PIN = GPIO_NUM_26;
+    }
 
-    static constexpr gpio_num_t TRIGGER_PIN = GPIO_NUM_25;
-    static constexpr gpio_num_t ECHO_PIN = GPIO_NUM_26;
-
-public:
-    Ultrasonic();
-    ~Ultrasonic() = default;
+    class Ultrasonic {
+    private:
+        static constexpr const char* TAG = "Libs::Ultrasonic";
     
-    float measureCm();
-};
+    public:
+        explicit Ultrasonic();
+        ~Ultrasonic() = default;
+        
+        /**
+         * @brief Measures and returns the distance from the sensor
+         *
+         * @return (float) Distance in cm
+        */
+        float measureCm();
+    };
+}

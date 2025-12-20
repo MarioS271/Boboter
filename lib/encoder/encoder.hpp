@@ -1,7 +1,9 @@
 /**
  * @file encoder.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
@@ -10,28 +12,43 @@
 #include <driver/gpio.h>
 #include <esp_attr.h>
 
-class Encoder
-{
-    friend void IRAM_ATTR encoder_isr_handler(void* arg);
-
-private:
-    static constexpr const char* TAG = "Encoder";
+namespace Boboter::Libs::Encoder {
+    namespace Config {
+        constexpr gpio_num_t ENCODER_LEFT_PIN = GPIO_NUM_27;
+        constexpr gpio_num_t ENCODER_RIGHT_PIN = GPIO_NUM_14;
+    }
     
-    static constexpr gpio_num_t ENCODER_LEFT_PIN = GPIO_NUM_27;
-    static constexpr gpio_num_t ENCODER_RIGHT_PIN = GPIO_NUM_14;
+    namespace Internal {
+        void IRAM_ATTR encoder_isr_handler(void* arg);
+    }
 
-    encoder_num_t encoder_num;
-    gpio_num_t encoder_pin;
-    bool error;
+    class Encoder {
+    private:
+        static constexpr const char* TAG = "Libs::Encoder";
+        
+        Boboter::Types::Encoder::Id encoder_id;
+        gpio_num_t encoder_pin;
+        static bool isr_service_installed;
+        
+        friend void IRAM_ATTR Internal::encoder_isr_handler(void* arg);
+        volatile int32_t pulse_count;
+    
+    public:
+        explicit Encoder(Boboter::Types::Encoder::Id encoder_id);
+        ~Encoder() = default;
+    
+        /**
+         * @brief Gets the current count of pulses since last reset
+         *
+         * @return (int32_t) The pulse count
+        */
+        int32_t getPulseCount() const { return pulse_count; }
 
-    volatile int32_t pulse_count;
-
-public:
-    explicit Encoder(encoder_num_t encoder_number);
-    ~Encoder() = default;
-
-    int32_t getPulseCount() const { return pulse_count; }
-    void resetPulseCount() { pulse_count = 0; }
-
-    bool hasError() const { return error; }
-};
+        /**
+         * @brief Resets the pulse count back to zero
+         *
+         * @return (void)  
+        */
+        void resetPulseCount() { pulse_count = 0; }
+    };
+}

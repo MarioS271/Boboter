@@ -1,15 +1,16 @@
 /**
- * @file predef_colors.h
+ * @file predef_colors.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
 #include <cstdint>
-#include "rgb_color.hpp"
+#include "types/rgb_color.hpp"
 
-namespace Colors
-{
+namespace Boboter::Helpers::Colors {
     constexpr uint8_t NUM_COLORS = 8;  // Not including OFF
 
     constexpr rgb_color_t OFF = {0, 0, 0};

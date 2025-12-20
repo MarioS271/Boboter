@@ -1,56 +1,16 @@
 /**
- * @file led_task.hpp
- * @authors MarioS271, ThomS263
- */
+ * @file leds_task.cpp
+ *
+ * @authors MarioS271
+ * @copyright MIT License
+*/
 
-#pragma once
+#include "tasks/leds/leds_task.hpp"
 
-#include <esp_random.h>
-#include <esp_timer.h>
-#include "delay.hpp"
-#include "system_context.hpp"
-#include "flex_struct.hpp"
-#include "rgb_color.hpp"
-#include "predef_colors.hpp"
-#include "leds.hpp"
-
-// void ledTask(void* params)
-// {
-//     using namespace Colors;
-
-//     SystemContext* ctx = static_cast<SystemContext*>(params);
-//     FlexStruct &ownFlex = ctx->ledsFlex;
-//     FlexStruct &ioShieldFlex = ctx->ioShieldFlex;
-//     Leds &leds = ctx->leds;
-
-//     static char mode_str[32] = "random_blink";
-//     ownFlex.set<char*>("mode", mode_str);
-    
-//     ownFlex.set<rgb_color_t>("led_ur", OFF);
-//     ownFlex.set<rgb_color_t>("led_ul", OFF);
-//     ownFlex.set<rgb_color_t>("led_lr", OFF);
-//     ownFlex.set<rgb_color_t>("led_ll", OFF);
-
-//     rgb_color_t colorArray[8] = { RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE };
-//     rgb_color_t colors[4] = {};
-
-//     while (true)
-//     {
-//         for (int i = 0; i < 4; i++)
-//             colors[i] = colorArray[esp_random() % NUM_COLORS];
-
-//         leds.setColor(LED_FRONT_LEFT, colors[0]);
-//         leds.setColor(LED_FRONT_RIGHT, colors[1]);
-//         leds.setColor(LED_BACK_LEFT, colors[2]);
-//         leds.setColor(LED_BACK_RIGHT, colors[3]);
-
-//         delay(1000);
-//     }
-// }
-
-void ledTask(void* params)
-{
-    using namespace Colors;
+void Boboter::Task::Leds::Task(void* params) {
+    using namespace Constants;
+    using namespace Boboter::Helpers::Colors;
+    using namespace Boboter::Types::RgbColor;
 
     SystemContext* ctx = static_cast<SystemContext*>(params);
     FlexStruct &ioShieldFlex = ctx->ioShieldFlex;
@@ -92,13 +52,11 @@ void ledTask(void* params)
     const uint64_t STROBE_PULSE = 40000; // 40 ms
     const uint64_t GROUP_PAUSE = 400000; // 400 ms
 
-    while (true)
-    {
+    while (true) {
         uint8_t mode = ioShieldFlex.get<int>("leds_mode");
         uint64_t now = esp_timer_get_time();
 
-        switch (mode)
-        {
+        switch (mode) {
             // 0: LEDs OFF
             case 0:
                 leds.setAll(OFF);
@@ -106,8 +64,7 @@ void ledTask(void* params)
 
             // 1: RANDOM BLINK
             case 1:
-                if (now - last_random >= INTERVAL_RANDOM)
-                {
+                if (now - last_random >= INTERVAL_RANDOM) {
                     last_random = now;
                     leds.setColor(LED_FRONT_LEFT, colorArray[esp_random() % 8]);
                     leds.setColor(LED_FRONT_RIGHT, colorArray[esp_random() % 8]);
@@ -118,8 +75,7 @@ void ledTask(void* params)
 
             // 2: BREATHING
             case 2:
-                if (now - last_breath >= INTERVAL_BREATH)
-                {
+                if (now - last_breath >= INTERVAL_BREATH) {
                     last_breath = now;
                     uint8_t fade = (step_breath < 128) ? step_breath * 2 : (255 - (step_breath - 128) * 2);
                     rgb_color_t c = rgb_color_t{fade, fade, fade};
@@ -130,8 +86,7 @@ void ledTask(void* params)
 
             // 3: POLICE FLASH
             case 3:
-                if (now - last_breath >= INTERVAL_BREATH)
-                {
+                if (now - last_breath >= INTERVAL_BREATH) {
                     last_police = now;
                     bool leftBlue = (step_police % 2 == 0);
                     bool rightRed = (step_police % 2 == 1);
@@ -145,8 +100,7 @@ void ledTask(void* params)
                 break;
 
             // 4: WARNING FLASHER
-            case 4:
-                {
+            case 4: {
                     bool warning_on = (step_warning % 2 == 0);
                     if ((warning_on && now - last_warning >= INTERVAL_WARNING_ON) ||
                         (!warning_on && now - last_warning >= INTERVAL_WARNING_OFF))
@@ -160,8 +114,7 @@ void ledTask(void* params)
 
             // 5: BATTERY STATUS
             case 5:
-                if (now - last_breath >= INTERVAL_BREATH)
-                {
+                if (now - last_breath >= INTERVAL_BREATH) {
                     last_battery = now;
                     uint8_t percentage = batteryManager.getPercentage();
                     rgb_color_t color = OFF;
@@ -178,8 +131,7 @@ void ledTask(void* params)
                         blink = true;
                     }
 
-                    if (blink)
-                    {
+                    if (blink) {
                         bool on = (step_battery % 2 == 0);
                         leds.setAll(on ? color : OFF);
                         step_battery++;
@@ -199,28 +151,24 @@ void ledTask(void* params)
 
             // 7: NON-BLOCKING FRONT/BACK STROBE
             case 7:
-                if (now - last_breath >= INTERVAL_BREATH)
-                {
+                if (now - last_breath >= INTERVAL_BREATH) {
                     last_strobe = now;
                     bool isFrontPhase = (step_strobe < 8);
                     bool ledOn = (step_strobe % 2 == 0);
 
                     // Determine which LEDs to flash
-                    if (isFrontPhase)
-                    {
+                    if (isFrontPhase) {
                         leds.setColor(LED_FRONT_LEFT, ledOn ? BLUE : OFF);
                         leds.setColor(LED_FRONT_RIGHT, ledOn ? BLUE : OFF);
                     }
-                    else
-                    {
+                    else {
                         leds.setColor(LED_BACK_LEFT, ledOn ? BLUE : OFF);
                         leds.setColor(LED_BACK_RIGHT, ledOn ? BLUE : OFF);
                     }
 
                     // Step counter update
                     step_strobe++;
-                    if (step_strobe >= 16)  // 8 steps front + 8 steps back
-                    {
+                    if (step_strobe >= 16) {  // 8 steps front + 8 steps back
                         step_strobe = 0;
                         last_strobe += GROUP_PAUSE; // Add group pause before restarting
                     }

@@ -1,41 +1,44 @@
 /**
  * @file bumper.cpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #include "bumper.hpp"
 
-#include "logger.hpp"
-#include "error.hpp"
+#include "lib/logger/logger.hpp"
+#include "lib/error/error.hpp"
 
-Bumper::Bumper(bumper_num_t bumper_number)
-: bumper_num(bumper_number),
-  error(false)
-{
-    switch (bumper_num)
+namespace Boboter::Libs::Bumper {
+    Bumper::Bumper(Boboter::Types::Bumper::Id bumper_id)
+    : bumper_id(bumper_id)
     {
-        case BUMPER_LEFT:
-            LOGI(TAG, "Initialized Bumper LEFT_BUMPER (ID: %d)", bumper_num);
-            bumper_pin = LEFT_BUMPER_PIN;
-            break;
+        using namespace Config;
+        using enum Boboter::Types::Bumper::Id;
+        using namespace Boboter::Libs::Logger;
+        using namespace Boboter::Libs::Error;
 
-        case BUMPER_RIGHT:
-            LOGI(TAG, "Initialized Bumper RIGHT_BUMPER (ID: %d)", bumper_num);
-            bumper_pin = RIGHT_BUMPER_PIN;
-            break;
-
-        default:
-            LOGE(TAG, "Unable to initialize Bumper (ID: %d)", bumper_num);
-            error = true;
-            return;
+        switch (bumper_id) {
+            case BUMPER_LEFT:
+                LOGI(TAG, "Initialized LEFT_BUMPER (ID: %d)", bumper_id);
+                bumper_pin = LEFT_BUMPER_PIN;
+                break;
+    
+            case BUMPER_RIGHT:
+                LOGI(TAG, "Initialized RIGHT_BUMPER (ID: %d)", bumper_id);
+                bumper_pin = RIGHT_BUMPER_PIN;
+                break;
+    
+            default:
+                LOGE(TAG, "Unable to initialize Bumper (ID: %d)", bumper_id);
+                return;
+        }
+    
+        ERROR_CHECK(TAG, gpio_reset_pin(bumper_pin));
+        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+            .pin_bit_mask = (1ull << bumper_pin),
+            .mode = GPIO_MODE_INPUT,
+        }));
     }
-
-    ERROR_CHECK(TAG, gpio_reset_pin(bumper_pin));
-    ERROR_CHECK(TAG, gpio_set_direction(bumper_pin, GPIO_MODE_INPUT));
-}
-
-bool Bumper::isHit() const
-{
-    bool state = !gpio_get_level(bumper_pin);
-    return state;
 }

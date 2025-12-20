@@ -1,13 +1,15 @@
 /**
- * @file motors.cpp
+ * @file motor.cpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
-#include "motors.hpp"
+#include "motor.hpp"
 
-#include "delay.hpp"
-#include "logger.hpp"
-#include "error.hpp"
+#include "helpers/delay.hpp"
+#include "lib/logger/logger.hpp"
+#include "lib/error/error.hpp"
 
 Motor::Motor(motor_num_t motor_number)
 : target_speed(0),
@@ -17,8 +19,7 @@ Motor::Motor(motor_num_t motor_number)
   current_speed(0),
   current_direction(M_FORWARD)
 {
-    switch (motor_num)
-    {
+    switch (motor_num) {
         case MOTOR_LEFT:
             LOGI(TAG, "Initialized Motor MOTOR_LEFT (ID: %d)", motor_num);
             speed_pin = MOTOR_LEFT_SPEED_PIN;
@@ -66,10 +67,8 @@ Motor::Motor(motor_num_t motor_number)
     xTaskCreate(rampTask, "MotorRampTask", 2048, this, 5, &rampTaskHandle);
 }
 
-Motor::~Motor()
-{
-    if (rampTaskHandle != nullptr)
-    {
+Motor::~Motor() {
+    if (rampTaskHandle != nullptr) {
         vTaskDelete(rampTaskHandle);
         rampTaskHandle = nullptr;
     }
@@ -77,20 +76,17 @@ Motor::~Motor()
 }
 
 
-void Motor::stop(bool wait)
-{
+void Motor::stop(bool wait) {
     if (error)
         return;
 
     target_speed = 0;
 
-    if (wait)
-    {
+    if (wait) {
         const uint32_t timeout_ms = 2000;
         uint32_t waited_ms = 0;
 
-        while (current_speed > RAMP_STEP && waited_ms < timeout_ms)
-        {
+        while (current_speed > RAMP_STEP && waited_ms < timeout_ms) {
             delay(RAMP_INTERVAL_MS);
             waited_ms += RAMP_INTERVAL_MS;
         }

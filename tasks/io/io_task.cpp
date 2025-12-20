@@ -1,25 +1,15 @@
 /**
- * @file io_shield_task.hpp
+ * @file io_task.cpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
-#pragma once
+#include "tasks/io/io_task.hpp"
 
-#include <esp_timer.h>
-#include "system_context.hpp"
-#include "flex_struct.hpp"
-#include "delay.hpp"
-#include "battery.hpp"
-#include "io_shield.hpp"
-
-namespace IOShield_Task
-{
-    constexpr const char* TAG = "task:IOShield";
-}
-
-void ioShieldTask(void* params)
-{
-    using namespace IOShield_Task;
+void Boboter::Task::IO::Task(void* params) {
+    using namespace Constants;
+    using namespace Boboter::Types;
 
     SystemContext* ctx = static_cast<SystemContext*>(params);
     FlexStruct &ownFlex = ctx->ioShieldFlex;
@@ -49,12 +39,10 @@ void ioShieldTask(void* params)
     ioShield.displaySetCursorPos(0, 25);
     ioShield.displayWriteText(buffer);
 
-    while (true)
-    {
+    while (true) {
         count++;
 
-        if (count >= 10)
-        {
+        if (count >= 10) {
             count = 0;
 
             batteryManager.update();
@@ -64,19 +52,16 @@ void ioShieldTask(void* params)
             ioShield.displayWriteText(buffer);
         }
 
-        if (ioShield.getButtonState())
-        {
+        if (ioShield.getButtonState()) {
             if (button_pressed_time == 0) button_pressed_time = esp_timer_get_time();
         } 
-        else
-        {
+        else {
             if (button_pressed_time == 0)
                 continue;
 
             uint64_t press_duration = esp_timer_get_time() - button_pressed_time;
 
-            if (press_duration > 500000)  // 500 ms
-            {
+            if (press_duration > 500000) {  // 500 ms
                 lf_enabled = !lf_enabled;
                 ownFlex.set<bool>("linefollower_enabled", lf_enabled);
 
@@ -86,8 +71,7 @@ void ioShieldTask(void* params)
 
                 LOGI(TAG, "lf_enabled: %s", lf_enabled ? "true" : "false");
             }
-            else
-            {
+            else {
                 leds_mode++;
                 if (leds_mode > 7) leds_mode = 0;
                 ownFlex.set<int>("leds_mode", leds_mode);

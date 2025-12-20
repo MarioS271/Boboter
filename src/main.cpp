@@ -1,50 +1,45 @@
 /**
  * @file main.cpp
  * @authors MarioS271
- */
+*/
 
-// Official Libraries
 #include <cstdio>
 #include <cstdint>
 #include <cstring>
 #include <cstdarg>
+#include <source_location>
 #include <esp_random.h>
 #include <freertos/FreeRTOS.h>
 
-// Headers
-#include "flags.hpp"
-#include "constants.hpp"
+#include "include/flags.hpp"
+#include "include/constants.hpp"
 
-// Types
-#include "flex_struct.hpp"
-#include "system_context.hpp"
+#include "types/flex_struct.hpp"
+#include "types/system_context.hpp"
 
-// Helpers
-#include "i2c_utils.hpp"
-#include "adc_utils.hpp"
+#include "helpers/i2c_utils.hpp"
+#include "helpers/adc_utils.hpp"
 
-// Custom Libraries
-#include "logger.hpp"
-#include "error.hpp"
-#include "battery.hpp"
-#include "leds.hpp"
-#include "motors.hpp"
-#include "encoder.hpp"
-#include "bumper.hpp"
-#include "ultrasonic.hpp"
-#include "gyro.hpp"
-#include "colorsensor.hpp"
-#include "linefollower.hpp"
-#include "move.hpp"
-#include "io_shield.hpp"
-#include "web_ui.hpp"
+#include "lib/logger/logger.hpp"
+#include "lib/error/error.hpp"
+#include "lib/battery/battery.hpp"
+#include "lib/leds/leds.hpp"
+#include "lib/motors/motors.hpp"
+#include "lib/encoder/encoder.hpp"
+#include "lib/bumper/bumper.hpp"
+#include "lib/ultrasonic/ultrasonic.hpp"
+#include "lib/gyro/gyro.hpp"
+#include "lib/colorsensor/colorsensor.hpp"
+#include "lib/linefollower/linefollower.hpp"
+#include "lib/move/move.hpp"
+#include "lib/io_shield/io_shield.hpp"
+#include "lib/web_ui/web_ui.hpp"
 
-// Tasks
-#include "sensor_test.hpp"
-#include "led_task.hpp"
-#include "io_shield_task.hpp"
-#include "web_ui_task.hpp"
-#include "line_follow_task.hpp"
+#include "tasks/sensor_test.hpp"
+#include "tasks/led_task.hpp"
+#include "tasks/io_shield_task.hpp"
+#include "tasks/web_ui_task.hpp"
+#include "tasks/line_follow_task.hpp"
 
 
 extern "C" void app_main() {
@@ -62,9 +57,9 @@ extern "C" void app_main() {
     init_i2c();
     scan_i2c_addresses();
 
-    ERROR_CHECK(TAG, gpio_reset_pin(GPIO_NUM_13));
-    ERROR_CHECK(TAG, gpio_set_direction(GPIO_NUM_13, GPIO_MODE_OUTPUT));
-    ERROR_CHECK(TAG, gpio_set_level(GPIO_NUM_13, 1));
+    // ERROR_CHECK(TAG, gpio_reset_pin(GPIO_NUM_13));
+    // ERROR_CHECK(TAG, gpio_set_direction(GPIO_NUM_13, GPIO_MODE_OUTPUT));
+    // ERROR_CHECK(TAG, gpio_set_level(GPIO_NUM_13, 1));
 
     static BatteryManager batteryManager = BatteryManager();
     static Leds leds = Leds();
@@ -100,8 +95,7 @@ extern "C" void app_main() {
     LOGI(TAG, "Starting FreeRTOS Task(s)");
     
 
-    if (ENABLE_SENSOR_TEST_MODE)
-    {
+    if (ENABLE_SENSOR_TEST_MODE) {
         xTaskCreate(sensorTest, "SensorTest", TASK_STACK_DEPTH, &sysctx, SENSOR_TEST_TASK_PRIORITY, nullptr);
         return;
     }

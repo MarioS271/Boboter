@@ -1,14 +1,15 @@
 /**
  * @file constants.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
 #include <cstdint>
 
-namespace Main
-{
+namespace Boboter::Main::Constants {
     constexpr const char* TAG = "Main";
 
     constexpr uint32_t TASK_STACK_DEPTH = 4096;
