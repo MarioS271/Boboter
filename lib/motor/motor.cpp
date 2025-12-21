@@ -11,117 +11,124 @@
 #include "lib/logger/logger.hpp"
 #include "lib/error/error.hpp"
 
-Motor::Motor(motor_num_t motor_number)
-: target_speed(0),
-  rampTaskHandle(nullptr),
-  motor_num(motor_number),
-  error(false),
-  current_speed(0),
-  current_direction(M_FORWARD)
-{
-    switch (motor_num) {
-        case MOTOR_LEFT:
-            LOGI(TAG, "Initialized Motor MOTOR_LEFT (ID: %d)", motor_num);
-            speed_pin = MOTOR_LEFT_SPEED_PIN;
-            direction_pin = MOTOR_LEFT_DIRECTION_PIN;
-            ledc_channel = LEDC_CHANNEL_0;
-            inverse_direction = true;
-            break;
+namespace Boboter::Libs::Motor {
+    Motor::Motor(Boboter::Types::Motor::Id motor_id, bool inverse_direction)
+    : ramp_task_handle(nullptr),
+      motor_id(motor_id),
+      inverse_direction(inverse_direction),
+      target_speed(0),
+      current_speed(0),
+      current_direction(Boboter::Types::Motor::Direction::FORWARD)
+    {
+        using namespace Config;
+        using namespace Boboter::Types::Motor;
+        using Boboter::Helpers::delay;
+        using namespace Boboter::Libs::Logger;
+        using namespace Boboter::Libs::Error;
 
-        case MOTOR_RIGHT:
-            LOGI(TAG, "Initialized Motor MOTOR_RIGHT (ID: %d)", motor_num);
-            speed_pin = MOTOR_RIGHT_SPEED_PIN;
-            direction_pin = MOTOR_RIGHT_DIRECTION_PIN;
-            ledc_channel = LEDC_CHANNEL_1;
-            inverse_direction = false;
-            break;
-
-        default:
-            LOGE(TAG, "Unable to initialize Motor (ID: %d)", motor_num);
-            inverse_direction = false;
-            error = true;
-            return;
-    }
-
-    ERROR_CHECK(TAG, gpio_reset_pin(direction_pin));
-    ERROR_CHECK(TAG, gpio_set_direction(direction_pin, GPIO_MODE_OUTPUT));
-
-    ledc_timer_config_t ledc_timer_conf = {};
-    ledc_timer_conf.speed_mode = LEDC_SPEED_MODE;
-    ledc_timer_conf.timer_num = LEDC_TIMER_0;
-    ledc_timer_conf.duty_resolution = LEDC_RESOLUTION;
-    ledc_timer_conf.freq_hz = LEDC_FREQUENCY;
-    ledc_timer_conf.clk_cfg = LEDC_AUTO_CLK;
-    ERROR_CHECK(TAG, ledc_timer_config(&ledc_timer_conf));
+        switch (motor_id) {
+            case Id::LEFT:
+                LOGI(TAG, "Initialized MOTOR_LEFT (ID: %d)", motor_id);
+                speed_pin = MOTOR_LEFT_SPEED_PIN;
+                direction_pin = MOTOR_LEFT_DIRECTION_PIN;
+                ledc_channel = LEDC_CHANNEL_0;
+                break;
     
-    ledc_channel_config_t ledc_channel_conf = {};
-    ledc_channel_conf.gpio_num = speed_pin;
-    ledc_channel_conf.speed_mode = LEDC_SPEED_MODE;
-    ledc_channel_conf.channel = ledc_channel;
-    ledc_channel_conf.timer_sel = LEDC_TIMER_0;
-    ledc_channel_conf.duty = 0;
-    ledc_channel_conf.hpoint = 0;
-    ERROR_CHECK(TAG, ledc_channel_config(&ledc_channel_conf));
-
-    delay(10);
-    xTaskCreate(rampTask, "MotorRampTask", 2048, this, 5, &rampTaskHandle);
-}
-
-Motor::~Motor() {
-    if (rampTaskHandle != nullptr) {
-        vTaskDelete(rampTaskHandle);
-        rampTaskHandle = nullptr;
-    }
-    stop(true);
-}
-
-
-void Motor::stop(bool wait) {
-    if (error)
-        return;
-
-    target_speed = 0;
-
-    if (wait) {
-        const uint32_t timeout_ms = 2000;
-        uint32_t waited_ms = 0;
-
-        while (current_speed > RAMP_STEP && waited_ms < timeout_ms) {
-            delay(RAMP_INTERVAL_MS);
-            waited_ms += RAMP_INTERVAL_MS;
+            case Id::RIGHT:
+                LOGI(TAG, "Initialized MOTOR_RIGHT (ID: %d)", motor_id);
+                speed_pin = MOTOR_RIGHT_SPEED_PIN;
+                direction_pin = MOTOR_RIGHT_DIRECTION_PIN;
+                ledc_channel = LEDC_CHANNEL_1;
+                ramp_task_name = "MotorRightRampTask";
+                break;
+    
+            default:
+                LOGE(TAG, "Unable to initialize Motor (ID: %d)", motor_id);
+                abort();
         }
-
-        WARN_CHECK(TAG, ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, 0));
-        WARN_CHECK(TAG, ledc_update_duty(LEDC_SPEED_MODE, ledc_channel));
-
-        current_speed = 0;
+    
+        ERROR_CHECK(TAG, gpio_reset_pin(direction_pin));
+        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+            .pin_bit_mask = (1ull << direction_pin),
+            .mode = GPIO_MODE_OUTPUT
+        }));
+    
+        ledc_timer_config_t ledc_timer_conf = {};
+        ledc_timer_conf.speed_mode = LEDC_SPEED_MODE;
+        ledc_timer_conf.timer_num = LEDC_TIMER_0;
+        ledc_timer_conf.duty_resolution = LEDC_RESOLUTION;
+        ledc_timer_conf.freq_hz = LEDC_FREQUENCY;
+        ledc_timer_conf.clk_cfg = LEDC_AUTO_CLK;
+        ERROR_CHECK(TAG, ledc_timer_config(&ledc_timer_conf));
+        
+        ledc_channel_config_t ledc_channel_conf = {};
+        ledc_channel_conf.gpio_num = speed_pin;
+        ledc_channel_conf.speed_mode = LEDC_SPEED_MODE;
+        ledc_channel_conf.channel = ledc_channel;
+        ledc_channel_conf.timer_sel = LEDC_TIMER_0;
+        ledc_channel_conf.duty = 0;
+        ledc_channel_conf.hpoint = 0;
+        ERROR_CHECK(TAG, ledc_channel_config(&ledc_channel_conf));
+    
+        delay(10);
+        xTaskCreate(
+            Internal::ramp_task,
+            ramp_task_name.c_str(),
+            RAMP_TASK_STACK_DEPTH,
+            this,
+            RAMP_TASK_PRIORITY,
+            &ramp_task_handle
+        );
     }
-}
+    
+    Motor::~Motor() {
+        if (ramp_task_handle != nullptr) {
+            vTaskDelete(ramp_task_handle);
+            ramp_task_handle = nullptr;
+        }
+        stop(true);
+    }
+    
+    void Motor::stop(bool wait) {
+        using namespace Config;
+        using Boboter::Helpers::delay;
+        using namespace Boboter::Libs::Error;
+    
+        target_speed = 0;
+    
+        if (wait) {
+            const uint32_t timeout_ms = 2000;
+            uint32_t waited_ms = 0;
+    
+            while (current_speed > RAMP_STEP && waited_ms < timeout_ms) {
+                delay(RAMP_INTERVAL_MS);
+                waited_ms += RAMP_INTERVAL_MS;
+            }
+    
+            WARN_CHECK(TAG, ledc_set_duty(LEDC_SPEED_MODE, ledc_channel, 0));
+            WARN_CHECK(TAG, ledc_update_duty(LEDC_SPEED_MODE, ledc_channel));
+    
+            current_speed = 0;
+        }
+    }
+    
+    void Motor::setSpeed(uint16_t speed) {
+        using namespace Boboter::Libs::Motor::Constants;
 
-void Motor::setSpeed(uint16_t speed)
-{
-    if (error)
-        return;
-
-    if (speed > Motors::MAX_MOTOR_SPEED)
-        speed = Motors::MAX_MOTOR_SPEED;
-
-    target_speed = speed;
-}
-
-void Motor::setDirection(motor_direction_t direction)
-{
-    if (error)
-        return;
-
-    WARN_CHECK(TAG, gpio_set_level(direction_pin, getActualDirection(direction) == M_FORWARD ? 1 : 0));
-    current_direction = direction;
-}
-
-motor_direction_t Motor::getActualDirection(motor_direction_t apparent_direction) const
-{
-    if (inverse_direction)
-        return apparent_direction == M_FORWARD ? M_BACKWARD : M_FORWARD;
-
-    return apparent_direction;
+        if (speed > MAX_MOTOR_SPEED)
+            speed = MAX_MOTOR_SPEED;
+    
+        target_speed = speed;
+    }
+    
+    void Motor::setDirection(Boboter::Types::Motor::Direction direction) {
+        using namespace Boboter::Types::Motor;
+        using namespace Boboter::Libs::Error;
+        
+        WARN_CHECK(TAG, gpio_set_level(
+            direction_pin,
+            getActualDirection(direction) == Direction::FORWARD ? 1 : 0
+        ));
+        current_direction = direction;
+    }
 }

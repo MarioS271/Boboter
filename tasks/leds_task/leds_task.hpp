@@ -7,24 +7,13 @@
 
 #pragma once
 
-#include <esp_random.h>
-#include <esp_timer.h>
-#include "types/system_context.hpp"
-#include "types/flex_struct.hpp"
-#include "types/rgb_color.hpp"
-#include "helpers/predef_colors.hpp"
-#include "helpers/delay.hpp"
-#include "lib/battery/battery.hpp"
-#include "lib/leds/leds.hpp"
-
-namespace Boboter::Task::Leds
-{
-    namespace Constants
-    {}
+namespace Boboter::Tasks::Leds {
+    namespace Constants {
+        constexpr const char* TAG = "Task::Leds";
+    }
 
     void Task(void* params);
 }
-
 
 // void ledTask(void* params) {
 //     using namespace Colors;

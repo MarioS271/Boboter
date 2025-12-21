@@ -9,6 +9,7 @@
 
 #include "motor_types.hpp"
 
+#include <string>
 #include <driver/ledc.h>
 #include <driver/gpio.h>
 #include <freertos/FreeRTOS.h>
@@ -26,10 +27,17 @@ namespace Boboter::Libs::Motor {
     
         constexpr uint8_t RAMP_STEP = 20;
         constexpr uint8_t RAMP_INTERVAL_MS = 10;
+
+        constexpr uint8_t RAMP_TASK_PRIORITY = 14;
+        constexpr uint16_t RAMP_TASK_STACK_DEPTH = 1024;
     }
 
     namespace Constants {
         constexpr uint16_t MAX_MOTOR_SPEED = 1023;
+    }
+
+    namespace Internal {
+        void ramp_task(void* params);
     }
     
     class Motor {
@@ -37,7 +45,7 @@ namespace Boboter::Libs::Motor {
         static constexpr const char* TAG = "Libs::Motor";
     
         TaskHandle_t ramp_task_handle;
-        
+        std::string ramp_task_name;
         Boboter::Types::Motor::Id motor_id;
         
         gpio_num_t speed_pin;
@@ -49,11 +57,11 @@ namespace Boboter::Libs::Motor {
         uint16_t target_speed;
         uint16_t current_speed;
         Boboter::Types::Motor::Direction current_direction;
-    
-        static void rampTask(void* params);
+
+        friend void Internal::ramp_task(void*);
     
     public:
-        explicit Motor(Boboter::Types::Motor::Id motor_number);
+        explicit Motor(Boboter::Types::Motor::Id motor_id, bool inverse_direction);
         ~Motor();
     
         void stop(bool wait = true);
@@ -62,8 +70,9 @@ namespace Boboter::Libs::Motor {
         void setDirection(Boboter::Types::Motor::Direction direction);
     
         uint16_t getSpeed() const { return current_speed; }
-
         Boboter::Types::Motor::Direction getDirection() const { return current_direction; }
-        Boboter::Types::Motor::Direction getActualDirection(Boboter::Types::Motor::Direction) const;
+
+        Boboter::Types::Motor::Direction getActualDirection(Boboter::Types::Motor::Direction apparent_direction) const
+        { return static_cast<Boboter::Types::Motor::Direction>(apparent_direction ^ inverse_direction); }
     };
 }

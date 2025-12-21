@@ -29,24 +29,24 @@ namespace Boboter::Libs::Encoder {
         using namespace Boboter::Libs::Error;
 
         switch (encoder_id) {
-            case ENCODER_LEFT:
+            case Id::LEFT:
                 LOGI(TAG, "Initialized ENCODER_LEFT (ID: %d)", encoder_id);
                 encoder_pin = ENCODER_LEFT_PIN;
                 break;
     
-            case ENCODER_RIGHT:
+            case Id::RIGHT:
                 LOGI(TAG, "Initialized ENCODER_RIGHT (ID: %d)", encoder_id);
                 encoder_pin = ENCODER_RIGHT_PIN;
                 break;
     
             default:
                 LOGE(TAG, "Unable to initialize Encoder (ID: %d)", encoder_id);
-                return;
+                abort();
         }
     
         ERROR_CHECK(TAG, gpio_reset_pin(encoder_pin));
         ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
-            .pin_bit_mask = (1ull << encoder_id),
+            .pin_bit_mask = (1ull << encoder_pin),
             .mode = GPIO_MODE_INPUT,
             .intr_type = GPIO_INTR_POSEDGE,
         }));

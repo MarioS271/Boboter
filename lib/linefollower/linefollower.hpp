@@ -1,7 +1,9 @@
 /**
  * @file linefollower.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
@@ -10,22 +12,31 @@
 #include <driver/gpio.h>
 #include <esp_adc/adc_oneshot.h>
 #include <esp_adc/adc_cali.h>
-#include "adc_utils.hpp"
 
-class Linefollower
-{
-private:
-    static constexpr const char* TAG = "Linefollower";
+namespace Boboter::Libs::Linefollower {
+    namespace Config {
+        constexpr gpio_num_t LF_RIGHT_LEFT_PIN = GPIO_NUM_12;
+        constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_0;
+    }
 
-    static constexpr gpio_num_t LF_RIGHT_LEFT_PIN = GPIO_NUM_12;
-    static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_0;
+    class Linefollower {
+    private:
+        static constexpr const char* TAG = "Libs::Linefollower";
 
-    adc_oneshot_unit_handle_t adc_unit = nullptr;
-    adc_cali_handle_t cal_handle = nullptr;
+        adc_oneshot_unit_handle_t adc_unit;
+        adc_cali_handle_t cal_handle;
 
-public:
-    Linefollower();
-    ~Linefollower() = default;
+    public:
+        explicit Linefollower();
+        ~Linefollower() = default;
 
-    lf_result_t get(lf_module_t module);
-};
+        /**
+         * @brief Gets the current reading of one of the line follower modules
+         *
+         * @return (Boboter::Types::Linefollower::Result) The result of the reading (either BLACK or WHITE)
+         *
+         * @param module_id The linefollower module id
+        */
+        Boboter::Types::Linefollower::Result get(Boboter::Types::Linefollower::Id module_id);
+    };
+}

@@ -1,5 +1,5 @@
 /**
- * @file bumper_types.hpp
+ * @file button_types.hpp
  *
  * @authors MarioS271
  * @copyright MIT License
@@ -9,9 +9,9 @@
 
 #include <cstdint>
 
-namespace Boboter::Types::Bumper {
+namespace Boboter::Types::Button {
     enum Id : uint8_t {
-        LEFT = 0,
-        RIGHT = 1
+        PRIMARY = 0,
+        SECONDARY = 1
     };
 }

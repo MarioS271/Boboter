@@ -1,20 +1,22 @@
 /**
  * @file linefollower_types.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
 #include <cstdint>
 
-enum lf_module_t : uint8_t
-{
-    LF_RIGHT = 0,
-    LF_LEFT = 1
-};
-
-enum lf_result_t : uint8_t
-{
-    LF_WHITE = 0,
-    LF_BLACK = 1
-};
+namespace Boboter::Types::Linefollower {
+    enum Id : uint8_t {
+        RIGHT = 0,
+        LEFT = 1
+    };
+    
+    enum Result : uint8_t {
+        WHITE = 0,
+        BLACK = 1
+    };
+}

@@ -7,7 +7,17 @@
 
 #include "tasks/leds/leds_task.hpp"
 
-void Boboter::Task::Leds::Task(void* params) {
+#include <esp_random.h>
+#include <esp_timer.h>
+#include "types/system_context.hpp"
+#include "types/flex_struct.hpp"
+#include "types/rgb_color.hpp"
+#include "helpers/predef_colors.hpp"
+#include "helpers/delay.hpp"
+#include "lib/battery/battery.hpp"
+#include "lib/leds/leds.hpp"
+
+void Boboter::Tasks::Leds::Task(void* params) {
     using namespace Constants;
     using namespace Boboter::Helpers::Colors;
     using namespace Boboter::Types::RgbColor;

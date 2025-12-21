@@ -1,122 +1,90 @@
 /**
  * @file gyro.cpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #include "gyro.hpp"
 
-#include <cmath>
-#include "delay.hpp"
-#include "logger.hpp"
+#include "helpers/delay.hpp"
+#include "lib/logger/logger.hpp"
 
-// MPU6050 full-scale gyro = ±250 deg/s → 131 LSB/(°/s)
-constexpr float GYRO_SCALE = 131.0f;
-
-// Constructor
-Gyro::Gyro()
-: accel_x(0), accel_y(0), accel_z(0),
-  gyro_x(0), gyro_y(0), gyro_z(0),
-  pitch_offset(0), yaw_offset(0), roll_offset(0),
-  pitch_total(0), yaw_total(0), roll_total(0),
-  yaw_bias(0), last_update_ms(0), calibrating(false)
-{
-    writeRegister(0x6B, 0x00); // wake MPU6050
-    delay(100);
-    last_update_ms = millis();
-    LOGI(TAG, "Initialized Gyro");
-}
-
-void Gyro::writeRegister(uint8_t reg, uint8_t data)
-{
-    uint8_t buf[2] = { reg, data };
-    i2c_master_write_to_device(I2C_PORT, I2C_ADDRESS, buf, 2, pdMS_TO_TICKS(100));
-}
-
-void Gyro::readRegisters(uint8_t reg, uint8_t *data, size_t len)
-{
-    i2c_master_write_read_device(I2C_PORT, I2C_ADDRESS, &reg, 1, data, len, pdMS_TO_TICKS(100));
-}
-
-// Multi-sample calibration
-void Gyro::calibrate()
-{
-    calibrating = true;
-
-    const int samples = 500;
-    float sum_x = 0, sum_y = 0, sum_z = 0;
-
-    for (int i = 0; i < samples; i++)
+namespace Boboter::Libs::Gyro {
+    Gyro::Gyro()
+    : offset_gyro_x(0.0f), offset_gyro_y(0.0f), offset_gyro_z(0.0f),
+      accel_x(0.0f), accel_y(0.0f), accel_z(0.0f),
+      gyro_x(0.0f), gyro_y(0.0f), gyro_z(0.0f),
+      temperature(0.0f)
     {
-        uint8_t raw[14];
-        readRegisters(0x3B, raw, 14);
+        using namespace Config;
+        using namespace Constants;
+        using namespace Boboter::Libs::Logger;
 
-        float gx = static_cast<int16_t>((raw[8] << 8) | raw[9]) / GYRO_SCALE;
-        float gy = static_cast<int16_t>((raw[10] << 8) | raw[11]) / GYRO_SCALE;
-        float gz = static_cast<int16_t>((raw[12] << 8) | raw[13]) / GYRO_SCALE;
+        write_register(REG_PWR_MGMT_1, 0x03);
+        
+        uint8_t id = 0;
+        read_registers(REG_WHO_AM_I, &id, 1);
 
-        sum_x += gx;
-        sum_y += gy;
-        sum_z += gz;
+        if (id != 0x68) {
+            LOGE(TAG, "MPU6050 not found, instead found device with id 0x%02x", id);
+            abort();
+        }
 
-        delay(5);
+        LOGI(TAG, "Initialized Gyro");
+
+        calibrate();
+    }
+    
+    void Gyro::calibrate() {
+        using namespace Config;
+        using namespace Boboter::Libs::Logger;
+        using Boboter::Helpers::delay;
+
+        LOGI(TAG, "Calibrating... Keep robot still!");
+
+        offset_gyro_x = 0.0f;
+        offset_gyro_y = 0.0f;
+        offset_gyro_z = 0.0f;
+        
+        float sum_x = 0, sum_y = 0, sum_z = 0;
+
+        for (int i = 0; i < CALIBRATION_SAMPLES; ++i) {
+            read();
+            sum_x += gyro_x;
+            sum_y += gyro_y;
+            sum_z += gyro_z;
+            delay(2);
+        }
+
+        offset_gyro_x = sum_x / CALIBRATION_SAMPLES;
+        offset_gyro_y = sum_y / CALIBRATION_SAMPLES;
+        offset_gyro_z = sum_z / CALIBRATION_SAMPLES;
+
+        LOGI(TAG, "Calibration done. Offsets: X:%.2f Y:%.2f Z:%.2f", 
+            offset_gyro_x, offset_gyro_y, offset_gyro_z);
     }
 
-    // Set offsets to zero current readings
-    roll_offset  = sum_x / samples;
-    pitch_offset = sum_y / samples;
-    yaw_offset   = sum_z / samples;
+    void Gyro::read() {
+        using namespace Config;
+        using namespace Constants;
+        
+        uint8_t data[14];
+        read_registers(REG_ACCEL_XOUT_H, data, 14);
 
-    // Reset total angles
-    roll_total = pitch_total = yaw_total = 0;
-    yaw_bias = 0;
+        auto combine = [](uint8_t h, uint8_t l) {
+            return static_cast<int16_t>((h << 8) | l);
+        };
 
-    calibrating = false;
-    LOGI(TAG, "Gyro calibrated: roll=%f pitch=%f yaw=%f", roll_offset, pitch_offset, yaw_offset);
-}
+        accel_x = combine(data[0], data[1]) / ACCEL_SCALE;
+        accel_y = combine(data[2], data[3]) / ACCEL_SCALE;
+        accel_z = combine(data[4], data[5]) / ACCEL_SCALE;
 
-// Update function with complementary filter and yaw bias correction
-void Gyro::update(bool ignore_is_calibrating)
-{
-    if (calibrating && !ignore_is_calibrating) return;
+        int16_t raw_temperature = combine(data[6], data[7]);
+        temperature = (static_cast<float>(raw_temperature) / TEMP_SENSITIVITY) + TEMP_OFFSET;
 
-    uint8_t raw[14];
-    readRegisters(0x3B, raw, 14);
-
-    // Convert accelerometer
-    accel_x = static_cast<int16_t>((raw[0] << 8) | raw[1]) / 16384.0f;
-    accel_y = static_cast<int16_t>((raw[2] << 8) | raw[3]) / 16384.0f;
-    accel_z = static_cast<int16_t>((raw[4] << 8) | raw[5]) / 16384.0f;
-
-    // Convert gyro
-    gyro_x = static_cast<int16_t>((raw[8] << 8) | raw[9]) / GYRO_SCALE;
-    gyro_y = static_cast<int16_t>((raw[10] << 8) | raw[11]) / GYRO_SCALE;
-    gyro_z = static_cast<int16_t>((raw[12] << 8) | raw[13]) / GYRO_SCALE;
-
-    // Time delta
-    uint64_t now = millis();
-    float dt = (now - last_update_ms) / 1000.0f;
-    last_update_ms = now;
-
-    // Accelerometer-based angles
-    float pitch_acc = atan2f(accel_y, sqrtf(accel_x*accel_x + accel_z*accel_z)) * 180.0f / M_PI;
-    float roll_acc  = atan2f(-accel_x, accel_z) * 180.0f / M_PI;
-
-    // Complementary filter for roll/pitch
-    constexpr float alpha = 0.98f;
-    roll_total  = alpha * (roll_total + (gyro_x - roll_offset) * dt) + (1.0f - alpha) * roll_acc;
-    pitch_total = alpha * (pitch_total + (gyro_y - pitch_offset) * dt) + (1.0f - alpha) * pitch_acc;
-
-    // Dynamic yaw bias tracker (works when stationary)
-    constexpr float yaw_bias_alpha = 0.9995f;
-    yaw_bias = yaw_bias_alpha * yaw_bias + (1.0f - yaw_bias_alpha) * (gyro_z - yaw_offset);
-
-    float yaw_rate = gyro_z - yaw_offset - yaw_bias;
-    yaw_total += yaw_rate * dt;
-
-    LOGI(TAG,
-        "Accel: x=%f y=%f z=%f | Gyro: x=%f y=%f z=%f | Roll=%f Pitch=%f Yaw=%f",
-        accel_x, accel_y, accel_z,
-        gyro_x - roll_offset, gyro_y - pitch_offset, gyro_z - yaw_offset,
-        roll_total, pitch_total, yaw_total
-    );
+        gyro_x = (combine(data[8], data[9]) / GYRO_SCALE) - offset_gyro_x;
+        gyro_y = (combine(data[10], data[11]) / GYRO_SCALE) - offset_gyro_y;
+        gyro_z = (combine(data[12], data[13]) / GYRO_SCALE) - offset_gyro_z;
+    }
 }

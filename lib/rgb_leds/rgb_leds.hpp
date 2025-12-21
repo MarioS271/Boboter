@@ -12,16 +12,16 @@
 #include <driver/gpio.h>
 #include "types/rgb_color.hpp"
 
-namespace Boboter::Libs::RgbLeds {
+namespace Boboter::Libs::RGB_Leds {
     namespace Config {
         constexpr gpio_num_t MOSI_PIN = GPIO_NUM_23;
         constexpr gpio_num_t CLK_PIN = GPIO_NUM_18;
         constexpr uint8_t NUM_LEDS = 4;
     }
 
-    class RgbLeds {
+    class RGB_Leds {
     private:
-        static constexpr const char* TAG = "Libs::RgbLeds";
+        static constexpr const char* TAG = "Libs::RGB_Leds";
     
         void sendBit(bool bit);
         void sendByte(uint8_t byte);
@@ -31,8 +31,8 @@ namespace Boboter::Libs::RgbLeds {
         Boboter::Types::rgb_color_t leds[Config::NUM_LEDS] = {};
     
     public:
-        explicit RgbLeds();
-        ~RgbLeds() = default;
+        explicit RGB_Leds();
+        ~RGB_Leds() = default;
     
         /**
          * @brief Sets the color of one LED
@@ -42,7 +42,7 @@ namespace Boboter::Libs::RgbLeds {
          * @param led_id The id of the LED of which to set the color
          * @param color The color to set the LED to
         */
-        void setColor(Boboter::Types::RgbLeds::Id led_id, Boboter::Types::rgb_color_t color);
+        void setColor(Boboter::Types::RGB_Leds::Id led_id, Boboter::Types::rgb_color_t color);
 
         /**
          * @brief Sets the color of all LEDs
@@ -60,7 +60,7 @@ namespace Boboter::Libs::RgbLeds {
          *
          * @param led_id The id of the LED to turn off
         */
-        void setOff(Boboter::Types::RgbLeds::Id led_id);
+        void setOff(Boboter::Types::RGB_Leds::Id led_id);
 
         /**
          * @brief Turns off all LEDs
@@ -76,6 +76,6 @@ namespace Boboter::Libs::RgbLeds {
          *
          * @param led_id The id of the LED of which to fetch the color
         */
-        Boboter::Types::rgb_color_t getColor(Boboter::Types::RgbLeds::Id led_id);
+        Boboter::Types::rgb_color_t getColor(Boboter::Types::RGB_Leds::Id led_id);
     };
 }

@@ -11,12 +11,12 @@
 
 namespace Boboter::Types::Motor {
     enum Id : uint8_t {
-        MOTOR_LEFT = 0,
-        MOTOR_RIGHT = 1
+        LEFT = 0,
+        RIGHT = 1
     };
     
     enum Direction : uint8_t {
-        M_FORWARD = 0,
-        M_BACKWARD = 1
+        FORWARD = 0,
+        BACKWARD = 1
     };
 }

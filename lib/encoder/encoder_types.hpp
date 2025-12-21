@@ -11,7 +11,7 @@
 
 namespace Boboter::Types::Encoder {
     enum Id : uint8_t {
-        ENCODER_LEFT = 0,
-        ENCODER_RIGHT = 1
+        LEFT = 0,
+        RIGHT = 1
     };
 }

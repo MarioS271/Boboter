@@ -8,7 +8,7 @@
 #pragma once
 
 #include <esp_timer.h>
-#include <freertos/task.h>
+#include <freertos/FreeRTOS.h>
 
 namespace Boboter::Helpers {
     /**

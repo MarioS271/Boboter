@@ -9,6 +9,7 @@
 
 #include "encoder_types.hpp"
 
+#include <atomic>
 #include <driver/gpio.h>
 #include <esp_attr.h>
 
@@ -31,7 +32,7 @@ namespace Boboter::Libs::Encoder {
         static bool isr_service_installed;
         
         friend void IRAM_ATTR Internal::encoder_isr_handler(void* arg);
-        volatile int32_t pulse_count;
+        std::atomic<int32_t> pulse_count;
     
     public:
         explicit Encoder(Boboter::Types::Encoder::Id encoder_id);

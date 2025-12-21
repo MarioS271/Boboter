@@ -9,46 +9,59 @@
 
 namespace Boboter::Libs {
     class Battery::Battery;
-    class NeoLeds::NeoLeds;
-    class OtherLeds;
+    class RGB_Leds::RGB_Leds;
+    class OtherLeds::OtherLeds;
     
-    class Motor;
-    class Encoder;
-    class Bumper;
+    class PID_Controller::PID_Controller;
+
+    class Motor::Motor;
+    class Encoder::Encoder;
+    class Bumper::Bumper;
     
-    class Ultrasonic;
-    class Gyro;
-    class Magnetometer;
+    class Ultrasonic::Ultrasonic;
+    class Gyro::Gyro;
+    class Magnetometer::Magnetometer;
+
+    class Colorsensor::Colorsensor;
+    class Linefollower::Linefollower;
     
-    class Display;
-    class Buzzer;
-    class Button;
+    class Display::Display;
+    class Buzzer::Buzzer;
+    class Button::Button;
+
+    class Bluepad::Bluepad;
 }
 
 namespace Boboter::Types {
-    struct system_context {
+    struct SystemContext {
         Boboter::Libs::Battery::Battery& battery;
-        Boboter::Libs::RgbLeds::RgbLeds& rgb_leds;
+        Boboter::Libs::RGB_Leds::RGB_Leds& rgb_leds;
         Boboter::Libs::OtherLeds::OtherLeds& other_leds;
 
-        Boboter::Libs::Motor& motorL;
-        Boboter::Libs::Motor& motorR;
-        Boboter::Libs::Encoder& encoderL;
-        Boboter::Libs::Encoder& encoderR;
-        Boboter::Libs::Bumper& bumperL;
-        Boboter::Libs::Bumper& bumperR;
+        Boboter::Libs::PID_Controller::PID_Controller& pid_controller;
 
-        Boboter::Libs::Ultrasonic& ultrasonic;
-        Boboter::Libs::Gyro& gyro;
-        Boboter::Libs::Magnetometer& magnetometer;
+        Boboter::Libs::Motor::Motor& motor_left;
+        Boboter::Libs::Motor::Motor& motor_right;
+        Boboter::Libs::Encoder::Encoder& encoder_left;
+        Boboter::Libs::Encoder::Encoder& encoder_right;
+        Boboter::Libs::Bumper::Bumper& bumper_left;
+        Boboter::Libs::Bumper::Bumper& bumper_right;
 
-        Boboter::Libs::Display& display;
-        Boboter::Libs::Buzzer& buzzer;
-        Boboter::Libs::Button& button1;
-        Boboter::Libs::Button& button2;
+        Boboter::Libs::Ultrasonic::Ultrasonic& ultrasonic;
+        Boboter::Libs::Gyro::Gyro& gyro;
+        Boboter::Libs::Magnetometer::Magnetometer& magnetometer;
 
-        Boboter::Types::flex ledsFlex;
-        Boboter::Types::flex ioShieldFlex;
-        Boboter::Types::flex webuiFlex;
+        Boboter::Libs::Colorsensor::Colorsensor& colorsensor;
+        Boboter::Libs::Linefollower::Linefollower& linefollower;
+
+        Boboter::Libs::Display::Display& display;
+        Boboter::Libs::Buzzer::Buzzer& buzzer;
+        Boboter::Libs::Button::Button& button_primary;
+        Boboter::Libs::Button::Button& button_secondary;
+
+        Boboter::Libs::Bluepad::Bluepad& bluepad;
+
+        Boboter::Types::flex settings_flex;
+        Boboter::Types::flex drive_flex;
     };
 }

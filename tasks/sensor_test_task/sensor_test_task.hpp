@@ -1,25 +1,35 @@
 /**
  * @file sensor_test.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
-#include "system_context.hpp"
-#include "rgb_color.hpp"
-#include "predef_colors.hpp"
-#include "delay.hpp"
-#include "logger.hpp"
-#include "leds.hpp"
-#include "motors.hpp"
-#include "encoder.hpp"
-#include "ultrasonic.hpp"
-#include "bumper.hpp"
+#include "types/system_context.hpp"
+#include "types/rgb_color.hpp"
+#include "helpers/predef_colors.hpp"
+#include "helpers/delay.hpp"
+
+#include "lib/logger/logger.hpp"
+#include "lib/rgb_leds/rgb_leds.hpp"
+#include "lib/motor/motor.hpp"
+#include "lib/encoder/encoder.hpp"
+#include "lib/ultrasonic/ultrasonic.hpp"
+#include "lib/bumper/bumper.hpp"
+
+namespace Boboter::Tasks::SensorTest {
+    namespace Constants {
+        constexpr const char* TAG = "Tasks::SensorTest";
+        constexpr float MAX_DISPLAY_DISTANCE = 100.0f;
+        constexpr float MIN_DISPLAY_DISTANCE = 5.0f;
+    }
+
+    void task(void* params);
+}
 
 namespace Sensor_Test_Task {
-    constexpr const char* TAG = "task:SensorTest";
-    constexpr float MAX_DISPLAY_DISTANCE = 100.0;
-    constexpr float MIN_DISPLAY_DISTANCE = 5.0;
 }
 
 void sensorTest(void* params) {

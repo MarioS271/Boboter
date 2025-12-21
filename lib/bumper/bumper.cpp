@@ -15,24 +15,24 @@ namespace Boboter::Libs::Bumper {
     : bumper_id(bumper_id)
     {
         using namespace Config;
-        using enum Boboter::Types::Bumper::Id;
+        using namespace Boboter::Types::Bumper;
         using namespace Boboter::Libs::Logger;
         using namespace Boboter::Libs::Error;
 
         switch (bumper_id) {
-            case BUMPER_LEFT:
+            case Id::LEFT:
                 LOGI(TAG, "Initialized LEFT_BUMPER (ID: %d)", bumper_id);
                 bumper_pin = LEFT_BUMPER_PIN;
                 break;
     
-            case BUMPER_RIGHT:
+            case Id::RIGHT:
                 LOGI(TAG, "Initialized RIGHT_BUMPER (ID: %d)", bumper_id);
                 bumper_pin = RIGHT_BUMPER_PIN;
                 break;
     
             default:
                 LOGE(TAG, "Unable to initialize Bumper (ID: %d)", bumper_id);
-                return;
+                abort();
         }
     
         ERROR_CHECK(TAG, gpio_reset_pin(bumper_pin));

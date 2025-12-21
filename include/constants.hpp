@@ -12,10 +12,27 @@
 namespace Boboter::Main::Constants {
     constexpr const char* TAG = "Main";
 
-    constexpr uint32_t TASK_STACK_DEPTH = 4096;
+    constexpr uint8_t SECURE_TASK_PRIORITY = 25;
+    constexpr uint16_t SECURE_TASK_STACK_DEPTH = 1024;
+    
+    constexpr uint8_t SYSTEM_TASK_PRIORITY = 7;
+    constexpr uint16_t SYSTEM_TASK_STACK_DEPTH = 2048;
 
-    constexpr uint8_t LED_TASK_PRIORITY = 1;
-    constexpr uint8_t WEBUI_TASK_PRIORITY = 2;
-    constexpr uint8_t IO_SHIELD_TASK_PRIORITY = 3;
-    constexpr uint8_t SENSOR_TEST_TASK_PRIORITY = 9;
+    constexpr uint8_t PID_TASK_PRIORITY = 15;
+    constexpr uint16_t PID_TASK_STACK_DEPTH = 4096;
+
+    constexpr uint8_t IO_TASK_PRIORITY = 10;
+    constexpr uint16_t IO_TASK_STACK_DEPTH = 2048;
+
+    constexpr uint8_t BLUEPAD_TASK_PRIORITY = 8;
+    constexpr uint16_t BLUEPAD_STACK_DEPTH = 4096;
+
+    constexpr uint8_t LEDS_TASK_PRIORITY = 5;
+    constexpr uint16_t LEDS_TASK_STACK_DEPTH = 2048;
+
+    constexpr uint8_t BUZZER_TASK_PRIORITY = 1;
+    constexpr uint16_t BUZZER_TASK_STACK_DEPTH = 1024;
+
+    constexpr uint8_t SENSOR_TEST_TASK_PRIORITY = 22;
+    constexpr uint16_t SENSOR_TEST_TASK_STACK_DEPTH = 8192;
 }

@@ -1,48 +1,110 @@
 /**
  * @file gyro.hpp
+ *
  * @authors MarioS271
- */
+ * @copyright MIT License
+*/
 
 #pragma once
 
 #include <cstdint>
 #include <driver/i2c.h>
-#include <freertos/FreeRTOS.h>
 
-class Gyro
-{
-private:
-    static constexpr const char* TAG = "Gyro";
+namespace Boboter::Libs::Gyro {
+    namespace Config {
+        constexpr uint8_t I2C_ADDRESS = 0x68;
+        constexpr uint16_t CALIBRATION_SAMPLES = 500;
+
+        constexpr float ACCEL_SCALE = 16384.0f;
+        constexpr float GYRO_SCALE = 131.0f;
+        constexpr float TEMP_SENSITIVITY = 340.0f;
+        constexpr float TEMP_OFFSET = 36.53f;
+    }
+
+    namespace Constants {
+        constexpr uint8_t REG_PWR_MGMT_1 = 0x6B;
+        constexpr uint8_t REG_ACCEL_XOUT_H = 0x3B;
+        constexpr uint8_t REG_GYRO_XOUT_H = 0x43;
+        constexpr uint8_t REG_WHO_AM_I = 0x75;
+    }
+
+    class Gyro {
+    private:
+        static constexpr const char* TAG = "Libs::Gyro";
     
-    static constexpr i2c_port_t I2C_PORT = I2C_NUM_0;
-    static constexpr uint8_t I2C_ADDRESS = 0x68;
+        float offset_gyro_x, offset_gyro_y, offset_gyro_z;
+        float accel_x, accel_y, accel_z;
+        float gyro_x, gyro_y, gyro_z;
+        float temperature;
 
-    float accel_x, accel_y, accel_z;
-    float gyro_x, gyro_y, gyro_z;
+        void write_register(uint8_t reg, uint8_t data);
+        void read_registers(uint8_t reg, uint8_t *data, size_t len);
+    
+    public:
+        explicit Gyro();
+        ~Gyro() = default;
+    
+        /**
+         * @brief Calibrates the gyro
+         *
+         * @return (void)  
+        */
+        void calibrate();
 
-    float pitch_offset, yaw_offset, roll_offset;
-    float pitch_total, yaw_total, roll_total;
+        /**
+         * @brief Reads the values from the gyro and stores them in the class
+         *
+         * @return (void)  
+        */
+        void read();
 
-    float yaw_bias;
+        /**
+         * @brief Gets the current x axis acceleration value
+         *
+         * @return (float) The current x axis acceleration
+        */
+        float get_accel_x() const { return accel_x; }
 
-    uint64_t last_update_ms;
-    bool calibrating;
+        /**
+         * @brief Gets the current y axis acceleration value
+         *
+         * @return (float) The current y axis acceleration
+        */
+        float get_accel_y() const { return accel_y; }
 
-    void writeRegister(uint8_t reg, uint8_t data);
-    void readRegisters(uint8_t reg, uint8_t *data, size_t len);
+        /**
+         * @brief Gets the current z axis acceleration value
+         *
+         * @return (float) The current z axis acceleration
+        */
+        float get_accel_z() const { return accel_z; }
 
-    uint64_t millis() const { return xTaskGetTickCount() * portTICK_PERIOD_MS; }
+        /**
+         * @brief Gets the current x axis gyroscope value
+         *
+         * @return (float) The current x axis rotation speed
+        */
+        float get_gyro_x() const { return gyro_x; }
 
-public:
-    Gyro();
-    ~Gyro() = default;
+        /**
+         * @brief Gets the current y axis gyroscope value
+         *
+         * @return (float) The current Y axis rotation speed
+        */
+        float get_gyro_y() const { return gyro_y; }
 
-    void calibrate();
-    bool isCalibrating() const { return calibrating; }
+        /**
+         * @brief Gets the current z axis gyroscope value
+         *
+         * @return (float) The current z axis rotation speed
+        */
+        float get_gyro_z() const { return gyro_z; }
 
-    void update(bool ignore_is_calibrating = false);
-
-    float getPitch() const { return pitch_total; }
-    float getYaw() const { return yaw_total; }
-    float getRoll() const { return roll_total; }
-};
+        /**
+         * @brief Gets the current temperature value
+         *
+         * @return (float) The current temperature (in degrees celsius)
+        */
+        float get_temperature() const { return temperature; }
+    };
+}

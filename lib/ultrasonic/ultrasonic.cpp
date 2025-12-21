@@ -21,10 +21,16 @@ namespace Boboter::Libs::Ultrasonic {
         using namespace Boboter::Libs::Error;
     
         ERROR_CHECK(TAG, gpio_reset_pin(TRIGGER_PIN));
-        ERROR_CHECK(TAG, gpio_set_direction(TRIGGER_PIN, GPIO_MODE_OUTPUT));
+        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+            .pin_bit_mask = (1ull << TRIGGER_PIN),
+            .mode = GPIO_MODE_OUTPUT
+        }));
     
         ERROR_CHECK(TAG, gpio_reset_pin(ECHO_PIN));
-        ERROR_CHECK(TAG, gpio_set_direction(ECHO_PIN, GPIO_MODE_INPUT));
+        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+            .pin_bit_mask = (1ull << ECHO_PIN),
+            .mode = GPIO_MODE_INPUT
+        }));
     
         LOGI(TAG, "Initialized Ultrasonic");
     }
