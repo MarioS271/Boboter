@@ -47,11 +47,15 @@ namespace Boboter::Libs::Motor {
                 abort();
         }
     
-        ERROR_CHECK(TAG, gpio_reset_pin(direction_pin));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+        gpio_config_t config = {
             .pin_bit_mask = (1ull << direction_pin),
-            .mode = GPIO_MODE_OUTPUT
-        }));
+            .mode = GPIO_MODE_OUTPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE
+        };
+        ERROR_CHECK(TAG, gpio_reset_pin(direction_pin));
+        ERROR_CHECK(TAG, gpio_config(&config));
     
         ledc_timer_config_t ledc_timer_conf = {};
         ledc_timer_conf.speed_mode = LEDC_SPEED_MODE;
@@ -112,7 +116,7 @@ namespace Boboter::Libs::Motor {
         }
     }
     
-    void Motor::setSpeed(uint16_t speed) {
+    void Motor::set_speed(uint16_t speed) {
         using namespace Boboter::Libs::Motor::Constants;
 
         if (speed > MAX_MOTOR_SPEED)
@@ -121,13 +125,13 @@ namespace Boboter::Libs::Motor {
         target_speed = speed;
     }
     
-    void Motor::setDirection(Boboter::Types::Motor::Direction direction) {
+    void Motor::set_direction(Boboter::Types::Motor::Direction direction) {
         using namespace Boboter::Types::Motor;
         using namespace Boboter::Libs::Error;
         
         WARN_CHECK(TAG, gpio_set_level(
             direction_pin,
-            getActualDirection(direction) == Direction::FORWARD ? 1 : 0
+            get_actual_direction(direction) == Direction::FORWARD ? 1 : 0
         ));
         current_direction = direction;
     }

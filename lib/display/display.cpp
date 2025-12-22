@@ -60,7 +60,7 @@ namespace Boboter::Libs::Display {
         uint8_t y = cursor_y;
 
         for (char c : text) {
-            char glyph = static_cast<char>(c);
+            uint8_t glyph = static_cast<uint8_t>(c);
 
             if (glyph >= 128)
                 glyph = '?';

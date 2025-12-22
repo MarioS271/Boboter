@@ -17,19 +17,23 @@ namespace Boboter::Libs::RGB_Leds {
         using namespace Boboter::Libs::Logger;
         using namespace Boboter::Libs::Error;
     
+        gpio_config_t config = {
+            .pin_bit_mask = (1ull << MOSI_PIN) | (1ull << CLK_PIN),
+            .mode = GPIO_MODE_OUTPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE
+        };
         ERROR_CHECK(TAG, gpio_reset_pin(MOSI_PIN));
         ERROR_CHECK(TAG, gpio_reset_pin(CLK_PIN));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
-            .pin_bit_mask = (1ull << MOSI_PIN) | (1ull << CLK_PIN),
-            .mode = GPIO_MODE_OUTPUT
-        }));
+        ERROR_CHECK(TAG, gpio_config(&config));
     
-        allOff();
+        all_off();
     
         LOGI(TAG, "Initialized RGB LEDs");
     }
     
-    void RGB_Leds::setColor(Boboter::Types::RGB_Leds::Id led_id, Boboter::Types::rgb_color_t color) {
+    void RGB_Leds::set_color(Boboter::Types::RGB_Leds::Id led_id, Boboter::Types::rgb_color_t color) {
         using namespace Boboter::Libs::Logger;
 
         if (led_id >= 4) {
@@ -41,7 +45,7 @@ namespace Boboter::Libs::RGB_Leds {
         update();
     }
     
-    void RGB_Leds::setOff(Boboter::Types::RGB_Leds::Id led_id) {
+    void RGB_Leds::set_off(Boboter::Types::RGB_Leds::Id led_id) {
         using namespace Boboter::Libs::Logger;
 
         if (led_id >= 4) {
@@ -49,20 +53,20 @@ namespace Boboter::Libs::RGB_Leds {
             return;
         }
     
-        setColor(led_id, Boboter::Helpers::Colors::OFF);
+        set_color(led_id, Boboter::Helpers::Colors::OFF);
     }
     
-    void RGB_Leds::setAll(Boboter::Types::rgb_color_t color) {
+    void RGB_Leds::set_all(Boboter::Types::rgb_color_t color) {
         for (int i = 0; i < 4; i++)
             leds[i] = color;
         update();
     }
     
-    void RGB_Leds::allOff() {
-        setAll(Boboter::Helpers::Colors::OFF);
+    void RGB_Leds::all_off() {
+        set_all(Boboter::Helpers::Colors::OFF);
     }
     
-    Boboter::Types::rgb_color_t RGB_Leds::getColor(Boboter::Types::RGB_Leds::Id led_id) {
+    Boboter::Types::rgb_color_t RGB_Leds::get_color(Boboter::Types::RGB_Leds::Id led_id) {
         using namespace Boboter::Libs::Logger;
 
         if (led_id >= 4) {

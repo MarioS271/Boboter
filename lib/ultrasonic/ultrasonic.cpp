@@ -20,22 +20,30 @@ namespace Boboter::Libs::Ultrasonic {
         using namespace Boboter::Libs::Logger;
         using namespace Boboter::Libs::Error;
     
-        ERROR_CHECK(TAG, gpio_reset_pin(TRIGGER_PIN));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+        gpio_config_t config_trigger = {
             .pin_bit_mask = (1ull << TRIGGER_PIN),
-            .mode = GPIO_MODE_OUTPUT
-        }));
-    
-        ERROR_CHECK(TAG, gpio_reset_pin(ECHO_PIN));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+            .mode = GPIO_MODE_OUTPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE
+        };
+        ERROR_CHECK(TAG, gpio_reset_pin(TRIGGER_PIN));
+        ERROR_CHECK(TAG, gpio_config(&config_trigger));
+
+        gpio_config_t config_echo = {
             .pin_bit_mask = (1ull << ECHO_PIN),
-            .mode = GPIO_MODE_INPUT
-        }));
+            .mode = GPIO_MODE_INPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE
+        };
+        ERROR_CHECK(TAG, gpio_reset_pin(ECHO_PIN));
+        ERROR_CHECK(TAG, gpio_config(&config_echo));
     
         LOGI(TAG, "Initialized Ultrasonic");
     }
     
-    float Ultrasonic::measureCm() {
+    float Ultrasonic::measure_cm() {
         using namespace Config;
         
         gpio_set_level(TRIGGER_PIN, 0);

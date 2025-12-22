@@ -18,11 +18,15 @@ namespace Boboter::Libs::Linefollower {
         using namespace Boboter::Libs::Logger;
         using namespace Boboter::Libs::Error;
 
-        ERROR_CHECK(TAG, gpio_reset_pin(LF_RIGHT_LEFT_PIN));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+        gpio_config_t config = {
             .pin_bit_mask = (1ull << LF_RIGHT_LEFT_PIN),
-            .mode = GPIO_MODE_OUTPUT
-        }));
+            .mode = GPIO_MODE_OUTPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE
+        };
+        ERROR_CHECK(TAG, gpio_reset_pin(LF_RIGHT_LEFT_PIN));
+        ERROR_CHECK(TAG, gpio_config(&config));
     
         adc_unit = ADC_Config::adc_handle;
         cal_handle = ADC_Config::cal_handle;

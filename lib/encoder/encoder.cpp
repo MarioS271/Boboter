@@ -13,11 +13,13 @@
 
 namespace Boboter::Libs::Encoder {
     namespace Internal {
-        void IRAM_ATTR encoder_isr_handler(void* arg) {
+        void encoder_isr_handler(void* arg) {
             Encoder* enc = reinterpret_cast<Encoder*>(arg);
             enc->pulse_count += 1;
         }
     }
+
+    bool Encoder::isr_service_installed = false;
 
     Encoder::Encoder(Boboter::Types::Encoder::Id encoder_id)
     : encoder_id(encoder_id),
@@ -44,12 +46,15 @@ namespace Boboter::Libs::Encoder {
                 abort();
         }
     
-        ERROR_CHECK(TAG, gpio_reset_pin(encoder_pin));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+        gpio_config_t config = {
             .pin_bit_mask = (1ull << encoder_pin),
             .mode = GPIO_MODE_INPUT,
-            .intr_type = GPIO_INTR_POSEDGE,
-        }));
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_POSEDGE
+        };
+        ERROR_CHECK(TAG, gpio_reset_pin(encoder_pin));
+        ERROR_CHECK(TAG, gpio_config(&config));
     
         if (!isr_service_installed) {
             ERROR_CHECK(TAG, gpio_install_isr_service(0));

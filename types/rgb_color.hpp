@@ -11,7 +11,7 @@
 
 namespace Boboter::Types {
     /**
-     * @struct RGB_Color
+     * @struct rgb_color_t
      * @brief Type to represent an RGB color with 16-bit depth per channel
     */
     struct rgb_color_t {

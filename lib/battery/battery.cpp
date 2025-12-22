@@ -13,12 +13,16 @@
 #include "lib/error/error.hpp"
 
 namespace Boboter::Libs::Battery {
-    Battery::Battery() {
+    Battery::Battery()
+    : adc_unit(nullptr),
+      cal_handle(nullptr),
+      voltage_mv(0),
+      percentage(0)
+    {
         using namespace Config;
+        namespace ADC_Config = Boboter::Helpers::ADC::Config;
         using namespace Boboter::Libs::Logger;
         using namespace Boboter::Libs::Error;
-
-        namespace ADC_Config = Boboter::Helpers::ADC::Config;
 
         ERROR_CHECK(TAG, gpio_reset_pin(ADC_GPIO));
 

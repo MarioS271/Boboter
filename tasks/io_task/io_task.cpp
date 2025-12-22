@@ -5,30 +5,25 @@
  * @copyright MIT License
 */
 
-#include "tasks/io_task/io_task.hpp"
+#include "io_task.hpp"
 
-#include <esp_timer.h>
-#include "types/system_context.hpp"
-#include "types/flex.hpp"
 #include "helpers/delay.hpp"
 
-#include "lib/battery/battery.hpp"
-#include "lib/other_leds/other_leds.hpp"
-#include "lib/display/display.hpp"
-#include "lib/buzzer/buzzer.hpp"
-#include "lib/button/button.hpp"
-
 void Boboter::Tasks::IO::task(void* params) {
-    using namespace Constants;
-    using namespace Boboter::Types;
-    using namespace Boboter::Libs::Display;
-    using namespace Boboter::Libs::Button;
+    while (true) {
+        Boboter::Helpers::delay(1000);
+    }
 
-    SystemContext* ctx = static_cast<SystemContext*>(params);
-    Display& display = ctx->display;
-    Buzzer& buzzer = ctx->buzzer;
-    Button& button_primary = ctx->button_primary;
-    Button& button_secondary = ctx->button_secondary;
+    // using namespace Constants;
+    // using namespace Boboter::Types;
+    // using namespace Boboter::Libs::Display;
+    // using namespace Boboter::Libs::Button;
+
+    // SystemContext* ctx = static_cast<SystemContext*>(params);
+    // Display& display = ctx->display;
+    // Buzzer& buzzer = ctx->buzzer;
+    // Button& button_primary = ctx->button_primary;
+    // Button& button_secondary = ctx->button_secondary;
 
     // SystemContext* ctx = static_cast<SystemContext*>(params);
     // FlexStruct &ownFlex = ctx->ioShieldFlex;

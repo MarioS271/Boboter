@@ -23,9 +23,9 @@ namespace Boboter::Libs::RGB_Leds {
     private:
         static constexpr const char* TAG = "Libs::RGB_Leds";
     
-        void sendBit(bool bit);
-        void sendByte(uint8_t byte);
-        void sendFrame(Boboter::Types::rgb_color_t color);
+        void send_bit(bool bit);
+        void send_byte(uint8_t byte);
+        void send_frame(Boboter::Types::rgb_color_t color);
         void update();
 
         Boboter::Types::rgb_color_t leds[Config::NUM_LEDS] = {};
@@ -42,7 +42,7 @@ namespace Boboter::Libs::RGB_Leds {
          * @param led_id The id of the LED of which to set the color
          * @param color The color to set the LED to
         */
-        void setColor(Boboter::Types::RGB_Leds::Id led_id, Boboter::Types::rgb_color_t color);
+        void set_color(Boboter::Types::RGB_Leds::Id led_id, Boboter::Types::rgb_color_t color);
 
         /**
          * @brief Sets the color of all LEDs
@@ -51,7 +51,7 @@ namespace Boboter::Libs::RGB_Leds {
          *
          * @param color The color to set the LEDs to
         */
-        void setAll(Boboter::Types::rgb_color_t color);
+        void set_all(Boboter::Types::rgb_color_t color);
 
         /**
          * @brief Turns off one LED
@@ -60,14 +60,14 @@ namespace Boboter::Libs::RGB_Leds {
          *
          * @param led_id The id of the LED to turn off
         */
-        void setOff(Boboter::Types::RGB_Leds::Id led_id);
+        void set_off(Boboter::Types::RGB_Leds::Id led_id);
 
         /**
          * @brief Turns off all LEDs
          *
          * @return (void)  
         */
-        void allOff();
+        void all_off();
     
         /**
          * @brief Gets the currently set color of one LED
@@ -76,6 +76,6 @@ namespace Boboter::Libs::RGB_Leds {
          *
          * @param led_id The id of the LED of which to fetch the color
         */
-        Boboter::Types::rgb_color_t getColor(Boboter::Types::RGB_Leds::Id led_id);
+        Boboter::Types::rgb_color_t get_color(Boboter::Types::RGB_Leds::Id led_id);
     };
 }

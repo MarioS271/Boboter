@@ -66,13 +66,13 @@ namespace Boboter::Libs::Motor {
     
         void stop(bool wait = true);
         
-        void setSpeed(uint16_t speed);
-        void setDirection(Boboter::Types::Motor::Direction direction);
+        void set_speed(uint16_t speed);
+        void set_direction(Boboter::Types::Motor::Direction direction);
     
-        uint16_t getSpeed() const { return current_speed; }
-        Boboter::Types::Motor::Direction getDirection() const { return current_direction; }
+        uint16_t get_speed() const { return current_speed; }
+        Boboter::Types::Motor::Direction get_direction() const { return current_direction; }
 
-        Boboter::Types::Motor::Direction getActualDirection(Boboter::Types::Motor::Direction apparent_direction) const
+        Boboter::Types::Motor::Direction get_actual_direction(Boboter::Types::Motor::Direction apparent_direction) const
         { return static_cast<Boboter::Types::Motor::Direction>(apparent_direction ^ inverse_direction); }
     };
 }

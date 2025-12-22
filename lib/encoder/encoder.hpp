@@ -29,9 +29,10 @@ namespace Boboter::Libs::Encoder {
         
         Boboter::Types::Encoder::Id encoder_id;
         gpio_num_t encoder_pin;
+
         static bool isr_service_installed;
         
-        friend void IRAM_ATTR Internal::encoder_isr_handler(void* arg);
+        friend void Internal::encoder_isr_handler(void* arg);
         std::atomic<int32_t> pulse_count;
     
     public:
@@ -43,13 +44,13 @@ namespace Boboter::Libs::Encoder {
          *
          * @return (int32_t) The pulse count
         */
-        int32_t getPulseCount() const { return pulse_count; }
+        int32_t get_pulse_count() const { return pulse_count; }
 
         /**
          * @brief Resets the pulse count back to zero
          *
          * @return (void)  
         */
-        void resetPulseCount() { pulse_count = 0; }
+        void reset_pulse_count() { pulse_count = 0; }
     };
 }

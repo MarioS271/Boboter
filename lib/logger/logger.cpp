@@ -19,7 +19,7 @@ namespace Boboter::Libs::Logger::Internal {
     {
         if (level > esp_log_level_get(tag)) return;
     
-        va_list args, args2;
+        va_list args;
         va_start(args, format);
     
         char log_level_char;

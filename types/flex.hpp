@@ -22,6 +22,7 @@ namespace Boboter::Types {
 
         std::unordered_map<std::string, void*> resources;
         std::unordered_map<std::string, size_t> sizes;
+        std::unordered_map<std::string, void(*)(void*)> deleters;
         mutable SemaphoreHandle_t mutex;
 
     public:
@@ -37,7 +38,7 @@ namespace Boboter::Types {
             xSemaphoreTake(mutex, portMAX_DELAY);
             
             for (auto& pair : resources)
-                delete pair.second;
+                deleters[pair.first](pair.second);
             
             resources.clear();
             sizes.clear();
@@ -61,11 +62,14 @@ namespace Boboter::Types {
             xSemaphoreTake(mutex, portMAX_DELAY);
 
             auto it = resources.find(key);
-            if (it != resources.end())
-                delete static_cast<T*>(it->second);
+            if (it != resources.end()) {
+                deleters[key](it->second);
+            }
 
             resources[key] = new T(value);
-            sizes[key] = sizeof(T);
+            deleters[key] = [](void* ptr) {
+                delete static_cast<T*>(ptr);
+            };
 
             xSemaphoreGive(mutex);
         }

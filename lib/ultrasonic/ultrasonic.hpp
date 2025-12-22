@@ -26,8 +26,8 @@ namespace Boboter::Libs::Ultrasonic {
         /**
          * @brief Measures and returns the distance from the sensor
          *
-         * @return (float) Distance in cm
+         * @return (float) Distance in CM
         */
-        float measureCm();
+        float measure_cm();
     };
 }

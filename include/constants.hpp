@@ -12,7 +12,7 @@
 namespace Boboter::Main::Constants {
     constexpr const char* TAG = "Main";
 
-    constexpr uint8_t SECURE_TASK_PRIORITY = 25;
+    constexpr uint8_t SECURE_TASK_PRIORITY = 24;
     constexpr uint16_t SECURE_TASK_STACK_DEPTH = 1024;
     
     constexpr uint8_t SYSTEM_TASK_PRIORITY = 7;
@@ -25,7 +25,7 @@ namespace Boboter::Main::Constants {
     constexpr uint16_t IO_TASK_STACK_DEPTH = 2048;
 
     constexpr uint8_t BLUEPAD_TASK_PRIORITY = 8;
-    constexpr uint16_t BLUEPAD_STACK_DEPTH = 4096;
+    constexpr uint16_t BLUEPAD_TASK_STACK_DEPTH = 4096;
 
     constexpr uint8_t LEDS_TASK_PRIORITY = 5;
     constexpr uint16_t LEDS_TASK_STACK_DEPTH = 2048;

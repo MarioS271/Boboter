@@ -33,6 +33,6 @@ namespace Boboter::Libs::Bumper {
          *
          * @return (bool) The state of the bumper (false -> not hit, true -> hit)
         */
-        bool isHit() const { return !gpio_get_level(bumper_pin); }
+        bool is_hit() const { return !gpio_get_level(bumper_pin); }
     };
 }

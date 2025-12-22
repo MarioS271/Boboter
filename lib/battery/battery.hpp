@@ -22,11 +22,11 @@ namespace Boboter::Libs::Battery {
     private:
         static constexpr const char* TAG = "Libs::Battery";
         
-        adc_oneshot_unit_handle_t adc_unit = nullptr;
-        adc_cali_handle_t cal_handle = nullptr;
+        adc_oneshot_unit_handle_t adc_unit;
+        adc_cali_handle_t cal_handle;
 
-        uint16_t voltage_mv = 0;
-        uint8_t percentage = 0;
+        uint16_t voltage_mv;
+        uint8_t percentage;
 
     public:
         explicit Battery();
@@ -44,13 +44,13 @@ namespace Boboter::Libs::Battery {
          *
          * @return (uint8_t) The percentage
         */
-        uint8_t getPercentage() const { return percentage; }
+        uint8_t get_percentage() const { return percentage; }
 
         /**
          * @brief Returns the current battery voltage in millivolts
          *
          * @return (uint16_t) The voltage
         */
-        uint16_t getVoltageMv() const { return voltage_mv; }
+        uint16_t get_voltage_mv() const { return voltage_mv; }
     };
 }

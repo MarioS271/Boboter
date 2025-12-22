@@ -15,7 +15,7 @@ namespace Boboter::Libs::Button {
     namespace Config {
         constexpr gpio_num_t PRIMARY_PIN = GPIO_NUM_16;
         constexpr gpio_num_t SECONDARY_PIN = GPIO_NUM_17;
-        constexpr uint8_t DEBOUNCE_US = 250'000;
+        constexpr uint32_t DEBOUNCE_US = 250'000;
     }
 
     class Button {

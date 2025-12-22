@@ -33,7 +33,7 @@ namespace Boboter::Libs::OtherLeds {
          *
          * @param new_state The new state to set the LED to
         */
-        void setStatusLed(bool new_state);
+        void set_status_led(bool new_state);
 
         /**
          * @brief Sets the state of the bottom LED
@@ -42,20 +42,20 @@ namespace Boboter::Libs::OtherLeds {
          *
          * @param new_state The new state to set the LED to
         */
-        void setBottomLed(bool new_state);
+        void set_bottom_led(bool new_state);
 
         /**
          * @brief Gets the current state of the status LED
          *
          * @return (bool) The state of the LED
         */
-        bool getStatusLed() const { return status_led_state; }
+        bool get_status_led() const { return status_led_state; }
 
         /**
          * @brief Gets the current state of the bottom LED
          *
          * @return (bool) The state of the LED
         */
-        bool getBottomLed() const { return bottom_led_state; }
+        bool get_bottom_led() const { return bottom_led_state; }
     };
 }

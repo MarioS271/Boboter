@@ -37,11 +37,15 @@ namespace Boboter::Libs::Button {
                 abort();
         }
 
-        ERROR_CHECK(TAG, gpio_reset_pin(button_pin));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+        gpio_config_t config = {
             .pin_bit_mask = (1ull << button_pin),
-            .mode = GPIO_MODE_INPUT
-        }));
+            .mode = GPIO_MODE_INPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE
+        };
+        ERROR_CHECK(TAG, gpio_reset_pin(button_pin));
+        ERROR_CHECK(TAG, gpio_config(&config));
     }
 
     bool Button::get_debounced_press() {

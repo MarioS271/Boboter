@@ -1,6 +1,8 @@
 /**
  * @file main.cpp
+ *
  * @authors MarioS271
+ * @copyright MIT License
 */
 
 #include <cstdio>
@@ -9,6 +11,7 @@
 #include <cstdarg>
 #include <cmath>
 #include <string>
+#include <vector>
 #include <atomic>
 #include <algorithm>
 #include <unordered_map>
@@ -29,6 +32,9 @@
 
 #include "types/flex.hpp"
 #include "types/system_context.hpp"
+#include "types/rgb_color.hpp"
+#include "types/note.hpp"
+#include "types/sound.hpp"
 
 #include "helpers/map.hpp"
 #include "helpers/delay.hpp"
@@ -41,32 +47,35 @@
 #include "lib/battery/battery.hpp"
 #include "lib/rgb_leds/rgb_leds.hpp"
 #include "lib/other_leds/other_leds.hpp"
-#include "lib/pid_controller/pid_controller.hpp"
+// #include "lib/pid_controller/pid_controller.hpp"
 #include "lib/motor/motor.hpp"
 #include "lib/encoder/encoder.hpp"
 #include "lib/bumper/bumper.hpp"
 #include "lib/ultrasonic/ultrasonic.hpp"
 #include "lib/gyro/gyro.hpp"
 #include "lib/magnetometer/magnetometer.hpp"
-#include "lib/colorsensor/colorsensor.hpp"
+// #include "lib/colorsensor/colorsensor.hpp"
 #include "lib/linefollower/linefollower.hpp"
 #include "lib/display/display.hpp"
 #include "lib/buzzer/buzzer.hpp"
 #include "lib/button/button.hpp"
-#include "lib/bluepad/bluepad.hpp"
 
+#include "tasks/secure_task/secure_task.hpp"
+// #include "tasks/system_task/system_task.hpp"
+// #include "tasks/pid_task/pid_task.hpp"
+// #include "tasks/io_task/io_task.hpp"
+// #include "tasks/leds_task/leds_task.hpp"
+// #include "tasks/buzzer_task/buzzer_task.hpp"
 #include "tasks/sensor_test_task/sensor_test_task.hpp"
-#include "tasks/leds_task/leds_task.hpp"
 
 
 extern "C" void app_main() {
     using namespace Boboter::Main;
     using namespace Boboter::Main::Constants;
     using namespace Boboter::Types;
-    using Boboter::Helpers::delay;
     using namespace Boboter::Libs::Logger;
 
-    delay(500);
+    Boboter::Helpers::delay(500);
 
     LOGI(TAG, " === BOBOTER is starting ===");
     LOGI(TAG, "Hello, World!");
@@ -81,9 +90,9 @@ extern "C" void app_main() {
     static Boboter::Libs::Battery::Battery battery;
     static Boboter::Libs::RGB_Leds::RGB_Leds rgb_leds;
     static Boboter::Libs::OtherLeds::OtherLeds other_leds;
-    static Boboter::Libs::PID_Controller::PID_Controller pid_controller;
-    static Boboter::Libs::Motor::Motor motor_left(Boboter::Types::Motor::Id::LEFT);
-    static Boboter::Libs::Motor::Motor motor_right(Boboter::Types::Motor::Id::RIGHT);
+    // static Boboter::Libs::PID_Controller::PID_Controller pid_controller;
+    static Boboter::Libs::Motor::Motor motor_left(Boboter::Types::Motor::Id::LEFT, true);
+    static Boboter::Libs::Motor::Motor motor_right(Boboter::Types::Motor::Id::RIGHT, false);
     static Boboter::Libs::Encoder::Encoder encoder_left(Boboter::Types::Encoder::Id::LEFT);
     static Boboter::Libs::Encoder::Encoder encoder_right(Boboter::Types::Encoder::Id::RIGHT);
     static Boboter::Libs::Bumper::Bumper bumper_left(Boboter::Types::Bumper::Id::LEFT);
@@ -91,13 +100,12 @@ extern "C" void app_main() {
     static Boboter::Libs::Ultrasonic::Ultrasonic ultrasonic;
     static Boboter::Libs::Gyro::Gyro gyro;
     static Boboter::Libs::Magnetometer::Magnetometer magnetometer;
-    static Boboter::Libs::Colorsensor::Colorsensor colorsensor;
+    // static Boboter::Libs::Colorsensor::Colorsensor colorsensor;
     static Boboter::Libs::Linefollower::Linefollower linefollower;
     static Boboter::Libs::Display::Display display;
     static Boboter::Libs::Buzzer::Buzzer buzzer;
     static Boboter::Libs::Button::Button button_primary(Boboter::Types::Button::Id::PRIMARY);
     static Boboter::Libs::Button::Button button_secondary(Boboter::Types::Button::Id::SECONDARY);
-    static Boboter::Libs::Bluepad::Bluepad bluepad;
 
     LOGI(TAG, "Created all Objects successfully");
 
@@ -105,7 +113,7 @@ extern "C" void app_main() {
         .battery = battery,
         .rgb_leds = rgb_leds,
         .other_leds = other_leds,
-        .pid_controller = pid_controller,
+        // .pid_controller = pid_controller,
         .motor_left = motor_left,
         .motor_right = motor_right,
         .encoder_left = encoder_left,
@@ -115,20 +123,19 @@ extern "C" void app_main() {
         .ultrasonic = ultrasonic,
         .gyro = gyro,
         .magnetometer = magnetometer,
-        .colorsensor = colorsensor,
+        // .colorsensor = colorsensor,
         .linefollower = linefollower,
         .display = display,
         .buzzer = buzzer,
         .button_primary = button_primary,
         .button_secondary = button_secondary,
-        .bluepad = bluepad,
         
-        .settings_flex = flex(),
-        .drive_flex = flex()
+        .system_flex = flex(),
+        .buzzer_flex = flex(),
     };
 
     LOGI(TAG, "Created SystemContext");
-    LOGI(TAG, "Starting FreeRTOS Task(s)");
+    LOGI(TAG, "Starting FreeRTOS Tasks");
     
     // Secure Task
     xTaskCreate(
@@ -140,15 +147,15 @@ extern "C" void app_main() {
         nullptr
     );
 
-    // System Task
-    xTaskCreate(
-        Boboter::Tasks::System::task,
-        "SystemTask",
-        SYSTEM_TASK_STACK_DEPTH,
-        &sysctx,
-        SYSTEM_TASK_PRIORITY,
-        nullptr
-    );
+    // // System Task
+    // xTaskCreate(
+    //     Boboter::Tasks::System::task,
+    //     "SystemTask",
+    //     SYSTEM_TASK_STACK_DEPTH,
+    //     &sysctx,
+    //     SYSTEM_TASK_PRIORITY,
+    //     nullptr
+    // );
 
     // Sensor Test Task
     if (Flags::ENABLE_SENSOR_TEST_MODE) {
@@ -163,55 +170,45 @@ extern "C" void app_main() {
         vTaskDelete(nullptr);
     }
 
-    // PID Task
-    xTaskCreate(
-        Boboter::Tasks::PID::task,
-        "PID_Task",
-        PID_TASK_STACK_DEPTH,
-        &sysctx,
-        PID_TASK_PRIORITY,
-        nullptr
-    );
+    // // PID Task
+    // xTaskCreate(
+    //     Boboter::Tasks::PID::task,
+    //     "PID_Task",
+    //     PID_TASK_STACK_DEPTH,
+    //     &sysctx,
+    //     PID_TASK_PRIORITY,
+    //     nullptr
+    // );
 
-    // IO Task
-    xTaskCreate(
-        Boboter::Tasks::IO::task,
-        "IO_Task",
-        IO_TASK_STACK_DEPTH,
-        &sysctx,
-        IO_TASK_PRIORITY,
-        nullptr
-    );
+    // // IO Task
+    // xTaskCreate(
+    //     Boboter::Tasks::IO::task,
+    //     "IO_Task",
+    //     IO_TASK_STACK_DEPTH,
+    //     &sysctx,
+    //     IO_TASK_PRIORITY,
+    //     nullptr
+    // );
 
-    // Bluepad Task
-    xTaskCreate(
-        Boboter::Tasks::Bluepad::task,
-        "Task",
-        BLUEPAD_TASK_STACK_DEPTH,
-        &sysctx,
-        BLUEPAD_TASK_PRIORITY,
-        nullptr
-    );
+    // // LEDs Task
+    // xTaskCreate(
+    //     Boboter::Tasks::Leds::task,
+    //     "LEDs_Task",
+    //     LEDS_TASK_STACK_DEPTH,
+    //     &sysctx,
+    //     LEDS_TASK_PRIORITY,
+    //     nullptr
+    // );
 
-    // LEDs Task
-    xTaskCreate(
-        Boboter::Tasks::Leds::task,
-        "LEDs_Task",
-        LEDS_TASK_STACK_DEPTH,
-        &sysctx,
-        LEDS_TASK_PRIORITY,
-        nullptr
-    );
-
-    // Buzzer Task
-    xTaskCreate(
-        Boboter::Tasks::Buzzer::task,
-        "BuzzerTask",
-        BUZZER_TASK_STACK_DEPTH,
-        &sysctx,
-        BUZZER_TASK_PRIORITY,
-        nullptr
-    );
+    // // Buzzer Task
+    // xTaskCreate(
+    //     Boboter::Tasks::Buzzer::task,
+    //     "BuzzerTask",
+    //     BUZZER_TASK_STACK_DEPTH,
+    //     &sysctx,
+    //     BUZZER_TASK_PRIORITY,
+    //     nullptr
+    // );
 
     vTaskDelete(nullptr);
 }

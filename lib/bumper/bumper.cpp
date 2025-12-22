@@ -35,10 +35,14 @@ namespace Boboter::Libs::Bumper {
                 abort();
         }
     
-        ERROR_CHECK(TAG, gpio_reset_pin(bumper_pin));
-        ERROR_CHECK(TAG, gpio_config(&(gpio_config_t){
+        gpio_config_t config = {
             .pin_bit_mask = (1ull << bumper_pin),
             .mode = GPIO_MODE_INPUT,
-        }));
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE
+        };
+        ERROR_CHECK(TAG, gpio_reset_pin(bumper_pin));
+        ERROR_CHECK(TAG, gpio_config(&config));
     }
 }

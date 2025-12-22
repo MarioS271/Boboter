@@ -18,10 +18,11 @@ namespace Boboter::Libs::Buzzer {
 
         ledc_timer_config_t timer_config = {
             .speed_mode = LEDC_SPEED_MODE,
-            .duty_resolution = LEDC_TIMER_BITS,
+            .duty_resolution = LEDC_TIMER_10_BIT,
             .timer_num = LEDC_TIMER,
             .freq_hz = 1000,
-            .clk_cfg = LEDC_CLOCK
+            .clk_cfg = LEDC_AUTO_CLK,
+            .deconfigure = false
         };
         ERROR_CHECK(TAG, ledc_timer_config(&timer_config));
 
@@ -32,7 +33,9 @@ namespace Boboter::Libs::Buzzer {
             .intr_type = LEDC_INTR_DISABLE,
             .timer_sel = LEDC_TIMER,
             .duty = 0,
-            .hpoint = 0
+            .hpoint = 0,
+            .sleep_mode = LEDC_SLEEP_MODE_NO_ALIVE_NO_PD,
+            .flags = { .output_invert = 1 }
         };
         ERROR_CHECK(TAG, ledc_channel_config(&channel_config));
 

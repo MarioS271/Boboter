@@ -4,11 +4,10 @@ The firmware is segmented into a few FreeRTOS tasks to seperate and categorize t
 Here is an overview of all tasks:
 | Task Name         | Priority | Stack Depth | When is it created | Where is it created | On what condition is it created (- for none) |
 |-------------------|----------|-------------|--------------------|---------------------|----------------------------------------------|
-| Secure Task       | 25 | 1024 | Once | `src/main.cpp` | - |
+| Secure Task       | 24 | 1024 | Once | `src/main.cpp` | - |
 | System Task       | 20 | 2048 | Once | `src/main.cpp` | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
 | PID Task          | 15 | 4096 | Once | `src/main.cpp` | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| IO Task           | 10 | 2048 | Once | `src/main.cpp` | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| Bluepad Task      |  8 | 4096 | Once | `src/main.cpp` | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
+| IO Task           |  8 | 2048 | Once | `src/main.cpp` | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
 | LEDs Task         |  5 | 2048 | Once | `src/main.cpp` | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
 | Buzzer Task       |  1 | 1024 | Once | `src/main.cpp` | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
 | Ramp Task         | 14 | 2048 | Once for each instance of the `Motor` class | `libs/motor/motor.cpp` | - |
@@ -33,9 +32,6 @@ directly controls the PWM output to the motors.
 ### IO Task
 Manages user interaction via the SSD1306 OLED display and two buttons.
 Additionally, this task handles outputs such as the buzzer or the status LED.
-
-### Bluepad Task
-Receives and processes Bluetooth Gamepad Inputs.
 
 ### LEDs Task
 Manages the NeoPixel RGB LEDs and executes lighting routines.
