@@ -7,6 +7,7 @@
 
 #include "include/hal/adc.h"
 
+#include <array>
 #include <algorithm>
 
 #include <driver/gpio.h>
@@ -139,7 +140,7 @@ namespace ADC {
         return found;
     }
 
-    uint16_t Controller::read_raw(const std::optional<adc_channel_t> adc_channel) const {
+    uint16_t Controller::read_raw(const std::optional<adc_channel_t> adc_channel, uint16_t samples) const {
         CHECK_FOR_NULLOPT(adc_channel);
 
         if (!is_registered(adc_channel)) {
@@ -147,16 +148,23 @@ namespace ADC {
             return 0;
         }
 
-        int raw_value = 0;
-        WARN_CHECK(adc_oneshot_read(adc_handle, adc_channel.value(), &raw_value));
+        int raw_value;
+        uint32_t average_value = 0;
 
-        return static_cast<uint16_t>(raw_value);
+        for (uint16_t i = 0; i < samples; ++i) {
+            WARN_CHECK(adc_oneshot_read(adc_handle, adc_channel.value(), &raw_value));
+            average_value += raw_value;
+        }
+
+        average_value /= samples;
+
+        return static_cast<uint16_t>(average_value);
     }
 
-    uint16_t Controller::read_millivolts(const std::optional<adc_channel_t> adc_channel) const {
+    uint16_t Controller::read_millivolts(const std::optional<adc_channel_t> adc_channel, uint16_t samples) const {
         CHECK_FOR_NULLOPT(adc_channel);
 
-        uint16_t raw_value = read_raw(adc_channel);
+        uint16_t raw_value = read_raw(adc_channel, samples);
         int voltage_mv = 0;
 
         if (cali_handle != nullptr) {

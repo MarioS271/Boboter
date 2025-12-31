@@ -95,8 +95,9 @@ namespace ADC {
          * @return The raw ADC reading
          *
          * @param adc_channel The ADC channel to read from
+         * @param samples The amount of samples to take when reading (default: 1)
          */
-        [[nodiscard]] uint16_t read_raw(std::optional<adc_channel_t> adc_channel) const;
+        [[nodiscard]] uint16_t read_raw(std::optional<adc_channel_t> adc_channel, uint16_t samples = 1) const;
 
         /**
          * @brief Reads the current voltage in millivolts
@@ -105,7 +106,8 @@ namespace ADC {
          * @return The voltage in millivolts
          * 
          * @param adc_channel The ADC channel to read from
+         * @param samples The amount of samples to take when reading (default: 1)
          */
-        [[nodiscard]] uint16_t read_millivolts(std::optional<adc_channel_t> adc_channel) const;
+        [[nodiscard]] uint16_t read_millivolts(std::optional<adc_channel_t> adc_channel, uint16_t samples = 1) const;
     };
 }
