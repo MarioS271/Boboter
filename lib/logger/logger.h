@@ -11,8 +11,6 @@
 /**
  * @brief Callback for custom logging
  *
- * @return (void)  
- *
  * @param level The log level
  * @param tag The tag to use
  * @param format The content to log (using same formatting as printf)
@@ -24,70 +22,45 @@ void custom_log(esp_log_level_t level,
 
 /**
  * @brief Logs a message with the verbose log level
+ * @note Wrapper for @c custom_log
+ * @attention This macro requires @c TAG to be defined in the scope where it is used. If it isn't, please directly use @c custom_log
  *
- * @return (void)  
- *
- * @param tag The tag to log with
  * @param format The printf-style format to use
- * @param args All values to format the output with
  */
-template <typename... T>
-inline void LOGV(const char* tag, const char* format, T... args) {
-    custom_log(ESP_LOG_VERBOSE, tag, format, args...);
-}
+#define LOGV(format, ...) custom_log(ESP_LOG_VERBOSE, TAG, format, ##__VA_ARGS__)
 
 /**
  * @brief Logs a message with the debug log level
+ * @note Wrapper for @c custom_log
+ * @attention This macro requires @c TAG to be defined in the scope where it is used. If it isn't, please directly use @c custom_log
  *
- * @return (void)  
- *
- * @param tag The tag to log with
  * @param format The printf-style format to use
- * @param args All values to format the output with
  */
-template <typename... T>
-inline void LOGD(const char* tag, const char* format, T... args) {
-    custom_log(ESP_LOG_DEBUG, tag, format, args...);
-}
+#define LOGD(format, ...) custom_log(ESP_LOG_DEBUG, TAG, format, ##__VA_ARGS__)
 
 /**
  * @brief Logs a message with the information log level
+ * @note Wrapper for @c custom_log
+ * @attention This macro requires @c TAG to be defined in the scope where it is used. If it isn't, please directly use @c custom_log
  *
- * @return (void)  
- *
- * @param tag The tag to log with
  * @param format The printf-style format to use
- * @param args All values to format the output with
  */
-template <typename... T>
-inline void LOGI(const char* tag, const char* format, T... args) {
-    custom_log(ESP_LOG_INFO, tag, format, args...);
-}
+#define LOGI(format, ...) custom_log(ESP_LOG_INFO, TAG, format, ##__VA_ARGS__)
 
 /**
  * @brief Logs a message with the warning log level
+ * @note Wrapper for @c custom_log
+ * @attention This macro requires @c TAG to be defined in the scope where it is used. If it isn't, please directly use @c custom_log
  *
- * @return (void)  
- *
- * @param tag The tag to log with
  * @param format The printf-style format to use
- * @param args All values to format the output with
  */
-template <typename... T>
-inline void LOGW(const char* tag, const char* format, T... args) {
-    custom_log(ESP_LOG_WARN, tag, format, args...);
-}
+#define LOGW(format, ...) custom_log(ESP_LOG_WARN, TAG, format, ##__VA_ARGS__)
 
 /**
  * @brief Logs a message with the error log level
+ * @note Wrapper for @c custom_log
+ * @attention This macro requires @c TAG to be defined in the scope where it is used. If it isn't, please directly use @c custom_log
  *
- * @return (void)  
- *
- * @param tag The tag to log with
  * @param format The printf-style format to use
- * @param args All values to format the output with
  */
-template <typename... T>
-inline void LOGE(const char* tag, const char* format, T... args) {
-    custom_log(ESP_LOG_ERROR, tag, format, args...);
-}
+#define LOGE(format, ...) custom_log(ESP_LOG_ERROR, TAG, format, ##__VA_ARGS__)

@@ -9,6 +9,9 @@
 
 #include <cstdint>
 
+/**
+ * @brief A namespace containing contstants for @c app_main
+ */
 namespace Constants {
     constexpr const char* TAG = "Main";
 

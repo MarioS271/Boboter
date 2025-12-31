@@ -7,6 +7,9 @@
 
 #pragma once
 
+/**
+ * @brief A namespace containing flags for @c app_main
+ */
 namespace Flags {
     // ENABLE_SENSOR_TEST_MODE
     //  This flag decides if the Robot will operate in "Sensor Test Mode",

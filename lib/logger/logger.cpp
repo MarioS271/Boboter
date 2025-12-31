@@ -3,12 +3,11 @@
  *
  * @authors MarioS271
  * @copyright MIT License
-*/
+ */
 
-#include "logger.hpp"
+#include "logger.h"
 
 #include <cstdio>
-#include <cstring>
 #include <cstdarg>
 
 void custom_log(esp_log_level_t level,
@@ -32,13 +31,11 @@ void custom_log(esp_log_level_t level,
     }
 
     char* buffer = nullptr;
-    int len = asprintf(&buffer, "%c [%s]: %s\n",
-                        log_level_char, tag, format);
 
-    if (len >= 0 && buffer != nullptr) {
-        esp_log_writev(level, tag, buffer, args);
-        free(buffer);
-    }
+    if (vasprintf(&buffer, format, args) >= 0)
+        esp_log_write(level, tag, "%c [%s]: %s\n", log_level_char, tag, buffer);
+
+    free(buffer);
 
     va_end(args);
 }
