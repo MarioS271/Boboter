@@ -68,7 +68,7 @@ namespace ADC {
          *
          * @param adc_channel The ADC channel to add
          */
-        void add(std::optional<adc_channel_t> adc_channel) const;
+        void add(std::optional<adc_channel_t> adc_channel);
 
         /**
          * @brief Removes an ADC input from the controller

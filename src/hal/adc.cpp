@@ -14,11 +14,11 @@
 
 namespace ADC {
     Controller::Controller() {
-        LOGI(TAG, "Constructor of ADC::Controller called");
+        LOGI("Constructor of ADC::Controller called");
     }
 
     Controller::~Controller() {
-        LOGI(TAG, "Deconstructor of ADC::Controller called");
+        LOGI("Deconstructor of ADC::Controller called");
         shutdown();
     }
 
@@ -38,7 +38,7 @@ namespace ADC {
         WARN_CHECK(adc_cali_create_scheme_line_fitting(&cali_config, &cali_handle));
 
         is_configured = true;
-        LOGI(TAG, "Initialized ADC::Controller HAL");
+        LOGI("Initialized ADC::Controller HAL");
     }
 
     void Controller::shutdown() {
@@ -61,12 +61,16 @@ namespace ADC {
         }
 
         is_configured = false;
-        LOGI(TAG, "Shut down ADC controller HAL");
+        LOGI("Shut down ADC controller HAL");
     }
 
     void Controller::add(const std::optional<adc_channel_t> adc_channel) {
-        if (!is_configured)
-            LOGW(TAG, "Unable to add ADC_CHANNEL_%d because ADC controller is not registered");
+        if (!is_configured) {
+            LOGW("Unable to add ADC_CHANNEL_%d because ADC controller is not registered");
+            return;
+        }
+
+
     }
 
     void Controller::remove(const std::optional<adc_channel_t> adc_channel) {
