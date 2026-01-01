@@ -16,9 +16,9 @@ void error_check_callback(const char* tag,
         return;
 
     printf("\n");
-    LOGE(tag, "ERROR_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
-    LOGE(tag, "  on line %u", loc.line());
-    LOGE(tag, "  in file %s", loc.file_name());
+    custom_log(ESP_LOG_ERROR, tag, "ERROR_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
+    custom_log(ESP_LOG_ERROR, tag, "  on line %lu", loc.line());
+    custom_log(ESP_LOG_ERROR, tag, "  in file %s", loc.file_name());
 
     abort();
 }
@@ -31,8 +31,8 @@ void warn_check_callback(const char* tag,
         return;
 
     printf("\n");
-    LOGW(tag, "WARN_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
-    LOGW(tag, "  on line %u", loc.line());
-    LOGW(tag, "  in file %s", loc.file_name());
+    custom_log(ESP_LOG_WARN, tag, "WARN_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
+    custom_log(ESP_LOG_WARN, tag, "  on line %lu", loc.line());
+    custom_log(ESP_LOG_WARN, tag, "  in file %s", loc.file_name());
     printf("\n");
 }

@@ -9,15 +9,15 @@
 
 #include <array>
 #include <algorithm>
-
 #include <driver/gpio.h>
-#include "helpers/gpio_adc_conversions.h"
-#include "helpers/check_for_nullopt.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
 namespace ADC {
-    Controller::Controller() : config() {
+    Controller::Controller() :
+        config(),
+        is_configured(false)
+    {
         LOGI("Constructor of ADC::Controller called");
     }
 
@@ -26,7 +26,7 @@ namespace ADC {
         shutdown();
     }
 
-    void Controller::configure(const Config& config) {
+    void Controller::configure(const config_t& config) {
         const adc_oneshot_unit_init_cfg_t unit_config = {
             .unit_id = ADC_UNIT_1,
             .clk_src = config.clock_source,
@@ -60,29 +60,24 @@ namespace ADC {
 
         if (!registered_channels.empty()) {
             for (const auto& channel : registered_channels) {
-                std::optional<gpio_num_t> pin = adc_channel_to_gpio(channel);
-                if (pin.has_value())
-                    gpio_reset_pin(pin.value());
+                gpio_reset_pin(adc_channel_to_gpio(channel));
             }
+            registered_channels.clear();
         }
 
-        registered_channels.clear();
-        this->config = {};
+        config = {};
         is_configured = false;
 
-        LOGI("Shut down ADC controller HAL");
+        LOGI("Shut down the ADC controller HAL");
     }
 
-    void Controller::add(const std::optional<adc_channel_t> adc_channel) {
-        CHECK_FOR_NULLOPT(adc_channel);
-
+    void Controller::add(const adc_channel_t adc_channel) {
         if (!is_configured) {
             LOGW("Unable to add ADC channel because ADC controller is not registered");
             return;
         }
 
-        const adc_channel_t adc_channel_value = adc_channel.value();
-        const uint8_t adc_channel_number = static_cast<uint8_t>(adc_channel_value);
+        const auto adc_channel_number = static_cast<uint8_t>(adc_channel);
 
         if (is_registered(adc_channel)) {
             LOGW("ADC channel %d is already registered", adc_channel_number);
@@ -94,65 +89,51 @@ namespace ADC {
             .bitwidth = config.bitwidth
         };
 
-        const esp_err_t result = adc_oneshot_config_channel(adc_handle, adc_channel.value(), &channel_config);
-        WARN_CHECK(result);
+        ERROR_CHECK(adc_oneshot_config_channel(adc_handle, adc_channel, &channel_config));
 
-        if (result == ESP_OK) {
-            registered_channels.push_back(adc_channel.value());
-            LOGI("Initialized ADC channel %d of ADC1", adc_channel_number);
-        } else {
-            LOGW("Unable to initialize ADC channel %d of ADC1", adc_channel_number);
-        }
+        registered_channels.push_back(adc_channel);
+        LOGI("Initialized ADC channel %d of ADC1", adc_channel_number);
     }
 
-    void Controller::remove(const std::optional<adc_channel_t> adc_channel) {
-        CHECK_FOR_NULLOPT(adc_channel);
-
+    void Controller::remove(const adc_channel_t adc_channel) {
         if (!is_configured) {
             LOGW("Unable to remove ADC channel because ADC controller is not registered");
             return;
         }
 
-        const adc_channel_t adc_channel_value = adc_channel.value();
-        const uint8_t adc_channel_number = static_cast<uint8_t>(adc_channel_value);
-        const gpio_num_t gpio_pin = adc_channel_to_gpio(adc_channel_value).value();
+        const auto adc_channel_number = static_cast<uint8_t>(adc_channel);
 
-        const esp_err_t result = gpio_reset_pin(gpio_pin);
-        WARN_CHECK(result);
+        WARN_CHECK(gpio_reset_pin(adc_channel_to_gpio(adc_channel)));
 
-        if (result == ESP_OK) {
-            if (const auto it = std::ranges::find(registered_channels, adc_channel_value);
-                it != registered_channels.end())
-            {
-                registered_channels.erase(it);
-            }
-
-            LOGI("Removed ADC channel %d of ADC1", adc_channel_number);
-        } else {
-            LOGW("Unable to remove ADC channel %d of ADC1", adc_channel_number);
+        if (const auto channel = std::ranges::find(registered_channels, adc_channel);
+            channel != registered_channels.end())
+        {
+            registered_channels.erase(channel);
         }
+
+        LOGI("Removed ADC channel %d of ADC1", adc_channel_number);
     }
 
-    bool Controller::is_registered(const std::optional<adc_channel_t> adc_channel) const {
-        CHECK_FOR_NULLOPT(adc_channel);
-
-        const bool found = std::ranges::contains(registered_channels, adc_channel.value());
-        return found;
+    bool Controller::is_registered(const adc_channel_t adc_channel) const {
+        return std::ranges::contains(registered_channels, adc_channel);
     }
 
-    uint16_t Controller::read_raw(const std::optional<adc_channel_t> adc_channel, uint16_t samples) const {
-        CHECK_FOR_NULLOPT(adc_channel);
-
+    uint16_t Controller::read_raw(const adc_channel_t adc_channel, const uint16_t samples) const {
         if (!is_registered(adc_channel)) {
             LOGW("Unable to read raw value, channel is not registered (returning zero)");
             return 0;
         }
 
-        int raw_value;
+        if (samples == 0) {
+            LOGE("Unable to read raw value, illegal number of samples given");
+            abort();
+        }
+
+        int raw_value = 0;
         uint32_t average_value = 0;
 
         for (uint16_t i = 0; i < samples; ++i) {
-            WARN_CHECK(adc_oneshot_read(adc_handle, adc_channel.value(), &raw_value));
+            WARN_CHECK(adc_oneshot_read(adc_handle, adc_channel, &raw_value));
             average_value += raw_value;
         }
 
@@ -161,10 +142,8 @@ namespace ADC {
         return static_cast<uint16_t>(average_value);
     }
 
-    uint16_t Controller::read_millivolts(const std::optional<adc_channel_t> adc_channel, uint16_t samples) const {
-        CHECK_FOR_NULLOPT(adc_channel);
-
-        uint16_t raw_value = read_raw(adc_channel, samples);
+    uint16_t Controller::read_millivolts(const adc_channel_t adc_channel, const uint16_t samples) const {
+        const uint16_t raw_value = read_raw(adc_channel, samples);
         int voltage_mv = 0;
 
         if (cali_handle != nullptr) {

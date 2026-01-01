@@ -18,7 +18,7 @@
 void custom_log(esp_log_level_t level,
                 const char* tag,
                 const char* format,
-                ...);
+                ...) __attribute__((format(printf, 3, 4)));
 
 /**
  * @brief Logs a message with the verbose log level

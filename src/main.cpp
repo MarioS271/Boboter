@@ -11,5 +11,4 @@
 
 extern "C" void app_main() {
     using namespace Constants;
-    using namespace Flags;
 }

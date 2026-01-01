@@ -9,9 +9,9 @@ Here is an overview of all tasks:
 | Secure Task      | 24       | 4096        | Once                                        | `src/main.cpp`         | -                                                     |
 | System Task      | 20       | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
 | PID Task         | 15       | 4096        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| IO Task          |  8       | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| LEDs Task        |  5       | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| Buzzer Task      |  1       | 1024        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
+| IO Task          | 10       | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
+| LEDs Task        | 3        | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
+| Buzzer Task      | 1        | 1024        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
 | Ramp Task        | 14       | 2048        | Once for each instance of the `Motor` class | `libs/motor/motor.cpp` | -                                                     |
 | Sensor Test Task | 22       | 8192        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to true  |
 

@@ -20,7 +20,7 @@ namespace Constants {
     constexpr uint16_t SECURE_TASK_STACK_DEPTH = 4096;
 
     constexpr const char* SYSTEM_TASK_NAME = "SystemTask";
-    constexpr uint8_t SYSTEM_TASK_PRIORITY = 7;
+    constexpr uint8_t SYSTEM_TASK_PRIORITY = 18;
     constexpr uint16_t SYSTEM_TASK_STACK_DEPTH = 8192;
 
     constexpr const char* PID_TASK_NAME = "PID_Task";
@@ -32,7 +32,7 @@ namespace Constants {
     constexpr uint16_t IO_TASK_STACK_DEPTH = 4096;
 
     constexpr const char* LEDS_TASK_NAME = "LedsTask";
-    constexpr uint8_t LEDS_TASK_PRIORITY = 5;
+    constexpr uint8_t LEDS_TASK_PRIORITY = 3;
     constexpr uint16_t LEDS_TASK_STACK_DEPTH = 2048;
 
     constexpr const char* BUZZER_TASK_NAME = "BuzzerTask";
