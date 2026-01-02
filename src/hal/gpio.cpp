@@ -8,7 +8,6 @@
 #include "include/hal/gpio.h"
 
 #include <algorithm>
-
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
@@ -32,7 +31,7 @@ namespace GPIO {
         LOGI("Shut down the GPIO cntroller HAL");
     }
 
-    void Controller::add(const config_entry_t& entry) {
+    void Controller::add(const pin_config_t& entry) {
         const auto pin_as_int = static_cast<uint8_t>(entry.gpio_pin);
 
         gpio_pullup_t pullup_mode = GPIO_PULLUP_DISABLE;

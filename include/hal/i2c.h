@@ -7,20 +7,13 @@
 
 #pragma once
 
-/**
- * @brief A namespace containing everything for the I2C hardware abstraction layer
- */
+#include <vector>
+
 namespace I2C {
-    /**
-     * @brief Data structure to hold the information for initializing the I2C controller
-     */
-    struct config_t {
+    struct controller_config_t {
 
     };
 
-    /**
-     * @brief An I2C hardware abstraction layer controller class
-     */
     class Controller {
     private:
         static constexpr const char* TAG = "HAL:ADC";

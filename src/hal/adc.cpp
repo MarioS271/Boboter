@@ -26,7 +26,7 @@ namespace ADC {
         shutdown();
     }
 
-    void Controller::configure(const config_t& config) {
+    void Controller::configure(const controller_config_t& config) {
         const adc_oneshot_unit_init_cfg_t unit_config = {
             .unit_id = ADC_UNIT_1,
             .clk_src = config.clock_source,

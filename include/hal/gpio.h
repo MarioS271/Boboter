@@ -10,34 +10,22 @@
 #include <vector>
 #include <driver/gpio.h>
 
-/**
- * @brief A namespace containing everything for the GPIO hardware abstraction layer
- */
 namespace GPIO {
     using bitmask_t = uint64_t;
 
-    /**
-     * @brief Data structure to hold information for initializing GPIO pins
-     */
-    struct config_entry_t {
-        gpio_num_t gpio_pin;                               ///< GPIO pin to configure
-        gpio_mode_t mode;                                  ///< Mode to set pin to
-        gpio_pull_mode_t pull_mode = GPIO_FLOATING;        ///< Pull resistor mode
-        gpio_int_type_t intr_type = GPIO_INTR_DISABLE;     ///< GPIO interrupt type
-        bool pull_low_in_deep_sleep = false;               ///< Decide whether the pin should be pulled low before entering deep sleep
+    struct pin_config_t {
+        gpio_num_t gpio_pin;
+        gpio_mode_t mode;
+        gpio_pull_mode_t pull_mode = GPIO_FLOATING;
+        gpio_int_type_t intr_type = GPIO_INTR_DISABLE;
+        bool pull_low_in_deep_sleep = false;
     };
 
-    /**
-     * @brief Type to represent the state of a GPIO pin
-     */
     enum class level_t : uint8_t {
         LOW = 0,
         HIGH = 1
     };
 
-    /**
-     * @brief A GPIO hardware abstraction layer controller class
-     */
     class Controller {
     private:
         static constexpr const char* TAG = "HAL:GPIO";
@@ -72,11 +60,11 @@ namespace GPIO {
         void shutdown();
 
         /**
-        * @brief Configures a new GPIO pin using the given config
+         * @brief Configures a new GPIO pin using the given config
          *
          * @param entry The GPIO config entry to configure
          */
-        void add(const config_entry_t& entry);
+        void add(const pin_config_t& entry);
 
         /**
          * @brief Removes and resets a pin from the microcontroller

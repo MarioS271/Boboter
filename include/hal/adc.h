@@ -12,28 +12,19 @@
 #include <esp_adc/adc_oneshot.h>
 #include <esp_adc/adc_cali.h>
 
-/**
- * @brief A namespace containing everything for the ADC hardware abstraction layer
- */
 namespace ADC {
-    /**
-     * @brief Data structure to hold the information for initializing the ADC controller
-     */
-    struct config_t {
+    struct controller_config_t {
         adc_atten_t attenuation;
         adc_bitwidth_t bitwidth;
         adc_ulp_mode_t ulp_mode = ADC_ULP_MODE_DISABLE;
         adc_oneshot_clk_src_t clock_source = ADC_RTC_CLK_SRC_DEFAULT;
     };
 
-    /**
-     * @brief An ADC hardware abstraction layer controller class
-     */
     class Controller {
     private:
         static constexpr const char* TAG = "HAL:ADC";
 
-        config_t config;
+        controller_config_t config;
         bool is_configured;
 
         adc_oneshot_unit_handle_t adc_handle = nullptr;
@@ -81,7 +72,7 @@ namespace ADC {
          *
          * @param config The config struct to use
          */
-        void configure(const config_t& config);
+        void configure(const controller_config_t& config);
 
         /**
          * @brief Safely shuts down the controller and hardware
