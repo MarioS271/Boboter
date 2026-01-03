@@ -22,6 +22,9 @@ jobs:
           tar -xf doxygen-1.15.0.linux.bin.tar.gz
           echo "$(pwd)/doxygen-1.15.0/bin" >> $GITHUB_PATH
 
+      - name: Clean old docs
+        run: rm -rf ./docs/doxygen
+
       - name: Run Doxygen
         run: doxygen Doxyfile
 
