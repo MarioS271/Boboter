@@ -4,7 +4,6 @@ GENERATE_LATEX = NO
 
 INPUT = .
 RECURSIVE = YES
-EXTRACT_ALL = YES
 EXCLUDE = .pio .idea
 FILE_PATTERNS = *.cpp *.h
 
