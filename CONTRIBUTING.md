@@ -1,30 +1,29 @@
-# Mitwirken an Boboter
+# Contributing to Boboter
 
-Vielen Dank, dass du helfen möchtest! Um das Projekt sicher und sauber zu halten, befolge bitte diese Schritte.
+Thank you for your interest in helping out! To keep the project safe and maintainable, please follow these steps.
 
-(Für alle die durch den Begriff PR verwirrt sind: PR steht für Pull Request! 😉)
+(For those confused by the term PR: it stands for **Pull Request**! 😉)
 
 ## 1. Workflow
- 1. **Fork**: Erstelle eine Kopie (Fork) der Repository in deinem Account.
- 2. **Branch**: Erstelle einen neuen Branch für deine Änderungen (`git checkout -b feature/mein-feature`).
- 3. **Commit**: Schreibe klare Commit-Nachrichten.
- 4. **Push**: Lade den Branch in __deinen Fork__ hoch.
- 5. **Pull Request (PR)**: Eröffne einen PR gegen meinen `main`-Branch.
+1. **Fork**: Create a copy (Fork) of the repository in your own account.
+2. **Branch**: Create a new branch for your changes (`git checkout -b feature/my-feature`).
+3. **Commit**: Write clear and descriptive commit messages.
+4. **Push**: Upload the branch to **your fork**.
+5. **Pull Request (PR)**: Open a PR against my `main` branch.
 
-## 2. Regeln für Pull Requests
- - Beschreibe im PR kurz, was du geändert/hinzugefügt hast und warum.
- - Halte PRs klein und fokussiert auf ein Thema.
- - Pushe niemals API-Keys, Passwörter oder private Konfigurationsdateien.
+## 2. Pull Request Rules
+- Briefly describe what you changed or added and why.
+- Keep PRs small and focused on a single topic.
+- **Never** push API keys, passwords, or private configuration files.
 
-## 3. Code-Stil
- - Achte auf äußerst sauberen und strukturierten Code, da ich einen hohen Code-Standard voraussetze,
-   sodass der Code gut verständlich für Anfänger ist.
- - Doxygen bei Methoden und Namespaces unbedingt zufügen.
- - Kommentare nur dort verwenden, wo sie für das Verständnis komplexer Logik unbedingt nötig sind.
+## 3. Code Style
+- Ensure your code is exceptionally clean and structured. I maintain high standards to keep the codebase accessible for beginners.
+- **Doxygen** documentation is mandatory for methods and namespaces.
+- Use comments only where absolutely necessary to explain complex logic.
 
-## 4. Inhalt
- - Füge neue Bibliotheken nur dann hinzu, wenn nichts anderes überbleibt und nur mit Absprache mit dem Hauptentwickler!
- - Verändere NIEMALS Basisprinzipien der Firmware wie z.B. HALs oder Komponenten ohne Absprache mit dem Hauptentwickler!
+## 4. Content
+- Only add new libraries if there is no other way, and only after consulting with the lead developer.
+- **NEVER** modify core firmware principles, such as HALs or components, without prior approval from the lead developer.
 
-### Fragen oder ähnliches?
-Kontaktiere mich gern über [Discord](https://discord.com/users/772058278116851734)! ;)
+### Questions or Feedback?
+Feel free to contact me via [Discord](https://discord.com/users/772058278116851734)! ;)
