@@ -11,6 +11,7 @@
 #include <driver/gpio.h>
 #include <esp_adc/adc_oneshot.h>
 #include <esp_adc/adc_cali.h>
+#include <freertos/FreeRTOS.h>
 
 /**
  * @brief A namespace containing all components of the ADC hardware abstraction layer
@@ -29,6 +30,7 @@ namespace ADC {
 
         controller_config_t config;
         bool is_configured;
+        SemaphoreHandle_t mutex;
 
         adc_oneshot_unit_handle_t adc_handle = nullptr;
         adc_cali_handle_t cali_handle = nullptr;

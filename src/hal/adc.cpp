@@ -10,23 +10,33 @@
 #include <array>
 #include <algorithm>
 #include <driver/gpio.h>
+#include "types/smart_mutex.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
 namespace ADC {
     Controller::Controller() :
         config(),
-        is_configured(false)
+        is_configured(false),
+        mutex(xSemaphoreCreateMutex())
     {
         LOGI("Constructor of ADC::Controller called");
     }
 
     Controller::~Controller() {
         LOGI("Deconstructor of ADC::Controller called");
+
         shutdown();
+
+        if (mutex != nullptr) {
+            vSemaphoreDelete(mutex);
+            mutex = nullptr;
+        }
     }
 
     void Controller::configure(const controller_config_t& config) {
+        smart_mutex lock(mutex);
+
         const adc_oneshot_unit_init_cfg_t unit_config = {
             .unit_id = ADC_UNIT_1,
             .clk_src = config.clock_source,
@@ -48,6 +58,8 @@ namespace ADC {
     }
 
     void Controller::shutdown() {
+        smart_mutex lock(mutex);
+
         if (adc_handle != nullptr) {
             WARN_CHECK(adc_oneshot_del_unit(adc_handle));
             adc_handle = nullptr;
@@ -72,6 +84,8 @@ namespace ADC {
     }
 
     void Controller::add(const adc_channel_t adc_channel) {
+        smart_mutex lock(mutex);
+
         if (!is_configured) {
             LOGW("Unable to add ADC channel because ADC controller is not registered");
             return;
@@ -96,6 +110,8 @@ namespace ADC {
     }
 
     void Controller::remove(const adc_channel_t adc_channel) {
+        smart_mutex lock(mutex);
+
         if (!is_configured) {
             LOGW("Unable to remove ADC channel because ADC controller is not registered");
             return;
@@ -115,11 +131,14 @@ namespace ADC {
     }
 
     bool Controller::is_registered(const adc_channel_t adc_channel) const {
+        smart_mutex lock(mutex);
         return std::ranges::contains(registered_channels, adc_channel);
     }
 
     uint16_t Controller::read_raw(const adc_channel_t adc_channel, const uint16_t samples) const {
-        if (!is_registered(adc_channel)) {
+        smart_mutex lock(mutex);
+
+        if (!std::ranges::contains(registered_channels, adc_channel)) {
             LOGW("Unable to read raw value, channel is not registered (returning zero)");
             return 0;
         }
@@ -146,14 +165,34 @@ namespace ADC {
         const uint16_t raw_value = read_raw(adc_channel, samples);
         int voltage_mv = 0;
 
+        smart_mutex lock(mutex);
+
+        if (!std::ranges::contains(registered_channels, adc_channel)) {
+            LOGW("Unable to read voltage, channel is not registered (returning zero)");
+            return 0;
+        }
+
         if (cali_handle != nullptr) {
             WARN_CHECK(adc_cali_raw_to_voltage(cali_handle, raw_value, &voltage_mv));
         } else {
             LOGW("Unable to convert raw value to voltage due to missing calibration handle, defaulting to linear approximation");
 
-            // For the linear approximation, a max voltage of 3.3V (3300)
-            // and a resolution of 12 bits (2^12 or 4095) are used
-            voltage_mv = raw_value * 3300 / 4095;
+            uint16_t max_voltage;
+            switch (config.attenuation) {
+                case ADC_ATTEN_DB_0: max_voltage = 1100; break;
+                case ADC_ATTEN_DB_2_5: max_voltage = 1500; break;
+                case ADC_ATTEN_DB_6: max_voltage = 2200; break;
+                case ADC_ATTEN_DB_12: max_voltage = 3300; break;
+                default: max_voltage = 1100; break;
+            }
+
+            auto bitwidth = static_cast<uint16_t>(config.bitwidth);
+            if (bitwidth < 9 || bitwidth > 13) {
+                bitwidth = 12;
+            }
+
+            const uint32_t scaled_voltage = static_cast<uint32_t>(raw_value) * static_cast<uint32_t>(max_voltage);
+            voltage_mv = static_cast<uint16_t>(scaled_voltage / (1 << bitwidth));
         }
 
         return static_cast<uint16_t>(voltage_mv);
