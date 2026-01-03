@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <driver/gpio.h>
+#include <freertos/FreeRTOS.h>
 
 /**
  * @brief A namespace containing all components of the GPIO hardware abstraction layer
@@ -29,9 +30,14 @@ namespace GPIO {
         HIGH = 1
     };
 
+    /**
+     * @brief The GPIO hardware abstraction layer's control class
+     */
     class Controller {
     private:
         static constexpr const char* TAG = "HAL:GPIO";
+
+        SemaphoreHandle_t mutex;
 
         struct saved_config_entry_t {
             gpio_num_t gpio_pin;
@@ -46,6 +52,9 @@ namespace GPIO {
         ~Controller();
 
     public:
+        Controller(const Controller&) = delete;
+        Controller& operator=(const Controller&) = delete;
+
         /**
          * @brief Gets the controller instance
          * @note The instance will be created on the first call of this function

@@ -14,8 +14,8 @@
  *        at the end of its lifetime (normally the scope in which the wrapper was created)
  *
  * @details To create a smart mutex, just do: @code smart_mutex lock(mutex);@endcode. Done! Now,
- *          the mutex will stay locked until the function finishes (goes out of scope) and then it
- *          will automatically unlock the mutex for you.
+ *          the mutex will stay locked until the function finishes (until this object goes out of scope and
+ *          its destructor is called) and then it will automatically unlock the mutex for you.
  *          Be careful that you don't lock the mutex and then call a function which again locks the mutex,
  *          which will cause the firmware to hang!!
  */

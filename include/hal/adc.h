@@ -24,13 +24,17 @@ namespace ADC {
         adc_oneshot_clk_src_t clock_source = ADC_RTC_CLK_SRC_DEFAULT;
     };
 
+    /**
+     * @brief The ADC hardware abstraction layer's control class
+     */
     class Controller {
     private:
         static constexpr const char* TAG = "HAL:ADC";
 
+        SemaphoreHandle_t mutex;
+
         controller_config_t config;
         bool is_configured;
-        SemaphoreHandle_t mutex;
 
         adc_oneshot_unit_handle_t adc_handle = nullptr;
         adc_cali_handle_t cali_handle = nullptr;
@@ -61,6 +65,9 @@ namespace ADC {
         }
 
     public:
+        Controller(const Controller&) = delete;
+        Controller& operator=(const Controller&) = delete;
+
         /**
          * @brief Returns a reference to the static controller instance
          * @note The instance will be created on the first call of this function

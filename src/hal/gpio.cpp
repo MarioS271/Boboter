@@ -8,20 +8,32 @@
 #include "include/hal/gpio.h"
 
 #include <algorithm>
+#include "types/smart_mutex.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
 namespace GPIO {
-    Controller::Controller() : pins_to_pull_low(0) {
+    Controller::Controller() :
+        mutex(xSemaphoreCreateMutex()),
+        pins_to_pull_low(0)
+    {
         LOGI("Constructor of GPIO::Controller called");
     }
 
     Controller::~Controller() {
         LOGI("Destructor of GPIO::Controller called");
+
         shutdown();
+
+        if (mutex != nullptr) {
+            vSemaphoreDelete(mutex);
+            mutex = nullptr;
+        }
     }
 
     void Controller::shutdown() {
+        smart_mutex lock(mutex);
+
         for (const auto& entry : registered_entries) {
             gpio_reset_pin(entry.gpio_pin);
         }
@@ -32,6 +44,8 @@ namespace GPIO {
     }
 
     void Controller::add(const pin_config_t& entry) {
+        smart_mutex lock(mutex);
+
         const auto pin_as_int = static_cast<uint8_t>(entry.gpio_pin);
 
         gpio_pullup_t pullup_mode = GPIO_PULLUP_DISABLE;
@@ -79,9 +93,17 @@ namespace GPIO {
     }
 
     void Controller::remove(const gpio_num_t gpio_pin) {
+        smart_mutex lock(mutex);
+
         const auto pin_as_int = static_cast<uint8_t>(gpio_pin);
 
-        if (!is_registered(gpio_pin)) {
+        if (!std::ranges::any_of(
+            registered_entries,
+            [gpio_pin](const gpio_num_t pin) {
+                return pin == gpio_pin;
+            },
+            &saved_config_entry_t::gpio_pin))
+        {
             LOGW("GPIO pin %d is not registered, skipping remove", pin_as_int);
             return;
         }
@@ -95,6 +117,8 @@ namespace GPIO {
     }
 
     bool Controller::is_registered(const gpio_num_t gpio_pin) const {
+        smart_mutex lock(mutex);
+
         return std::ranges::any_of(
             registered_entries,
             [gpio_pin](const gpio_num_t pin) {
@@ -105,6 +129,8 @@ namespace GPIO {
     }
 
     void Controller::set_level(const gpio_num_t gpio_pin, const level_t level) const {
+        smart_mutex lock(mutex);
+
         const auto entry = std::ranges::find_if(
             registered_entries,
             [gpio_pin](const gpio_num_t pin) {
@@ -122,6 +148,8 @@ namespace GPIO {
     }
 
     level_t Controller::get_level(const gpio_num_t gpio_pin) const {
+        smart_mutex lock(mutex);
+
         const auto entry = std::ranges::find_if(
             registered_entries,
             [gpio_pin](const gpio_num_t pin) {
@@ -139,6 +167,8 @@ namespace GPIO {
     }
 
     void Controller::prepare_for_deep_sleep() const {
+        smart_mutex lock(mutex);
+
         if (pins_to_pull_low == 0) {
             return;
         }

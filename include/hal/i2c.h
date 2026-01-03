@@ -8,6 +8,9 @@
 #pragma once
 
 #include <vector>
+#include <driver/gpio.h>
+#include <driver/i2c_master.h>
+#include <freertos/FreeRTOS.h>
 
 /**
  * @brief A namespace containing all components of the I2C hardware abstraction layer
@@ -17,20 +20,28 @@ namespace I2C {
 
     };
 
+    /**
+     * @brief The I2C hardware abstraction layer's control class
+     */
     class Controller {
     private:
         static constexpr const char* TAG = "HAL:ADC";
 
-        config_t config;
+        SemaphoreHandle_t mutex;
+
+        controller_config_t config;
         bool is_configured;
 
-        std::vector<> registered_channels;
+        std::vector<> registered_xxxxxxxxx;
 
     private:
         explicit Controller();
         ~Controller();
 
     public:
+        Controller(const Controller&) = delete;
+        Controller& operator=(const Controller&) = delete;
+
         /**
          * @brief Returns a reference to the static controller instance
          * @note The instance will be created on the first call of this function

@@ -58,7 +58,7 @@ public:
     protected_struct& operator=(const protected_struct&) = delete;
 
     /**
-     * @brief Overload of the @c -> (get value from dereferenced pointer) operator to make it
+     * @brief Overload of the get value from dereferenced pointer operator to make it
      *        possible to get a value using it
      *
      * @return A temporary proxy object to hold the mutex and return the value
@@ -68,7 +68,7 @@ public:
     }
 
     /**
-     * @brief Overload of the @c * (dereference) operator to make it possible to pass the
+     * @brief Overload of the dereference operator to make it possible to pass the
      *        whole struct to something
      *
      * @return A temporary proxy object to hold the mutex and return the value

@@ -10,6 +10,7 @@
 #include <vector>
 #include <driver/gpio.h>
 #include <driver/ledc.h>
+#include <freertos/FreeRTOS.h>
 
 /**
  * @brief A namespace containing all components of the LEDC hardware abstraction layer
@@ -29,9 +30,14 @@ namespace LEDC {
         uint32_t duty = 0;
     };
 
+    /**
+     * @brief The LEDC hardware abstraction layer's control class
+     */
     class Controller {
     private:
         static constexpr const char* TAG = "HAL:LEDC";
+
+        SemaphoreHandle_t mutex;
 
         struct saved_channel_config_t {
             ledc_channel_t channel;
@@ -46,6 +52,9 @@ namespace LEDC {
         ~Controller();
 
     public:
+        Controller(const Controller&) = delete;
+        Controller& operator=(const Controller&) = delete;
+
         /**
          * @brief Gets the controller instance
          * @note The instance will be created on the first call of this function
@@ -106,7 +115,7 @@ namespace LEDC {
          * @param ledc_channel The channel of which to set the duty cycle
          * @param duty The target duty cycle
          */
-        void set_duty(ledc_channel_t ledc_channel, uint16_t duty);
+        void set_duty(ledc_channel_t ledc_channel, uint32_t duty);
 
         /**
          * @brief Pulls low all pins of which channels are registered
