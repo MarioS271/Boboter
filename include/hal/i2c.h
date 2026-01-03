@@ -9,6 +9,9 @@
 
 #include <vector>
 
+/**
+ * @brief A namespace containing all components of the I2C hardware abstraction layer
+ */
 namespace I2C {
     struct controller_config_t {
 

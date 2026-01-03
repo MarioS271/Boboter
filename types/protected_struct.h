@@ -13,20 +13,14 @@
  *
  * @tparam struct_type The struct to make thread-safe
  *
- * @code
- * protected_struct<x> y;
- * @endcode
- * Creating a protected struct called @c y from a normal struct called @c x
+ * Creating a protected struct called @c y from a normal struct called @c x:
+ * @code protected_struct<x> y;@endcode
  *
- * @code
- * y->value = 5;
- * @endcode
- * Accessing a member
+ * Accessing a member:
+ * @code y->value = 5;@endcode
  *
- * @code
- * func_that_needs_struct(*y);
- * @endcode
- * Passing the whole struct
+ * Passing the whole struct:
+ * @code func_that_needs_struct(*y);@endcode
  */
 template <typename struct_type>
 class protected_struct {

@@ -8,10 +8,12 @@
 #pragma once
 
 #include <vector>
-#include <mutex>
 #include <driver/gpio.h>
 #include <driver/ledc.h>
 
+/**
+ * @brief A namespace containing all components of the LEDC hardware abstraction layer
+ */
 namespace LEDC {
     struct timer_config_t {
         ledc_timer_t timer;

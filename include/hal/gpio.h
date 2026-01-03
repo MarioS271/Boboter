@@ -10,6 +10,9 @@
 #include <vector>
 #include <driver/gpio.h>
 
+/**
+ * @brief A namespace containing all components of the GPIO hardware abstraction layer
+ */
 namespace GPIO {
     using bitmask_t = uint64_t;
 

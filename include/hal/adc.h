@@ -12,6 +12,9 @@
 #include <esp_adc/adc_oneshot.h>
 #include <esp_adc/adc_cali.h>
 
+/**
+ * @brief A namespace containing all components of the ADC hardware abstraction layer
+ */
 namespace ADC {
     struct controller_config_t {
         adc_atten_t attenuation;
