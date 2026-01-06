@@ -8,7 +8,7 @@
 #pragma once
 
 #include <vector>
-#include <driver/gpio.h>
+#include <soc/gpio_num.h>
 #include <esp_adc/adc_oneshot.h>
 #include <esp_adc/adc_cali.h>
 #include <freertos/FreeRTOS.h>
@@ -80,7 +80,7 @@ namespace ADC {
         }
 
         /**
-         * @brief Configure the ADC Controller
+         * @brief Configures the ADC Controller
          *
          * @param config The config struct to use
          */

@@ -7,7 +7,6 @@
 
 #include "include/hal/adc.h"
 
-#include <array>
 #include <algorithm>
 #include <driver/gpio.h>
 #include "types/smart_mutex.h"
@@ -35,6 +34,11 @@ namespace ADC {
     }
 
     void Controller::configure(const controller_config_t& config) {
+        if (is_configured) {
+            LOGW("Unable to configure ADC controller, controller is already configured");
+            return;
+        }
+
         smart_mutex lock(mutex);
 
         const adc_oneshot_unit_init_cfg_t unit_config = {
@@ -58,6 +62,11 @@ namespace ADC {
     }
 
     void Controller::shutdown() {
+        if (!is_configured) {
+            LOGW("Unable to shut down ADC controller, controller is not configured");
+            return;
+        }
+
         smart_mutex lock(mutex);
 
         if (adc_handle != nullptr) {
@@ -84,12 +93,12 @@ namespace ADC {
     }
 
     void Controller::add(const adc_channel_t adc_channel) {
-        smart_mutex lock(mutex);
-
         if (!is_configured) {
-            LOGW("Unable to add ADC channel because ADC controller is not registered");
+            LOGW("Unable to add ADC channel, controller is not configured");
             return;
         }
+
+        smart_mutex lock(mutex);
 
         const auto adc_channel_number = static_cast<uint8_t>(adc_channel);
 
@@ -110,6 +119,11 @@ namespace ADC {
     }
 
     uint16_t Controller::read_raw(const adc_channel_t adc_channel, const uint16_t samples) const {
+        if (!is_configured) {
+            LOGW("Unable to read raw value, controller is not configured (returning zero)");
+            return 0;
+        }
+
         smart_mutex lock(mutex);
 
         if (!std::ranges::contains(registered_channels, adc_channel)) {
@@ -138,6 +152,11 @@ namespace ADC {
     uint16_t Controller::read_millivolts(const adc_channel_t adc_channel, const uint16_t samples) const {
         const uint16_t raw_value = read_raw(adc_channel, samples);
         int voltage_mv = 0;
+
+        if (!is_configured) {
+            LOGW("Unable to voltage, controller is not configured (returning zero)");
+            return 0;
+        }
 
         smart_mutex lock(mutex);
 

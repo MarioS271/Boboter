@@ -8,7 +8,7 @@
 #pragma once
 
 #include <vector>
-#include <driver/gpio.h>
+#include <soc/gpio_num.h>
 #include <driver/ledc.h>
 #include <freertos/FreeRTOS.h>
 
