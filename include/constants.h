@@ -13,7 +13,7 @@
  * @brief A namespace containing contstants for @c app_main
  */
 namespace Constants {
-    constexpr const char* TAG = "Main";
+    constexpr auto TAG = "Main";
 
     constexpr const char* SECURE_TASK_NAME = "SecureTask";
     constexpr uint8_t SECURE_TASK_PRIORITY = 24;

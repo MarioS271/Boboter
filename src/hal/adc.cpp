@@ -16,9 +16,9 @@
 
 namespace ADC {
     Controller::Controller() :
+        mutex(xSemaphoreCreateMutex()),
         config(),
-        is_configured(false),
-        mutex(xSemaphoreCreateMutex())
+        is_configured(false)
     {
         LOGI("Constructor of ADC::Controller called");
     }
@@ -93,7 +93,7 @@ namespace ADC {
 
         const auto adc_channel_number = static_cast<uint8_t>(adc_channel);
 
-        if (is_registered(adc_channel)) {
+        if (std::ranges::contains(registered_channels, adc_channel)) {
             LOGW("ADC channel %d is already registered", adc_channel_number);
             return;
         }
@@ -107,32 +107,6 @@ namespace ADC {
 
         registered_channels.push_back(adc_channel);
         LOGI("Initialized ADC channel %d of ADC1", adc_channel_number);
-    }
-
-    void Controller::remove(const adc_channel_t adc_channel) {
-        smart_mutex lock(mutex);
-
-        if (!is_configured) {
-            LOGW("Unable to remove ADC channel because ADC controller is not registered");
-            return;
-        }
-
-        const auto adc_channel_number = static_cast<uint8_t>(adc_channel);
-
-        WARN_CHECK(gpio_reset_pin(adc_channel_to_gpio(adc_channel)));
-
-        if (const auto channel = std::ranges::find(registered_channels, adc_channel);
-            channel != registered_channels.end())
-        {
-            registered_channels.erase(channel);
-        }
-
-        LOGI("Removed ADC channel %d of ADC1", adc_channel_number);
-    }
-
-    bool Controller::is_registered(const adc_channel_t adc_channel) const {
-        smart_mutex lock(mutex);
-        return std::ranges::contains(registered_channels, adc_channel);
     }
 
     uint16_t Controller::read_raw(const adc_channel_t adc_channel, const uint16_t samples) const {

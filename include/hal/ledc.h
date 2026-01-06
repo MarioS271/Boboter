@@ -18,16 +18,16 @@
 namespace LEDC {
     struct timer_config_t {
         ledc_timer_t timer;
-        uint32_t frequency = 10'000;
-        ledc_timer_bit_t resolution = LEDC_TIMER_10_BIT;
-        ledc_mode_t speed_mode = LEDC_LOW_SPEED_MODE;
+        uint32_t frequency;
+        ledc_timer_bit_t resolution;
     };
 
     struct channel_config_t {
         ledc_channel_t channel;
         ledc_timer_t timer;
         gpio_num_t gpio_pin;
-        uint32_t duty = 0;
+        uint32_t duty;
+        bool pull_low_on_deep_sleep;
     };
 
     /**
@@ -37,11 +37,14 @@ namespace LEDC {
     private:
         static constexpr const char* TAG = "HAL:LEDC";
 
-        SemaphoreHandle_t mutex;
+        static constexpr ledc_mode_t SPEED_MODE = LEDC_LOW_SPEED_MODE;
+
+        mutable SemaphoreHandle_t mutex;
 
         struct saved_channel_config_t {
             ledc_channel_t channel;
             gpio_num_t gpio_pin;
+            bool pull_low_on_deep_sleep;
         };
 
         std::vector<ledc_timer_t> registered_timers;
@@ -86,28 +89,12 @@ namespace LEDC {
         void add_channel(const channel_config_t& config);
 
         /**
-         * @brief Removes and resets a pin from the microcontroller
-         *
-         * @param ledc_channel The channel to remove
-         */
-        void remove(ledc_channel_t ledc_channel);
-
-        /**
-         * @brief Checks if a specific channel is already registered
-         *
-         * @return Whether the channel is registered (true) or not (false)
-         *
-         * @param ledc_channel The channel to check for
-         */
-        [[nodiscard]] bool is_registered(ledc_channel_t ledc_channel) const;
-
-        /**
          * @brief Sets the frequency of a specific LEDC timer
          *
          * @param ledc_timer The timer of which to set the frequency
          * @param frequency The target frequency
          */
-        void set_frequency(ledc_timer_t ledc_timer, uint32_t frequency);
+        void set_frequency(ledc_timer_t ledc_timer, uint32_t frequency) const;
 
         /**
          * @brief Sets the duty cycle of a specific LEDC channel
@@ -115,11 +102,11 @@ namespace LEDC {
          * @param ledc_channel The channel of which to set the duty cycle
          * @param duty The target duty cycle
          */
-        void set_duty(ledc_channel_t ledc_channel, uint32_t duty);
+        void set_duty(ledc_channel_t ledc_channel, uint32_t duty) const;
 
         /**
-         * @brief Pulls low all pins of which channels are registered
+         * @brief Pulls low all pins of which channels are registered for deep sleep
          */
-        void prepare_for_deep_sleep();
+        void prepare_for_deepsleep() const;
     };
 }

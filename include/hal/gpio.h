@@ -20,9 +20,9 @@ namespace GPIO {
     struct pin_config_t {
         gpio_num_t gpio_pin;
         gpio_mode_t mode;
-        gpio_pull_mode_t pull_mode = GPIO_FLOATING;
-        gpio_int_type_t intr_type = GPIO_INTR_DISABLE;
-        bool pull_low_in_deep_sleep = false;
+        gpio_pull_mode_t pull_mode;
+        gpio_int_type_t intr_type;
+        bool pull_low_in_deep_sleep;
     };
 
     enum class level_t : uint8_t {
@@ -37,7 +37,7 @@ namespace GPIO {
     private:
         static constexpr const char* TAG = "HAL:GPIO";
 
-        SemaphoreHandle_t mutex;
+        mutable SemaphoreHandle_t mutex;
 
         struct saved_config_entry_t {
             gpio_num_t gpio_pin;
@@ -79,22 +79,6 @@ namespace GPIO {
         void add(const pin_config_t& entry);
 
         /**
-         * @brief Removes and resets a pin from the microcontroller
-         *
-         * @param gpio_pin The GPIO pin to remove
-         */
-        void remove(gpio_num_t gpio_pin);
-
-        /**
-         * @brief Checks if a specific pin is already registered
-         *
-         * @return Whether the pin is registered (true) or not (false)
-         *
-         * @param gpio_pin The GPIO pin to check for
-         */
-        [[nodiscard]] bool is_registered(gpio_num_t gpio_pin) const;
-
-        /**
          * @brief Sets the level of the given GPIO pin
          *
          * @param gpio_pin The pin of which to set the level
@@ -114,6 +98,6 @@ namespace GPIO {
         /**
          * @brief Pulls low all pins in the @c pull_low_in_deep_sleep bitmask
          */
-        void prepare_for_deep_sleep() const;
+        void prepare_for_deepsleep() const;
     };
 }

@@ -40,7 +40,7 @@ namespace GPIO {
 
         registered_entries.clear();
 
-        LOGI("Shut down the GPIO cntroller HAL");
+        LOGI("Shut down the GPIO controller HAL");
     }
 
     void Controller::add(const pin_config_t& entry) {
@@ -79,53 +79,18 @@ namespace GPIO {
         };
         ERROR_CHECK(gpio_config(&config));
 
-        const saved_config_entry_t saved_config_entry = {
-            .gpio_pin = entry.gpio_pin,
-            .mode = entry.mode
-        };
-        registered_entries.push_back(saved_config_entry);
+        registered_entries.push_back(
+            saved_config_entry_t{
+                entry.gpio_pin,
+                entry.mode
+            }
+        );
 
         if (entry.pull_low_in_deep_sleep) {
             pins_to_pull_low |= 1ULL << pin_as_int;
         }
 
         LOGI("Initialized pin %d", pin_as_int);
-    }
-
-    void Controller::remove(const gpio_num_t gpio_pin) {
-        smart_mutex lock(mutex);
-
-        const auto pin_as_int = static_cast<uint8_t>(gpio_pin);
-
-        if (!std::ranges::any_of(
-            registered_entries,
-            [gpio_pin](const gpio_num_t pin) {
-                return pin == gpio_pin;
-            },
-            &saved_config_entry_t::gpio_pin))
-        {
-            LOGW("GPIO pin %d is not registered, skipping remove", pin_as_int);
-            return;
-        }
-
-        WARN_CHECK(gpio_reset_pin(gpio_pin));
-        pins_to_pull_low &= ~(1ULL << pin_as_int);
-
-        std::erase_if(registered_entries, [gpio_pin](const auto& entry) {
-            return entry.gpio_pin == gpio_pin;
-        });
-    }
-
-    bool Controller::is_registered(const gpio_num_t gpio_pin) const {
-        smart_mutex lock(mutex);
-
-        return std::ranges::any_of(
-            registered_entries,
-            [gpio_pin](const gpio_num_t pin) {
-                return pin == gpio_pin;
-            },
-            &saved_config_entry_t::gpio_pin
-        );
     }
 
     void Controller::set_level(const gpio_num_t gpio_pin, const level_t level) const {
@@ -166,7 +131,7 @@ namespace GPIO {
         abort();
     }
 
-    void Controller::prepare_for_deep_sleep() const {
+    void Controller::prepare_for_deepsleep() const {
         smart_mutex lock(mutex);
 
         if (pins_to_pull_low == 0) {
@@ -179,6 +144,7 @@ namespace GPIO {
             if (pins_to_pull_low & 1ULL << i) {
                 const auto pin = static_cast<gpio_num_t>(i);
 
+                WARN_CHECK(gpio_set_direction(pin, GPIO_MODE_OUTPUT));
                 WARN_CHECK(gpio_set_level(pin, 0));
                 WARN_CHECK(gpio_pullup_dis(pin));
                 WARN_CHECK(gpio_pulldown_en(pin));

@@ -27,7 +27,7 @@ namespace I2C {
     private:
         static constexpr const char* TAG = "HAL:ADC";
 
-        SemaphoreHandle_t mutex;
+        mutable SemaphoreHandle_t mutex;
 
         controller_config_t config;
         bool is_configured;
