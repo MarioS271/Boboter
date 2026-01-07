@@ -65,6 +65,9 @@ void Robot::begin() {
 
     battery.initialize();
     leds.initialize();
+
+    set_status_led(true);
+    set_bottom_led(false);
 }
 
 void Robot::set_status_led(const bool state) const {
