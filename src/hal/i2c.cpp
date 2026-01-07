@@ -11,7 +11,7 @@
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
-namespace I2C {
+namespace HAL::I2C {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex()),
         config(),
@@ -53,7 +53,7 @@ namespace I2C {
         this->config = config;
         is_configured = true;
 
-        LOGI("Initialized I2C controller HAL, configured bus %d", static_cast<uint8_t>(config.port));
+        LOGI("Initialized I2C::Controller HAL, configured bus %d", static_cast<uint8_t>(config.port));
     }
 
     void Controller::shutdown() {

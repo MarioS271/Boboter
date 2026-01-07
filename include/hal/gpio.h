@@ -14,7 +14,7 @@
 /**
  * @brief A namespace containing all components of the GPIO hardware abstraction layer
  */
-namespace GPIO {
+namespace HAL::GPIO {
     using bitmask_t = uint64_t;
 
     struct pin_config_t {
@@ -34,7 +34,7 @@ namespace GPIO {
      */
     class Controller {
     private:
-        static constexpr const char* TAG = "HAL:GPIO";
+        static constexpr const char* TAG = "HAL::GPIO";
 
         mutable SemaphoreHandle_t mutex;
 

@@ -4,7 +4,7 @@
 file(GLOB_RECURSE SOURCES
     "*.cpp"
     "../lib/**/*.cpp"
-    "../components/**/*.cpp"
+    "../devices/**/*.cpp"
     "../tasks/**/*.cpp"
 )
 

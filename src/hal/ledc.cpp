@@ -12,7 +12,7 @@
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
-namespace LEDC {
+namespace HAL::LEDC {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex())
     {

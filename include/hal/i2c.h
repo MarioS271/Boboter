@@ -15,7 +15,7 @@
 /**
  * @brief A namespace containing all components of the I2C hardware abstraction layer
  */
-namespace I2C {
+namespace HAL::I2C {
     struct bus_config_t {
         i2c_port_num_t port;
         gpio_num_t sda_pin;
@@ -33,7 +33,7 @@ namespace I2C {
      */
     class Controller {
     private:
-        static constexpr const char* TAG = "HAL:I2C";
+        static constexpr const char* TAG = "HAL::I2C";
 
         mutable SemaphoreHandle_t mutex;
 

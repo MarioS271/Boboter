@@ -15,7 +15,7 @@
 /**
  * @brief A namespace containing all components of the LEDC hardware abstraction layer
  */
-namespace LEDC {
+namespace HAL::LEDC {
     struct timer_config_t {
         ledc_timer_t timer;
         uint32_t frequency;
@@ -34,7 +34,7 @@ namespace LEDC {
      */
     class Controller {
     private:
-        static constexpr const char* TAG = "HAL:LEDC";
+        static constexpr const char* TAG = "HAL::LEDC";
 
         static constexpr ledc_mode_t SPEED_MODE = LEDC_LOW_SPEED_MODE;
 

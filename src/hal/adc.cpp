@@ -13,7 +13,7 @@
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
-namespace ADC {
+namespace HAL::ADC {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex()),
         config(),

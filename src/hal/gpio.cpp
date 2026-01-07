@@ -12,7 +12,7 @@
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
-namespace GPIO {
+namespace HAL::GPIO {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex())
     {

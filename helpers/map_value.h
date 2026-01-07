@@ -1,5 +1,5 @@
 /**
- * @file map.h
+ * @file map_value.h
  *
  * @authors MarioS271
  * @copyright MIT License

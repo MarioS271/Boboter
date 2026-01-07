@@ -16,7 +16,7 @@
 /**
  * @brief A namespace containing all components of the ADC hardware abstraction layer
  */
-namespace ADC {
+namespace HAL::ADC {
     struct controller_config_t {
         adc_atten_t attenuation;
         adc_bitwidth_t bitwidth;
@@ -29,7 +29,7 @@ namespace ADC {
      */
     class Controller {
     private:
-        static constexpr const char* TAG = "HAL:ADC";
+        static constexpr const char* TAG = "HAL::ADC";
 
         mutable SemaphoreHandle_t mutex;
 

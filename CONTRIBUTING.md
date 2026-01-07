@@ -22,6 +22,7 @@ Thank you for your interest in helping out! To keep the project safe and maintai
 - **Doxygen** documentation is mandatory for methods, namespaces and classes.
 - Use comments only where absolutely necessary to explain complex logic.
 - Format variables and similar using snake case (like this: `variable_name`)
+- Maintain the existing formatting and naming scheme(s) of the firmware (namespace paths, ...)
 
 ## 4. Content
 - Only add new libraries if there is no other way, and only after consulting with the lead developer.
