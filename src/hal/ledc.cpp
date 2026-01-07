@@ -84,15 +84,14 @@ namespace LEDC {
             .duty = config.duty,
             .hpoint = 0,
             .sleep_mode = LEDC_SLEEP_MODE_NO_ALIVE_NO_PD,
-            .flags = { .output_invert = 1 }
+            .flags = { .output_invert = 0 }
         };
 
         ERROR_CHECK(ledc_channel_config(&channel_config));
         registered_channels.push_back(
             saved_channel_config_t{
                 config.channel,
-                config.gpio_pin,
-                config.pull_low_on_deep_sleep
+                config.gpio_pin
             }
         );
     }
@@ -107,23 +106,5 @@ namespace LEDC {
 
         ERROR_CHECK(ledc_set_duty(SPEED_MODE, ledc_channel, duty));
         ERROR_CHECK(ledc_update_duty(SPEED_MODE, ledc_channel));
-    }
-
-    void Controller::prepare_for_deepsleep() const {
-        smart_mutex lock(mutex);
-
-        for (const auto& channel : registered_channels) {
-            ledc_stop(SPEED_MODE, channel.channel, 0);
-
-            if (channel.pull_low_on_deep_sleep) {
-                WARN_CHECK(gpio_set_direction(channel.gpio_pin, GPIO_MODE_OUTPUT));
-                WARN_CHECK(gpio_set_level(channel.gpio_pin, 0));
-                WARN_CHECK(gpio_pullup_dis(channel.gpio_pin));
-                WARN_CHECK(gpio_pulldown_en(channel.gpio_pin));
-                WARN_CHECK(gpio_hold_en(channel.gpio_pin));
-            }
-        }
-
-        LOGI("Prepared LEDC pins for deepsleep");
     }
 }

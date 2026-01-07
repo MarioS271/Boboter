@@ -27,7 +27,6 @@ namespace LEDC {
         ledc_timer_t timer;
         gpio_num_t gpio_pin;
         uint32_t duty;
-        bool pull_low_on_deep_sleep;
     };
 
     /**
@@ -44,7 +43,6 @@ namespace LEDC {
         struct saved_channel_config_t {
             ledc_channel_t channel;
             gpio_num_t gpio_pin;
-            bool pull_low_on_deep_sleep;
         };
 
         std::vector<ledc_timer_t> registered_timers;
@@ -103,10 +101,5 @@ namespace LEDC {
          * @param duty The target duty cycle
          */
         void set_duty(ledc_channel_t ledc_channel, uint32_t duty) const;
-
-        /**
-         * @brief Pulls low all pins of which channels are registered for deep sleep
-         */
-        void prepare_for_deepsleep() const;
     };
 }

@@ -18,8 +18,9 @@ Thank you for your interest in helping out! To keep the project safe and maintai
 
 ## 3. Code Style
 - Ensure your code is exceptionally clean and structured. I maintain high standards to keep the codebase accessible for beginners.
-- **Doxygen** documentation is mandatory for methods and namespaces.
+- **Doxygen** documentation is mandatory for methods, namespaces and classes.
 - Use comments only where absolutely necessary to explain complex logic.
+- Format variables and similar using snake case (like this: `variable_name`)
 
 ## 4. Content
 - Only add new libraries if there is no other way, and only after consulting with the lead developer.

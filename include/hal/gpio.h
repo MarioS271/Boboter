@@ -22,7 +22,6 @@ namespace GPIO {
         gpio_mode_t mode;
         gpio_pull_mode_t pull_mode;
         gpio_int_type_t intr_type;
-        bool pull_low_in_deep_sleep;
     };
 
     enum class level_t : uint8_t {
@@ -45,7 +44,6 @@ namespace GPIO {
         };
 
         std::vector<saved_config_entry_t> registered_entries;
-        bitmask_t pins_to_pull_low;
 
     private:
         explicit Controller();
@@ -94,10 +92,5 @@ namespace GPIO {
          * @param gpio_pin The pin of which to get the level
          */
         [[nodiscard]] level_t get_level(gpio_num_t gpio_pin) const;
-
-        /**
-         * @brief Pulls low all pins in the @c pull_low_in_deep_sleep bitmask
-         */
-        void prepare_for_deepsleep() const;
     };
 }

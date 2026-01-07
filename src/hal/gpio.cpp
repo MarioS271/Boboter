@@ -14,8 +14,7 @@
 
 namespace GPIO {
     Controller::Controller() :
-        mutex(xSemaphoreCreateMutex()),
-        pins_to_pull_low(0)
+        mutex(xSemaphoreCreateMutex())
     {
         LOGI("Constructor of GPIO::Controller called");
     }
@@ -86,10 +85,6 @@ namespace GPIO {
             }
         );
 
-        if (entry.pull_low_in_deep_sleep) {
-            pins_to_pull_low |= 1ULL << pin_as_int;
-        }
-
         LOGI("Initialized pin %d", pin_as_int);
     }
 
@@ -129,31 +124,5 @@ namespace GPIO {
 
         LOGE("Unable to get GPIO pin level, invalid pin");
         abort();
-    }
-
-    void Controller::prepare_for_deepsleep() const {
-        smart_mutex lock(mutex);
-
-        if (pins_to_pull_low == 0) {
-            return;
-        }
-
-        uint8_t pulled_down_pins = 0;
-
-        for (int i = 0; i < GPIO_NUM_MAX; i++) {
-            if (pins_to_pull_low & 1ULL << i) {
-                const auto pin = static_cast<gpio_num_t>(i);
-
-                WARN_CHECK(gpio_set_direction(pin, GPIO_MODE_OUTPUT));
-                WARN_CHECK(gpio_set_level(pin, 0));
-                WARN_CHECK(gpio_pullup_dis(pin));
-                WARN_CHECK(gpio_pulldown_en(pin));
-                WARN_CHECK(gpio_hold_en(pin));
-
-                ++pulled_down_pins;
-            }
-        }
-
-        LOGI("Pulled down %d pins for deep sleep mode", pulled_down_pins);
     }
 }
