@@ -5,19 +5,27 @@
  * @copyright MIT License
  */
 
-#include <esp_random.h>
-#include "include/constants.h"
 #include "include/flags.h"
+#include "include/constants.h"
 #include "include/robot.h"
-#include "helpers/delay.h"
-#include "helpers/predef_colors.h"
 #include "lib/logger/logger.h"
 
+#include "helpers/delay.h"
+#include <esp_random.h>
+#include "helpers/predef_colors.h"
+
 extern "C" void app_main() {
-    using namespace Constants;
+    constexpr const char* TAG = "Main";
 
     LOGI("=== Boboter is starting ===");
+    LOGI("Firmware v%s by %s", Constants::VERSION, Constants::AUTHORS);
     LOGI("Hello, World!");
+    LOGI("===========================");
+
+    LOGW("Warning");
+    LOGE("Error");
+    LOGD("Debug");
+    LOGV("Verbose");
 
     Robot& robot = Robot::get_instance();
     robot.begin();
