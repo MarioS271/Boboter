@@ -5,10 +5,12 @@
  * @copyright MIT License
  */
 
+#include <esp_random.h>
 #include "include/constants.h"
 #include "include/flags.h"
 #include "include/robot.h"
 #include "helpers/delay.h"
+#include "helpers/predef_colors.h"
 #include "lib/logger/logger.h"
 
 extern "C" void app_main() {
@@ -21,12 +23,15 @@ extern "C" void app_main() {
     robot.begin();
 
     while (true) {
-        robot.battery.update();
-        const int8_t percentage = robot.battery.get_percentage();
-        const uint16_t voltage = robot.battery.get_millivolts();
+        for (int i = 0; i < 4; ++i) {
+            const uint32_t color_index = esp_random() % Colors::NUM_COLORS;
 
-        LOGI("Battery Percentage/Voltage: %d%% / %d mV", percentage, voltage);
+            robot.leds.set_color(
+                static_cast<Device::Leds::led_id_t>(i),
+                Colors::LIST[color_index]
+            );
+        }
 
-        delay(500);
+        delay(1000);
     }
 }

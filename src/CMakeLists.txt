@@ -8,7 +8,7 @@ file(GLOB_RECURSE SOURCES
     "../tasks/**/*.cpp"
 )
 
-set(INC_DIRS ".")
+set(INC_DIRS "..")
 
 idf_component_register(
     SRCS ${SOURCES}

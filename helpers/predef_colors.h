@@ -26,4 +26,8 @@ namespace Colors {
     constexpr rgb_color_t BLUE = {0, 0, 255};
     constexpr rgb_color_t MAGENTA = {255, 0, 255};
     constexpr rgb_color_t WHITE = {255, 255, 255};
+
+    constexpr rgb_color_t LIST[NUM_COLORS] = {
+        RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE
+    };
 }

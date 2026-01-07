@@ -12,6 +12,7 @@
 #include "include/hal/adc.h"
 #include "include/hal/i2c.h"
 #include "devices/battery/battery.h"
+#include "devices/leds/leds.h"
 
 /**
  * @brief Class containing all the components of the robot
@@ -38,6 +39,7 @@ public:
     HAL::I2C::Controller& i2c;
 
     Device::Battery battery;
+    Device::Leds leds;
 
     /**
      * @brief Gets the robot instance

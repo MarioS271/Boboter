@@ -14,7 +14,8 @@ Robot::Robot() :
     adc(HAL::ADC::Controller::get_instance()),
     i2c(HAL::I2C::Controller::get_instance()),
 
-    battery(*this)
+    battery(*this),
+    leds(*this)
 {
     LOGI("Constructor of Robot called");
 }
@@ -63,6 +64,7 @@ void Robot::begin() {
     );
 
     battery.initialize();
+    leds.initialize();
 }
 
 void Robot::set_status_led(const bool state) const {
