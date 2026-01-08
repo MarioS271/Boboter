@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <cstdint>
 #include "types/rgb_color.h"
 
 /**
@@ -27,6 +26,9 @@ namespace Colors {
     constexpr rgb_color_t MAGENTA = {255, 0, 255};
     constexpr rgb_color_t WHITE = {255, 255, 255};
 
+    /**
+     * @brief An array containing all the colors to make it easy to loop over them or randomly pick one
+     */
     constexpr rgb_color_t LIST[NUM_COLORS] = {
         RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, MAGENTA, WHITE
     };

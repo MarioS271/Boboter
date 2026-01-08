@@ -13,6 +13,7 @@
 #include "include/hal/i2c.h"
 #include "devices/battery/battery.h"
 #include "devices/leds/leds.h"
+#include "devices/display/display.h"
 
 /**
  * @brief Class containing all the components of the robot
@@ -29,6 +30,16 @@ public:
     static constexpr gpio_num_t STATUS_LED_PIN = GPIO_NUM_5;
     static constexpr gpio_num_t BOTTOM_LED_PIN = GPIO_NUM_13;
 
+    struct task_config_t {
+        TaskFunction_t task_function;
+        const char* task_name;
+        const uint32_t stack_depth;
+        void* const params_for_task;
+        UBaseType_t priority;
+        TaskHandle_t* const created_task_handle;
+        const BaseType_t core_id;
+    };
+
 public:
     Robot(const Robot&) = delete;
     Robot& operator=(const Robot&) = delete;
@@ -40,6 +51,7 @@ public:
 
     Device::Battery battery;
     Device::Leds leds;
+    Device::Display display;
 
     /**
      * @brief Gets the robot instance
@@ -56,6 +68,13 @@ public:
      * @brief Initialize all HALs, devices and integrated stuff like the status LED or similar
      */
     void begin();
+
+    /**
+     * @brief Creates a FreeRTOS task
+     *
+     * @param config The configuration of the task to create
+     */
+    void create_task(const task_config_t& config);
 
     /**
      * @brief Sets the status LED

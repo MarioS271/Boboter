@@ -41,7 +41,7 @@ namespace Device {
 
     public:
         explicit Leds(Robot& robot);
-        ~Leds() = default;
+        ~Leds();
 
         /**
          * @brief Sets up the neccessary GPIO pins

@@ -2,18 +2,22 @@
 
 The firmware is segmented into a few FreeRTOS tasks to seperate and categorize the individual workloads.
 
+Cores 0 and 1 are both used. While Core 0 is used for low-level system functionality and some outside tasks/libs,
+Core 1 is used for higher level stuff such as I/O, PID, motor ramping, ...
+
 Here is an overview of all tasks:
 
-| Task Name        | Priority | Stack Depth | Creation Time                               | Creation Location      | On what condition is it created                       |
-|------------------|----------|-------------|---------------------------------------------|------------------------|-------------------------------------------------------|
-| Secure Task      | 24       | 4096        | Once                                        | `src/main.cpp`         | -                                                     |
-| System Task      | 20       | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| PID Task         | 15       | 4096        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| IO Task          | 10       | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| LEDs Task        | 3        | 2048        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| Buzzer Task      | 1        | 1024        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to false |
-| Ramp Task        | 14       | 2048        | Once for each instance of the `Motor` class | `libs/motor/motor.cpp` | -                                                     |
-| Sensor Test Task | 22       | 8192        | Once                                        | `src/main.cpp`         | If the flag `ENABLE_SENSOR_TEST_MODE` is set to true  |
+| Task Name   | Priority | Stack Depth | Assigned Core | On what condition is it created                    |
+|-------------|----------|-------------|---------------|----------------------------------------------------|
+| Secure Task | 24       | 2048        | Core 0        | Is always created                                  |
+| System Task | 20       | 2048        | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| PID Task    | 15       | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Ramp Task   | 14       | 1024        | Core 1        | Is always created                                  |
+| IO Task     | 10       | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Log Task    | 6        | 4096        | Core 1        | Is always created                                  |  
+| LEDs Task   | 3        | 1024        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Buzzer Task | 1        | 1024        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Test Task   | 22       | 4096        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |
 
 
 ### Secure Task
@@ -47,7 +51,7 @@ Responsible for smooth motor acceleration and deceleration. It gradually adjusts
 target speed to prevent excessive acceleration and robot tipping.
 One ramp task is created for each motor that gets instantiated.
 
-### Sensor Test Task
-This is a special task, which is only started if the flag `ENABLE_SENSOR_TEST_MODE` is set.
-It goes over the robot's sensors and capabilities, and tests them to make sure there are no
+### Test Task
+This is a special task, which is only started if the flag `ENABLE_TEST_MODE` is set.
+It goes over the robot's devices (sensors, motors, ...), and tests them to make sure there are no
 hardware defects.

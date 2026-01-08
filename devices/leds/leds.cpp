@@ -19,6 +19,11 @@ namespace Device {
         LOGI("Constructor of Device::Leds called");
     }
 
+    Leds::~Leds() {
+        LOGI("Destructor of Device::Leds called");
+        turn_all_off();
+    }
+
     void Leds::initialize() {
         robot.gpio.add(
             HAL::GPIO::pin_config_t{

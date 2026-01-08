@@ -92,6 +92,13 @@ namespace HAL::I2C {
         i2c_master_dev_handle_t add_device(const device_config_t& config);
 
         /**
+         * @brief Gets the controller's I2C bus handle
+         *
+         * @return The bus handle
+         */
+        [[nodiscard]] i2c_master_bus_handle_t get_bus_handle() const { return bus_handle; }
+
+        /**
          * @brief Writes data to a specific device
          *
          * @param device_handle The handle of the target device
