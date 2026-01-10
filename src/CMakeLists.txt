@@ -5,7 +5,7 @@ file(GLOB_RECURSE SOURCES
     "*.cpp"
     "../lib/**/*.cpp"
     "../devices/**/*.cpp"
-    "../tasks/**/*.cpp"
+    "../tasks/*.cpp"
 )
 
 set(INC_DIRS "..")

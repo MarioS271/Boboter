@@ -7,14 +7,12 @@
 
 #include "tasks.h"
 
-#include "helpers/delay.h"
 #include "lib/logger/logger.h"
 
 namespace Task {
     [[noreturn]] void log_task(void* params) {
         while (true) {
-            process_log_queue();
-            delay(1);
+            Logger::get_instance().process_log_queue();
         }
     }
 }

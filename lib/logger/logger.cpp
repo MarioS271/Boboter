@@ -11,7 +11,11 @@
 #include <cstdarg>
 #include "include/flags.h"
 
-static void render_to_console(const esp_log_level_t level, const char* tag, const char* buffer) {
+static void render_to_serial(const esp_log_level_t level, const char* tag, const char* buffer, const bool is_linefeed) {
+    if (is_linefeed) {
+        printf("\n");
+    }
+
     char log_level_char;
     const char* RESET = "\033[0m";
     const char* DARKER = "\033[0;90m";
@@ -45,14 +49,25 @@ void Logger::custom_log(const esp_log_level_t level, const char* tag, const char
     va_end(args);
 
     if (use_queue && queue_handle != nullptr) {
-        const log_item item = { level, tag, buffer };
+        const log_item item = { level, tag, buffer, false };
         if (xQueueSend(queue_handle, &item, 0) != pdPASS) {
-            render_to_console(level, tag, buffer);
+            render_to_serial(level, tag, buffer, false);
             free(buffer);
         }
     } else {
-        render_to_console(level, tag, buffer);
+        render_to_serial(level, tag, buffer, false);
         free(buffer);
+    }
+}
+
+void Logger::print_linefeed() const {
+    if (use_queue && queue_handle != nullptr) {
+        const log_item item = { ESP_LOG_NONE, nullptr, nullptr, true };
+        if (xQueueSend(queue_handle, &item, 0) != pdPASS) {
+            render_to_serial(ESP_LOG_NONE, nullptr, nullptr, true);
+        }
+    } else {
+        render_to_serial(ESP_LOG_NONE, nullptr, nullptr, true);
     }
 }
 
@@ -66,7 +81,7 @@ void Logger::process_log_queue() const {
 
     log_item item{};
     if (xQueueReceive(queue_handle, &item, portMAX_DELAY) == pdPASS) {
-        render_to_console(item.level, item.tag, item.message);
+        render_to_serial(item.level, item.tag, item.message, item.is_linefeed);
         free(item.message);
     }
 }

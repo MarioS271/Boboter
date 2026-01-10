@@ -49,6 +49,12 @@ namespace Device {
         void initialize();
 
         /**
+         * @brief Function for preparing the LEDs for a shut-down state, for example for getting
+         *        destroyed or entering deep sleep
+         */
+        void shutdown();
+
+        /**
          * @brief Sets the color of a specific LED
          *
          * @param led_id The ID of the LED of which to set the color

@@ -15,10 +15,10 @@ void error_check_callback(const char* tag,
     if (expr == ESP_OK) [[likely]]
         return;
 
-    printf("\n");
-    custom_log(ESP_LOG_ERROR, tag, "ERROR_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
-    custom_log(ESP_LOG_ERROR, tag, "  on line %lu", loc.line());
-    custom_log(ESP_LOG_ERROR, tag, "  in file %s", loc.file_name());
+    Logger::get_instance().print_linefeed();
+    Logger::get_instance().custom_log(ESP_LOG_ERROR, tag, "ERROR_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
+    Logger::get_instance().custom_log(ESP_LOG_ERROR, tag, "  on line %lu", loc.line());
+    Logger::get_instance().custom_log(ESP_LOG_ERROR, tag, "  in file %s", loc.file_name());
 
     abort();
 }
@@ -30,9 +30,9 @@ void warn_check_callback(const char* tag,
     if (expr == ESP_OK) [[likely]]
         return;
 
-    printf("\n");
-    custom_log(ESP_LOG_WARN, tag, "WARN_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
-    custom_log(ESP_LOG_WARN, tag, "  on line %lu", loc.line());
-    custom_log(ESP_LOG_WARN, tag, "  in file %s", loc.file_name());
-    printf("\n");
+    Logger::get_instance().print_linefeed();
+    Logger::get_instance().custom_log(ESP_LOG_WARN, tag, "WARN_CHECK failed with code %s (0x%x)", esp_err_to_name(expr), expr);
+    Logger::get_instance().custom_log(ESP_LOG_WARN, tag, "  on line %lu", loc.line());
+    Logger::get_instance().custom_log(ESP_LOG_WARN, tag, "  in file %s", loc.file_name());
+    Logger::get_instance().print_linefeed();
 }

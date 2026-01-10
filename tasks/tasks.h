@@ -7,6 +7,9 @@
 
 #pragma once
 
+/**
+ * @brief A namespace containing all the custom FreeRTOS tasks the robot uses
+ */
 namespace Task {
     [[noreturn]] void secure_task(void* params);
     [[noreturn]] void system_task(void* params);
@@ -18,4 +21,5 @@ namespace Task {
     [[noreturn]] void buzzer_task(void* params);
 
     [[noreturn]] void test_task(void* params);
+    [[noreturn]] void halt_core_task(void* params);
 }

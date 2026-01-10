@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "types/sound.h"
 #include "include/hal/gpio.h"
 #include "include/hal/ledc.h"
 #include "include/hal/adc.h"
@@ -41,9 +42,12 @@ public:
     };
 
 public:
-    Robot(const Robot&) = delete;
-    Robot& operator=(const Robot&) = delete;
+    enum class rgb_leds_mode_t : uint8_t {
+        OFF = 0,
+        RANDOM_COLORS = 1
+    };
 
+public:
     HAL::GPIO::Controller& gpio;
     HAL::LEDC::Controller& ledc;
     HAL::ADC::Controller& adc;
@@ -52,6 +56,18 @@ public:
     Device::Battery battery;
     Device::Leds leds;
     Device::Display display;
+
+    struct data_struct {
+        struct leds_struct {
+            bool status_led_active;
+            bool bottom_led_active;
+            rgb_leds_mode_t rgb_leds_mode;
+        } leds{};
+    } data{};
+
+public:
+    Robot(const Robot&) = delete;
+    Robot& operator=(const Robot&) = delete;
 
     /**
      * @brief Gets the robot instance
@@ -65,16 +81,16 @@ public:
     }
 
     /**
-     * @brief Initialize all HALs, devices and integrated stuff like the status LED or similar
-     */
-    void begin();
-
-    /**
      * @brief Creates a FreeRTOS task
      *
      * @param config The configuration of the task to create
      */
     void create_task(const task_config_t& config);
+
+    /**
+     * @brief Shuts down all HALs, pulls down a few pins and puts the ESP32 into deep sleep mode
+     */
+    void permanent_sleep();
 
     /**
      * @brief Sets the status LED

@@ -45,6 +45,11 @@ namespace Device {
         void initialize();
 
         /**
+         * @brief Shuts down the LCD panel and the according I2C device
+         */
+        void shutdown();
+
+        /**
          * @brief Clears the display
          */
         void clear();

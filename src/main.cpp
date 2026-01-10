@@ -11,29 +11,10 @@
 #include "lib/logger/logger.h"
 #include "tasks/tasks.h"
 
-#include <esp_random.h>
-#include "helpers/delay.h"
-#include "helpers/predef_colors.h"
-
-void led_task(void* params) {
-    Robot& robot = Robot::get_instance();
-
-    while (true) {
-        for (int i = 0; i < 4; ++i) {
-            const uint32_t color_index = esp_random() % Colors::NUM_COLORS;
-
-            robot.leds.set_color(
-                static_cast<Device::Leds::led_id_t>(i),
-                Colors::LIST[color_index]
-            );
-        }
-
-        delay(1000);
-    }
-}
-
 extern "C" void app_main() {
     constexpr const char* TAG = "Main";
+
+    esp_log_level_set("gpio", ESP_LOG_NONE);
 
     LOGI("=== Boboter is starting ===");
     LOGI("Firmware v%s by %s", Constants::VERSION, Constants::AUTHORS);
@@ -82,7 +63,21 @@ extern "C" void app_main() {
     robot.set_status_led(true);
     robot.set_bottom_led(false);
 
-    QueueHandle_t log_queue = xQueueCreate(64, sizeof(Logger::log_item));
+    Logger::get_instance().switch_to_queue_logging(
+        xQueueCreate(64, sizeof(Logger::log_item))
+    );
+
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::secure_task,
+            .task_name = "SecureTask",
+            .stack_depth = 2048,
+            .params_for_task = nullptr,
+            .priority = 24,
+            .created_task_handle = nullptr,
+            .core_id = 0
+        }
+    );
 
     robot.create_task(
         Robot::task_config_t{
@@ -96,11 +91,17 @@ extern "C" void app_main() {
         }
     );
 
-    robot.display.clear();
-    robot.display.set_cursor_position(0, 0);
-    robot.display.write_text("Hello, World!");
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::leds_task,
+            .task_name = "LedsTask",
+            .stack_depth = 2048,
+            .params_for_task = nullptr,
+            .priority = 3,
+            .created_task_handle = nullptr,
+            .core_id = 1
+        }
+    );
 
-    while (true) {
-
-    }
+    vTaskDelete(nullptr);
 }

@@ -27,15 +27,7 @@ namespace Device {
 
     Display::~Display() {
         LOGI("Destructor of Device::Display called");
-
-        if (panel_handle != nullptr) {
-            esp_lcd_panel_del(panel_handle);
-        }
-        if (io_handle != nullptr) {
-            esp_lcd_panel_io_del(io_handle);
-        }
-
-        delete[] display_buffer;
+        shutdown();
     }
 
     void Display::initialize() {
@@ -62,6 +54,23 @@ namespace Device {
         ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, true));
 
         LOGI("Initialized Device::Display");
+    }
+
+    void Display::shutdown() {
+        clear();
+        WARN_CHECK(esp_lcd_panel_disp_on_off(panel_handle, false));
+
+        if (panel_handle != nullptr) {
+            esp_lcd_panel_del(panel_handle);
+            panel_handle = nullptr;
+        }
+        if (io_handle != nullptr) {
+            esp_lcd_panel_io_del(io_handle);
+            io_handle = nullptr;
+        }
+
+        delete[] display_buffer;
+        display_buffer = nullptr;
     }
 
     void Display::clear() {

@@ -5,8 +5,7 @@ For functions returning this type of error code (like `gpio_config()` or other b
 the library `error` has macros called `ERROR_CHECK` and `WARN_CHECK` which inspect the return value
 and if necessary either print a warning to the log (`WARN_CHECK`) or abort the program entirely (`ERROR_CHECK`).
 
-Normally, you will never cross paths with these functions, as they're only necessary in hardware abstraction layers and
-component libraries.
+Normally, you will never cross paths with these functions, as they're almost Exclusively necessary in hardware abstraction layers.
 
 
 ## Custom Error Types

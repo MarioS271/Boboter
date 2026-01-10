@@ -21,7 +21,7 @@ namespace Device {
 
     Leds::~Leds() {
         LOGI("Destructor of Device::Leds called");
-        turn_all_off();
+        shutdown();
     }
 
     void Leds::initialize() {
@@ -46,6 +46,10 @@ namespace Device {
         turn_all_off();
 
         LOGI("Initialized Device::Leds");
+    }
+
+    void Leds::shutdown() {
+        turn_all_off();
     }
 
     void Leds::set_color(const led_id_t led_id, const rgb_color_t color) {
