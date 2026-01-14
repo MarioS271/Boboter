@@ -29,7 +29,6 @@ namespace Device {
         void send_bit(bool bit) const;              ///< @brief Sends a single bit
         void send_byte(uint8_t byte) const;         ///< @brief Sends an entire byte
         void send_frame(rgb_color_t color) const;   ///< @brief Sends a frame (full color info)
-        void update() const;                        ///< @brief Updates the LEDs
 
     public:
         enum class led_id_t : uint8_t {
@@ -55,12 +54,18 @@ namespace Device {
         void shutdown();
 
         /**
+         * @brief Updates the physical LEDs
+         */
+        void update() const;
+
+        /**
          * @brief Sets the color of a specific LED
          *
          * @param led_id The ID of the LED of which to set the color
          * @param color The color to set that LED to
+         * @param do_update Decides if the function automatically updates the LEDs or not (default: true)
          */
-        void set_color(led_id_t led_id, rgb_color_t color);
+        void set_color(led_id_t led_id, rgb_color_t color, bool do_update = true);
 
         /**
          * @brief Sets the color of all LEDs
@@ -73,8 +78,9 @@ namespace Device {
          * @brief Turns off a specific LED
          *
          * @param led_id The ID of the LED to turn off
+         * @param do_update Decides if the function automatically updates the LEDs or not (default: true)
          */
-        void turn_off(led_id_t led_id);
+        void turn_off(led_id_t led_id, bool do_update = true);
 
         /**
          * @brief Turns off all LEDs

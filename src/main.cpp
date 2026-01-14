@@ -63,6 +63,7 @@ extern "C" void app_main() {
     robot.set_status_led(true);
     robot.set_bottom_led(false);
 
+    LOGI("Switching logging mode from real mode to queue mode");
     Logger::get_instance().switch_to_queue_logging(
         xQueueCreate(64, sizeof(Logger::log_item))
     );
@@ -74,6 +75,18 @@ extern "C" void app_main() {
             .stack_depth = 2048,
             .params_for_task = nullptr,
             .priority = 24,
+            .created_task_handle = nullptr,
+            .core_id = 0
+        }
+    );
+
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::system_task,
+            .task_name = "SystemTask",
+            .stack_depth = 2048,
+            .params_for_task = nullptr,
+            .priority = 20,
             .created_task_handle = nullptr,
             .core_id = 0
         }
@@ -103,5 +116,6 @@ extern "C" void app_main() {
         }
     );
 
+    LOGI("Created all tasks successfully");
     vTaskDelete(nullptr);
 }

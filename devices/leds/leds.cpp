@@ -52,9 +52,17 @@ namespace Device {
         turn_all_off();
     }
 
-    void Leds::set_color(const led_id_t led_id, const rgb_color_t color) {
+    void Leds::update() const {
+        for (int i = 0; i < 4; ++i) send_byte(0x00);
+        for (int i = 0; i < NUM_LEDS; ++i) send_frame(leds[i]);
+        for (int i = 0; i < 4; ++i) send_byte(0xFF);
+    }
+
+    void Leds::set_color(const led_id_t led_id, const rgb_color_t color, const bool do_update) {
         leds[static_cast<uint8_t>(led_id)] = color;
-        update();
+        if (do_update) {
+            update();
+        }
     }
 
     void Leds::set_color_all(const rgb_color_t color) {
@@ -65,9 +73,11 @@ namespace Device {
         update();
     }
 
-    void Leds::turn_off(const led_id_t led_id) {
+    void Leds::turn_off(const led_id_t led_id, const bool do_update) {
         leds[static_cast<uint8_t>(led_id)] = Colors::OFF;
-        update();
+        if (do_update) {
+            update();
+        }
     }
 
     void Leds::turn_all_off() {

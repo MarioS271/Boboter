@@ -15,6 +15,7 @@
 #include "devices/battery/battery.h"
 #include "devices/leds/leds.h"
 #include "devices/display/display.h"
+#include "types/protected_struct.h"
 
 /**
  * @brief Class containing all the components of the robot
@@ -44,7 +45,9 @@ public:
 public:
     enum class rgb_leds_mode_t : uint8_t {
         OFF = 0,
-        RANDOM_COLORS = 1
+        HEADLIGHTS = 1,
+        RANDOM_COLORS = 2,
+        POLICE = 3
     };
 
 public:
@@ -63,7 +66,8 @@ public:
             bool bottom_led_active;
             rgb_leds_mode_t rgb_leds_mode;
         } leds{};
-    } data{};
+    };
+    protected_struct<data_struct> data{};
 
 public:
     Robot(const Robot&) = delete;

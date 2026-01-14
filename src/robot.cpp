@@ -77,15 +77,21 @@ void Robot::permanent_sleep() {
 }
 
 void Robot::set_status_led(const bool state) const {
+    const auto locked_data = *data;
+    locked_data->leds.status_led_active = state;
+
     gpio.set_level(
         STATUS_LED_PIN,
-        static_cast<HAL::GPIO::level_t>(!state)
+        static_cast<HAL::GPIO::level_t>(!locked_data->leds.status_led_active)
     );
 }
 
 void Robot::set_bottom_led(const bool state) const {
+    const auto locked_data = *data;
+    locked_data->leds.status_led_active = state;
+
     gpio.set_level(
         BOTTOM_LED_PIN,
-        static_cast<HAL::GPIO::level_t>(state)
+        static_cast<HAL::GPIO::level_t>(locked_data->leds.bottom_led_active)
     );
 }

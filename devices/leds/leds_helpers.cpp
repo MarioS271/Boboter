@@ -35,10 +35,4 @@ namespace Device {
         send_byte(color.b);
         send_byte(color.g);
     }
-
-    void Leds::update() const {
-        for (int i = 0; i < 4; ++i) send_byte(0x00);
-        for (int i = 0; i < NUM_LEDS; ++i) send_frame(leds[i]);
-        for (int i = 0; i < 4; ++i) send_byte(0xFF);
-    }
 }

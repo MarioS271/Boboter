@@ -54,6 +54,8 @@ namespace Device {
         ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, true));
 
         LOGI("Initialized Device::Display");
+
+        clear();
     }
 
     void Display::shutdown() {

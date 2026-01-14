@@ -6,7 +6,9 @@
  */
 
 #pragma once
-#include "freertos/FreeRTOS.h"
+
+#include <freertos/FreeRTOS.h>
+#include "lib/logger/logger.h"
 
 /**
  * @brief A type used to make structs thread-safe for FreeRTOS via mutexes
@@ -25,29 +27,42 @@
 template <typename struct_type>
 class protected_struct {
 private:
+    static constexpr const char* TAG = "protected_struct";
+
     struct_type data;
-    SemaphoreHandle_t mutex;
+    mutable SemaphoreHandle_t mutex;
 
     struct proxy {
-        protected_struct& parent;
+        const protected_struct& parent;
 
-        explicit proxy(protected_struct& parent) : parent(parent) { xSemaphoreTake(parent.mutex, portMAX_DELAY); }
+        explicit proxy(const protected_struct& parent) : parent(parent) {
+            if (parent.mutex == nullptr) {
+                parent.mutex = xSemaphoreCreateMutex();
+            }
+            if (parent.mutex != nullptr) {
+                xSemaphoreTake(parent.mutex, portMAX_DELAY);
+            }
+        }
         ~proxy() { xSemaphoreGive(parent.mutex); }
 
         /**
          * @brief Operator Overload to retrieve automatically dereferenced pointer to data
          */
-        struct_type* operator->() { return &parent.data; }
+        struct_type* operator->() const {
+            return const_cast<struct_type*>(&parent.data);
+        }
 
         /**
          * @brief Operator Overload to enable retrieving a reference to the data to be able to
          *        pass it somewhere
          */
-        operator struct_type&() { return parent.data; }
+        operator struct_type&() const {
+            return *const_cast<struct_type*>(&parent.data);
+        }
     };
 
 public:
-    explicit protected_struct() : mutex(xSemaphoreCreateMutex()) {}
+    explicit protected_struct() : mutex() {}
     ~protected_struct() {
         if (mutex != nullptr) {
             vSemaphoreDelete(mutex);
@@ -63,7 +78,7 @@ public:
      *
      * @return A temporary proxy object to hold the mutex and return the value
      */
-    proxy operator->() {
+    proxy operator->() const {
         return proxy(*this);
     }
 
@@ -73,7 +88,7 @@ public:
      *
      * @return A temporary proxy object to hold the mutex and return the value
      */
-    proxy operator*() {
+    proxy operator*() const {
         return proxy(*this);
     }
 };

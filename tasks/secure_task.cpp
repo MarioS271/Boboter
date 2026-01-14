@@ -5,6 +5,8 @@
  * @copyright MIT License
  */
 
+#include "tasks/tasks.h"
+
 #include "include/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
@@ -34,7 +36,7 @@ namespace Task {
 
         while (true) {
             robot.battery.update();
-            voltage = robot.battery.get_millivolts() / 2;
+            voltage = robot.battery.get_millivolts();
             current_time = esp_timer_get_time();
 
             if (voltage < MIN_BATTERY_VOLTAGE) {
