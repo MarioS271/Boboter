@@ -19,7 +19,8 @@ Robot::Robot() :
 
     battery(*this),
     leds(*this),
-    display(*this)
+    display(*this),
+    buttons(*this)
 {
     LOGI("Constructor of Robot called");
 }

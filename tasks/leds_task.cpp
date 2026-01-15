@@ -5,6 +5,8 @@
  * @copyright MIT License
  */
 
+#include "tasks/tasks.h"
+
 #include <esp_random.h>
 #include "include/robot.h"
 #include "helpers/delay.h"

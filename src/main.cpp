@@ -11,6 +11,8 @@
 #include "lib/logger/logger.h"
 #include "tasks/tasks.h"
 
+#include "helpers/delay.h"
+
 extern "C" void app_main() {
     constexpr const char* TAG = "Main";
 
@@ -56,12 +58,13 @@ extern "C" void app_main() {
         }
     );
 
+    robot.set_status_led(true);
+    robot.set_bottom_led(false);
+
     robot.battery.initialize();
     robot.leds.initialize();
     robot.display.initialize();
-
-    robot.set_status_led(true);
-    robot.set_bottom_led(false);
+    robot.buttons.initialize();
 
     LOGI("Switching logging mode from real mode to queue mode");
     Logger::get_instance().switch_to_queue_logging(
@@ -89,6 +92,18 @@ extern "C" void app_main() {
             .priority = 20,
             .created_task_handle = nullptr,
             .core_id = 0
+        }
+    );
+
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::io_task,
+            .task_name = "IOTask",
+            .stack_depth = 4096,
+            .params_for_task = nullptr,
+            .priority = 10,
+            .created_task_handle = nullptr,
+            .core_id = 1
         }
     );
 

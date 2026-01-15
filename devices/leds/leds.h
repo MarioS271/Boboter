@@ -48,7 +48,7 @@ namespace Device {
         void initialize();
 
         /**
-         * @brief Function for preparing the LEDs for a shut-down state, for example for getting
+         * @brief Prepares the LEDs for a shut-down state, for example for getting
          *        destroyed or entering deep sleep
          */
         void shutdown();

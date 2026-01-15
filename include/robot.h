@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "types/sound.h"
+#include "types/protected_struct.h"
 #include "include/hal/gpio.h"
 #include "include/hal/ledc.h"
 #include "include/hal/adc.h"
@@ -15,7 +15,7 @@
 #include "devices/battery/battery.h"
 #include "devices/leds/leds.h"
 #include "devices/display/display.h"
-#include "types/protected_struct.h"
+#include "devices/buttons/buttons.h"
 
 /**
  * @brief Class containing all the components of the robot
@@ -59,6 +59,7 @@ public:
     Device::Battery battery;
     Device::Leds leds;
     Device::Display display;
+    Device::Buttons buttons;
 
     struct data_struct {
         struct leds_struct {
