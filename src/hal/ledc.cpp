@@ -16,11 +16,11 @@ namespace HAL::LEDC {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex())
     {
-        LOGI("Constructor of LEDC::Controller called");
+        LOGI("Constructor of HAL::LEDC::Controller called");
     }
 
     Controller::~Controller() {
-        LOGI("Destructor of LEDC::Controller called");
+        LOGI("Destructor of HAL::LEDC::Controller called");
 
         shutdown();
 
@@ -51,7 +51,7 @@ namespace HAL::LEDC {
         registered_timers.clear();
         registered_channels.clear();
 
-        LOGI("Shut down the LEDC controller HAL");
+        LOGI("Shut down the HAL::LEDC::Controller");
     }
 
     void Controller::add_timer(const timer_config_t& config) {

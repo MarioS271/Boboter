@@ -17,11 +17,11 @@ namespace HAL::I2C {
         config(),
         is_configured(false)
     {
-        LOGI("Constructor of I2C::Controller called");
+        LOGI("Constructor of HAL::I2C::Controller called");
     }
 
     Controller::~Controller() {
-        LOGI("Destructor of I2C::Controller called");
+        LOGI("Destructor of HAL::I2C::Controller called");
 
         shutdown();
 
@@ -53,7 +53,7 @@ namespace HAL::I2C {
         this->config = config;
         is_configured = true;
 
-        LOGI("Initialized I2C::Controller HAL, configured bus %d", static_cast<uint8_t>(config.port));
+        LOGI("Initialized HAL::I2C::Controller, configured bus %d", static_cast<uint8_t>(config.port));
     }
 
     void Controller::shutdown() {
@@ -78,7 +78,7 @@ namespace HAL::I2C {
         config = {};
         is_configured = false;
 
-        LOGI("Shut down the I2C controller HAL");
+        LOGI("Shut down HAL::I2C::Controller");
     }
 
     void Controller::scan_for_devices() const {

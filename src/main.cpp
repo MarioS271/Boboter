@@ -40,6 +40,7 @@ extern "C" void app_main() {
             .scl_pin = GPIO_NUM_22
         }
     );
+    robot.i2c.scan_for_devices();
 
     robot.gpio.add(
         HAL::GPIO::pin_config_t{
@@ -71,6 +72,7 @@ extern "C" void app_main() {
         xQueueCreate(64, sizeof(Logger::log_item))
     );
 
+    // Secure Task
     robot.create_task(
         Robot::task_config_t{
             .task_function = Task::secure_task,
@@ -83,6 +85,7 @@ extern "C" void app_main() {
         }
     );
 
+    // System Task
     robot.create_task(
         Robot::task_config_t{
             .task_function = Task::system_task,
@@ -95,6 +98,33 @@ extern "C" void app_main() {
         }
     );
 
+    // PID Task
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::pid_task,
+            .task_name = "PIDTask",
+            .stack_depth = 4096,
+            .params_for_task = nullptr,
+            .priority = 15,
+            .created_task_handle = nullptr,
+            .core_id = 1
+        }
+    );
+
+    // Ramp Task
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::ramp_task,
+            .task_name = "RampTask",
+            .stack_depth = 4096,
+            .params_for_task = nullptr,
+            .priority = 14,
+            .created_task_handle = nullptr,
+            .core_id = 1
+        }
+    );
+
+    // IO Task
     robot.create_task(
         Robot::task_config_t{
             .task_function = Task::io_task,
@@ -107,6 +137,7 @@ extern "C" void app_main() {
         }
     );
 
+    // Log Task
     robot.create_task(
         Robot::task_config_t{
             .task_function = Task::log_task,
@@ -119,6 +150,7 @@ extern "C" void app_main() {
         }
     );
 
+    // LEDs Task
     robot.create_task(
         Robot::task_config_t{
             .task_function = Task::leds_task,
@@ -126,6 +158,19 @@ extern "C" void app_main() {
             .stack_depth = 2048,
             .params_for_task = nullptr,
             .priority = 3,
+            .created_task_handle = nullptr,
+            .core_id = 1
+        }
+    );
+
+    // Buzzer Task
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::buzzer_task,
+            .task_name = "BuzzerTask",
+            .stack_depth = 2048,
+            .params_for_task = nullptr,
+            .priority = 1,
             .created_task_handle = nullptr,
             .core_id = 1
         }

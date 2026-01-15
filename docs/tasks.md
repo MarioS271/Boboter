@@ -11,8 +11,8 @@ Here is an overview of all tasks:
 |-------------|----------|-------------|---------------|----------------------------------------------------|
 | Secure Task | 24       | 2048        | Core 0        | Is always created                                  |
 | System Task | 20       | 2048        | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| PID Task    | 15       | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Ramp Task   | 14       | 1024        | Core 1        | Is always created                                  |
+| PID Task    | 15       | 4096        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Ramp Task   | 14       | 2048        | Core 1        | Is always created                                  |
 | IO Task     | 10       | 4096        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Log Task    | 6        | 4096        | Core 1        | Is always created                                  |
 | LEDs Task   | 3        | 1024        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |

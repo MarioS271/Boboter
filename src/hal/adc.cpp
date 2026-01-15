@@ -19,11 +19,11 @@ namespace HAL::ADC {
         config(),
         is_configured(false)
     {
-        LOGI("Constructor of ADC::Controller called");
+        LOGI("Constructor of HAL::ADC::Controller called");
     }
 
     Controller::~Controller() {
-        LOGI("Deconstructor of ADC::Controller called");
+        LOGI("Deconstructor of HAL::ADC::Controller called");
 
         shutdown();
 
@@ -58,7 +58,7 @@ namespace HAL::ADC {
         this->config = config;
         is_configured = true;
 
-        LOGI("Initialized ADC::Controller HAL");
+        LOGI("Initialized HAL::ADC::Controller");
     }
 
     void Controller::shutdown() {
@@ -89,7 +89,7 @@ namespace HAL::ADC {
         config = {};
         is_configured = false;
 
-        LOGI("Shut down the ADC controller HAL");
+        LOGI("Shut down HAL::ADC::Controller");
     }
 
     void Controller::add(const adc_channel_t adc_channel) {
