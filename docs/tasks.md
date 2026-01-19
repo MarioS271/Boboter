@@ -15,8 +15,8 @@ Here is an overview of all tasks:
 | Ramp Task   | 14       | 2048        | Core 1        | Is always created                                  |
 | IO Task     | 10       | 4096        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Log Task    | 6        | 4096        | Core 1        | Is always created                                  |
-| LEDs Task   | 3        | 1024        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Buzzer Task | 1        | 1024        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| LEDs Task   | 3        | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Buzzer Task | 1        | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Test Task   | 22       | 4096        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |
 
 

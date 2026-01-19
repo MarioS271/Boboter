@@ -116,7 +116,7 @@ extern "C" void app_main() {
         Robot::task_config_t{
             .task_function = Task::ramp_task,
             .task_name = "RampTask",
-            .stack_depth = 4096,
+            .stack_depth = 2048,
             .params_for_task = nullptr,
             .priority = 14,
             .created_task_handle = nullptr,
