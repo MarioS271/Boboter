@@ -12,7 +12,6 @@
 
 /**
  * @brief A RAII type used to make structs thread-safe for FreeRTOS via mutexes
- * @note Always use the @c -> operator when accessing members!
  *
  * @tparam struct_type The struct to make thread-safe
  *
@@ -25,14 +24,14 @@
  *              data->value = 5;
  *              @endcode
  *              Accesses and locks the struct for only one code line, very inefficient if you have lots of operations
- *              on the struct\n\n
+ *              on the struct, but convenient when you only need one quick access without blocking for too long\n\n
  *          2) Full Scope Access: Dereference Operator
  *              @code
  *              const auto ldata = *data;
  *              ldata->value = 5;
  *              @endcode
  *              Locks the struct for the full lifetime of the current scope, lets you interact with the locked
- *              struct via the newly variable (in this case: @c ldata)\n\n
+ *              struct via the newly created variable (in this case: @c ldata)\n\n
  *          3) Passing protected struct to function: Dereference Operator
  *              @code
  *              void process(my_struct& s) {
