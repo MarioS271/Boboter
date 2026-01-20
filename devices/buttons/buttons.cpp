@@ -16,11 +16,11 @@ namespace Device {
         primary_button_state(false),
         secondary_button_state(false)
     {
-        LOGI("Constructor of Device::Buttons called");
+        LOGI("Constructor called");
     }
 
     Buttons::~Buttons() {
-        LOGI("Destructor of Device::Buttons called");
+        LOGI("Destructor called");
     }
 
     void Buttons::initialize() {

@@ -26,7 +26,7 @@ namespace Device {
 
     public:
         explicit Battery(Robot& robot);
-        ~Battery() = default;
+        ~Battery();
 
         /**
          * @brief Configures the needed ADC channel

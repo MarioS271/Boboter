@@ -20,15 +20,16 @@ Robot::Robot() :
     battery(*this),
     leds(*this),
     display(*this),
-    buttons(*this)
+    buttons(*this),
+    buzzer(*this)
 {
-    LOGI("Constructor of Robot called");
+    LOGI("Constructor called");
 }
 
 Robot::~Robot() {
     using enum HAL::GPIO::level_t;
 
-    LOGI("Destructor of Robot called");
+    LOGI("Destructor called");
 
     gpio.set_level(STATUS_LED_PIN, HIGH);
     gpio.set_level(BOTTOM_LED_PIN, LOW);

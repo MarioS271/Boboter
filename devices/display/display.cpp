@@ -22,11 +22,11 @@ namespace Device {
         panel_handle(nullptr),
         io_handle(nullptr)
     {
-        LOGI("Constructor of Device::Display called");
+        LOGI("Constructor called");
     }
 
     Display::~Display() {
-        LOGI("Destructor of Device::Display called");
+        LOGI("Destructor called");
         shutdown();
     }
 

@@ -66,6 +66,7 @@ extern "C" void app_main() {
     robot.leds.initialize();
     robot.display.initialize();
     robot.buttons.initialize();
+    robot.buzzer.initialize();
 
     LOGI("Switching logging mode from real mode to queue mode");
     Logger::get_instance().switch_to_queue_logging(

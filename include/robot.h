@@ -16,6 +16,7 @@
 #include "devices/leds/leds.h"
 #include "devices/display/display.h"
 #include "devices/buttons/buttons.h"
+#include "devices/buzzer/buzzer.h"
 
 /**
  * @brief Class containing all the components of the robot
@@ -24,14 +25,14 @@ class Robot {
 private:
     static constexpr const char* TAG = "Robot";
 
+    static constexpr gpio_num_t STATUS_LED_PIN = GPIO_NUM_5;
+    static constexpr gpio_num_t BOTTOM_LED_PIN = GPIO_NUM_13;
+
 private:
     explicit Robot();
     ~Robot();
 
 public:
-    static constexpr gpio_num_t STATUS_LED_PIN = GPIO_NUM_5;
-    static constexpr gpio_num_t BOTTOM_LED_PIN = GPIO_NUM_13;
-
     struct task_config_t {
         TaskFunction_t task_function;
         const char* task_name;
@@ -42,7 +43,6 @@ public:
         const BaseType_t core_id;
     };
 
-public:
     enum class rgb_leds_mode_t : uint8_t {
         OFF = 0,
         HEADLIGHTS = 1,
@@ -60,6 +60,7 @@ public:
     Device::Leds leds;
     Device::Display display;
     Device::Buttons buttons;
+    Device::Buzzer buzzer;
 
     struct data_struct {
         struct leds_struct {

@@ -18,7 +18,7 @@ namespace Task {
         const Robot& robot = Robot::get_instance();
 
         using enum Robot::rgb_leds_mode_t;
-        robot.data->leds.rgb_leds_mode = RANDOM_COLORS;
+        robot.data->leds.rgb_leds_mode = POLICE;
 
         while (true) {
             delay(1000);
