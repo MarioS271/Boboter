@@ -1,5 +1,4 @@
 .pio
-docs/doxygen
 
 .idea/*
 !.idea/runConfigurations/

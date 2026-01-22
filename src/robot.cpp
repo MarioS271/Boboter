@@ -90,7 +90,7 @@ void Robot::set_status_led(const bool state) const {
 
 void Robot::set_bottom_led(const bool state) const {
     const auto locked_data = *data;
-    locked_data->leds.status_led_active = state;
+    locked_data->leds.bottom_led_active = state;
 
     gpio.set_level(
         BOTTOM_LED_PIN,

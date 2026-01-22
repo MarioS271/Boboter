@@ -25,14 +25,13 @@ class Robot {
 private:
     static constexpr const char* TAG = "Robot";
 
-    static constexpr gpio_num_t STATUS_LED_PIN = GPIO_NUM_5;
-    static constexpr gpio_num_t BOTTOM_LED_PIN = GPIO_NUM_13;
-
-private:
     explicit Robot();
     ~Robot();
 
 public:
+    static constexpr gpio_num_t STATUS_LED_PIN = GPIO_NUM_5;
+    static constexpr gpio_num_t BOTTOM_LED_PIN = GPIO_NUM_13;
+
     struct task_config_t {
         TaskFunction_t task_function;
         const char* task_name;
