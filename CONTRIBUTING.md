@@ -21,7 +21,8 @@ Thank you for your interest in helping out! To keep the project safe and maintai
   accessible for beginners.
 - **Doxygen** documentation is mandatory for methods, namespaces and classes.
 - Use comments only where absolutely necessary to explain complex logic.
-- Format variables and similar using snake case (like this: `variable_name`)
+- Format variables and similar using `snake_case` (like this: `variable_name`)
+- Format files using `snake_case` (like this: `file_name.cpp`)
 - Maintain the existing formatting and naming scheme(s) of the firmware (namespace paths, ...)
 
 ## 4. Content
