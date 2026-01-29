@@ -43,7 +43,7 @@ namespace Device {
         ~Leds();
 
         /**
-         * @brief Sets up the neccessary GPIO pins
+         * @brief Sets up the necessary GPIO pins
          */
         void initialize();
 

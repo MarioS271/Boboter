@@ -20,6 +20,7 @@ namespace Device {
 
     Buzzer::~Buzzer() {
         LOGI("Destructor called");
+        turn_off();
     }
 
     void Buzzer::initialize() {

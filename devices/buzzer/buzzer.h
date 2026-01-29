@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <cstdint>
 #include <hal/ledc_types.h>
 #include <soc/gpio_num.h>
 
