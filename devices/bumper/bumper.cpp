@@ -41,7 +41,7 @@ namespace Device {
         );
     }
 
-    bool Bumper::is_hit(bumper_id_t bumper_id) const {
+    bool Bumper::is_hit(const bumper_id_t bumper_id) const {
         using enum bumper_id_t;
 
         gpio_num_t pin = GPIO_NUM_NC;
