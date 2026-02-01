@@ -30,13 +30,8 @@
  **/
 ////////////////////
 
-//// MODIFICATIONS
+//// MODIFICATIONS FOR BOBOTER
 /*
- * Added "#pragma once"
- * Added "#include <cstdint>"
- * Added "[[maybe_unused]]"
- * Added CHAR_WIDTH and CHAR_HEIGHT constants
- * Put everything in a namespace
  * Transposed font by 90°
  */
 //////////////////
