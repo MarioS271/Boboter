@@ -36,7 +36,7 @@ namespace Device {
         ~Buzzer();
 
         /**
-         * @brief Sets up the necessary GPIO pins
+         * @brief Sets up the necessary GPIO pin and LEDC channel
          */
         void initialize();
 
