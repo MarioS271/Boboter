@@ -2,7 +2,7 @@
  * @file secure_task.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "tasks/tasks.h"
@@ -11,10 +11,10 @@
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
 
-static constexpr const char* TAG = "Task::secure_task";
-static constexpr uint16_t MIN_BATTERY_VOLTAGE = 3'300;
-static constexpr uint16_t ALERT_DELAY = 1000;
-static constexpr uint16_t SHUTDOWN_DELAY = 5000;
+constexpr const char* TAG = "Task::secure_task";
+constexpr uint16_t MIN_BATTERY_VOLTAGE = 3'300;
+constexpr uint16_t ALERT_DELAY = 1000;
+constexpr uint16_t SHUTDOWN_DELAY = 5000;
 
 enum class secure_task_state_t : uint8_t {
     OK = 0,

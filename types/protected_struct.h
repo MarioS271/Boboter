@@ -2,7 +2,7 @@
  * @file protected_struct.h
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #pragma once
@@ -17,49 +17,24 @@
  *
  * @details This class gives you the ability to make a struct thread-safe and then access it with an automatically
  *          managed FreeRTOS mutex, which automatically locks on construction and unlocks on destruction
- *          (RAII-Principle)\n\n
+ *          (RAII-Principle).\n\n
  *          Ways to access members of the protected struct:\n
- *          1) Single Access: Get from dereferenced pointer operator
+ *          1) Single Access: Using the dereferenced pointer operator directly on the protected_struct instance
  *              @code
- *              data->value = 5;
+ *              protected_struct_instance->value = 5;
  *              @endcode
- *              Accesses and locks the struct for only one code line, very inefficient if you have lots of operations
- *              on the struct, but convenient when you only need one quick access without blocking for too long\n\n
- *          2) Full Scope Access: Dereference Operator
- *              @code
- *              const auto ldata = *data;
- *              ldata->value = 5;
- *              @endcode
- *              Locks the struct for the full lifetime of the current scope, lets you interact with the locked
- *              struct via the newly created variable (in this case: @c ldata)\n\n
- *          3) Passing protected struct to function: Dereference Operator
- *              @code
- *              void process(my_struct& s) {
- *                  s.value = 5;
- *              }
- *              process(*data);
- *              @endcode
- *              Locks the struct, passes the locked struct to the function, executes the function and unlocks the
- *              struct again.\n
- *              IMPORTANT: Here, we use @c s.value instead of @c s->value in the function, as we're getting a struct reference
- *                         instead of a struct pointer.
+ *              This creates a temporary lock for the duration of the single expression. This is convenient for quick,
+ *              atomic operations but can be inefficient for multiple accesses within a single logical block.
  *
- * @attention If you try to do something like this:
- *            @code
- *            const auto ldata = *data;
- *
-*             void process(my_struct& s) {
- *                s.value = 5;
- *            }
- *            process(*data);
- *            @endcode
- *            The firmware will get caught in a race condition which is known as a deadlock, meaning it will
- *            try double-locking the mutex, which leads to it permanently hanging as soon as @c process(*data); is
- *            called. This happens because when you first create the ldata object, data gets locked. If you
- *            now also pass data to the @c process() function using the dereference operator (@c *data), the mutex will
- *            try to lock for a second time and wait forever until it's released for the first time, which can't happen,
- *            because the code flow to the end of scope is blocked by the mutex waiting for its own release.\n
- *            To fix this issue, instead of passing @c *data, just pass the already locked @c ldata object.
+ *          2) Full Scope Access: Using the @c get() method to obtain a locked guard object
+ *              @code
+ *              auto locked_data = protected_struct_instance.get();
+ *              locked_data->value = 5;
+ *              // ... more operations on locked_data-> ...
+ *              @endcode
+ *              This acquires the mutex and locks the struct for the entire lifetime of the @c locked_data object.
+ *              The mutex is automatically released when @c locked_data goes out of scope (RAII). This is efficient
+ *              for performing multiple operations on the protected struct within a single logical block.
  */
 template <typename struct_type>
 class protected_struct {
@@ -69,32 +44,33 @@ private:
     struct_type data;
     mutable SemaphoreHandle_t mutex;
 
-    struct proxy {
-        const protected_struct& parent;
+    struct locked_access_guard {
+        const protected_struct* parent;
 
-        explicit proxy(const protected_struct& parent) : parent(parent) {
-            if (parent.mutex == nullptr) {
-                parent.mutex = xSemaphoreCreateMutex();
+        explicit locked_access_guard(const protected_struct* parent) : parent(parent) {
+            if (parent->mutex == nullptr) {
+                parent->mutex = xSemaphoreCreateMutex();
             }
-            if (parent.mutex != nullptr) {
-                xSemaphoreTake(parent.mutex, portMAX_DELAY);
+            xSemaphoreTake(parent->mutex, portMAX_DELAY);
+        }
+
+        ~locked_access_guard() {
+            unlock();
+        }
+
+        void unlock() {
+            if (parent != nullptr) {
+                xSemaphoreGive(parent->mutex);
+                parent = nullptr;
             }
         }
-        ~proxy() { xSemaphoreGive(parent.mutex); }
 
-        /**
-         * @brief Operator Overload to retrieve automatically dereferenced pointer to data
-         */
         struct_type* operator->() const {
-            return const_cast<struct_type*>(&parent.data);
+            return (parent != nullptr) ? const_cast<struct_type*>(&parent->data) : nullptr;
         }
 
-        /**
-         * @brief Operator Overload to enable retrieving a reference to the data to be able to
-         *        pass it somewhere
-         */
         operator struct_type&() const {
-            return *const_cast<struct_type*>(&parent.data);
+            return *const_cast<struct_type*>(&parent->data);
         }
     };
 
@@ -113,19 +89,18 @@ public:
      * @brief Overload of the get value from dereferenced pointer operator to make it
      *        possible to get a value using it
      *
-     * @return A temporary proxy object to hold the mutex and return the value
+     * @return A temporary @c locked_access_guard object to hold the mutex and return the value
      */
-    proxy operator->() const {
-        return proxy(*this);
+    locked_access_guard operator->() const {
+        return locked_access_guard(this);
     }
 
     /**
-     * @brief Overload of the dereference operator to make it possible to pass the
-     *        whole struct to something
+     * @brief Locks the struct and holds the mutex for the returned guard's scope
      *
-     * @return A temporary proxy object to hold the mutex and return the value
+     * @return A @c locked_access_guard object to hold the mutex and provide access to the protected data
      */
-    proxy operator*() const {
-        return proxy(*this);
+    locked_access_guard lock() const {
+        return locked_access_guard(this);
     }
 };

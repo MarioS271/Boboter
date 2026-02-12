@@ -2,7 +2,7 @@
  * @file ultrasonic.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "ultrasonic.h"

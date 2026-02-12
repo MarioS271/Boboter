@@ -2,7 +2,7 @@
  * @file i2c.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "include/hal/i2c.h"

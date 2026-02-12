@@ -2,7 +2,7 @@
  * @file main.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "include/flags.h"
@@ -67,6 +67,7 @@ extern "C" void app_main() {
     robot.display.initialize();
     robot.buttons.initialize();
     robot.buzzer.initialize();
+    robot.motors.initialize();
 
     LOGI("Switching logging mode from real mode to queue mode");
     Logger::get_instance().switch_to_queue_logging(

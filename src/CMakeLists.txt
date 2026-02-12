@@ -2,15 +2,15 @@
 # without default 'CMakeLists.txt' file.
 
 file(GLOB_RECURSE SOURCES
-    "*.cpp"
-    "../lib/**/*.cpp"
-    "../devices/**/*.cpp"
-    "../tasks/*.cpp"
+        "*.cpp"
+        "../lib/**/*.cpp"
+        "../devices/**/*.cpp"
+        "../tasks/*.cpp"
 )
 
 set(INC_DIRS "..")
 
 idf_component_register(
-    SRCS ${SOURCES}
-    INCLUDE_DIRS ${INC_DIRS}
+        SRCS ${SOURCES}
+        INCLUDE_DIRS ${INC_DIRS}
 )

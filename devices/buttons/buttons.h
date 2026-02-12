@@ -2,7 +2,7 @@
  * @file buttons.h
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #pragma once
@@ -30,7 +30,7 @@ namespace Device {
         ~Buttons();
 
         /**
-         * @brief Sets up the neccessary GPIO pins
+         * @brief Sets up the necessary GPIO pins
          */
         void initialize();
 
@@ -42,11 +42,11 @@ namespace Device {
         /**
          * @brief Gets the state of the primary button
          */
-        bool get_button_state_primary() const { return primary_button_state; }
+        [[nodiscard]] bool get_button_state_primary() const { return primary_button_state; }
 
         /**
          * @brief Gets the state of the secondary button
          */
-        bool get_button_state_secondary() const { return secondary_button_state; }
+        [[nodiscard]] bool get_button_state_secondary() const { return secondary_button_state; }
     };
 }

@@ -2,7 +2,7 @@
  * @file ledc.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "include/hal/ledc.h"

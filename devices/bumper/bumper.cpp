@@ -2,7 +2,7 @@
  * @file bumper.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "bumper.h"

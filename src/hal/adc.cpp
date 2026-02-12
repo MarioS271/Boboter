@@ -2,7 +2,7 @@
  * @file adc.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "include/hal/adc.h"

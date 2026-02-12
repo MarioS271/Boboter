@@ -2,7 +2,7 @@
  * @file robot.h
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #pragma once
@@ -17,6 +17,7 @@
 #include "devices/display/display.h"
 #include "devices/buttons/buttons.h"
 #include "devices/buzzer/buzzer.h"
+#include "devices/motors/motors.h"
 
 /**
  * @brief Class containing all the components of the robot
@@ -60,6 +61,7 @@ public:
     Device::Display display;
     Device::Buttons buttons;
     Device::Buzzer buzzer;
+    Device::Motors motors;
 
     struct data_struct {
         struct leds_struct {
@@ -67,6 +69,15 @@ public:
             bool bottom_led_active;
             rgb_leds_mode_t rgb_leds_mode;
         } leds{};
+
+        struct motors_struct {
+            uint16_t target_speed_left;
+            uint16_t target_speed_right;
+            uint16_t ramp_time_left;
+            uint16_t ramp_time_right;
+            Device::Motors::motor_direction_t direction_left;
+            Device::Motors::motor_direction_t direction_right;
+        } motors{};
     };
     protected_struct<data_struct> data{};
 

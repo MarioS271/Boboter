@@ -1,6 +1,2 @@
 .pio
-
-.idea/*
-!.idea/runConfigurations/
-!.idea/misc.xml
-!.idea/vcs.xml
+.idea

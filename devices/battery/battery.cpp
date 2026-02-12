@@ -2,7 +2,7 @@
  * @file battery.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "battery.h"

@@ -2,7 +2,7 @@
  * @file buttons.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "buttons.h"

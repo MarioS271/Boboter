@@ -2,7 +2,7 @@
  * @file logger.cpp
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #include "logger.h"

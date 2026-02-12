@@ -2,7 +2,7 @@
  * @file smart_mutex.h
  *
  * @authors MarioS271
- * @copyright MIT License
+ * @copyright AGPLv3 License
  */
 
 #pragma once
