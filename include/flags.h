@@ -7,13 +7,15 @@
 
 #pragma once
 
+#include <esp_log_level.h>
+
 /**
  * @brief A namespace containing flags for configuring the firmware
  */
 namespace Flags {
     /**
      * @brief Enable the robot's test mode
-     * @note Default Value: false
+     * @note Default Value: @c false
      *
      * @details This disables most of the robot's tasks and enables a special
      *          test task, which goes through most of the robot's devices and tests
@@ -23,7 +25,13 @@ namespace Flags {
 
     /**
      * @brief Enable logging in color over the serial console
-     * @note Default Value: true
+     * @note Default Value: @c true
      */
     constexpr bool ENABLE_COLOR_LOGGING = true;
+
+    /**
+     * @brief Enable logging of debug messages
+     * @note Default Value: @c ESP_LOG_INFO
+     */
+    constexpr esp_log_level_t LOWEST_LOG_LEVEL = ESP_LOG_DEBUG;
 }

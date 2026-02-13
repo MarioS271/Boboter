@@ -16,11 +16,11 @@ namespace HAL::LEDC {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex())
     {
-        LOGI("Constructor of HAL::LEDC::Controller called");
+        LOGD("Constructor called");
     }
 
     Controller::~Controller() {
-        LOGI("Destructor of HAL::LEDC::Controller called");
+        LOGD("Destructor called");
 
         shutdown();
 
@@ -51,7 +51,7 @@ namespace HAL::LEDC {
         registered_timers.clear();
         registered_channels.clear();
 
-        LOGI("Shut down the HAL::LEDC::Controller");
+        LOGI("Shut down HAL::LEDC::Controller");
     }
 
     void Controller::add_timer(const timer_config_t& config) {
@@ -94,6 +94,8 @@ namespace HAL::LEDC {
                 config.gpio_pin
             }
         );
+
+        LOGD("Registered LEDC channel %d on GPIO %d with timer %d", config.channel, config.gpio_pin, config.timer);
     }
 
     void Controller::set_frequency(const ledc_timer_t ledc_timer, const uint32_t frequency) const {

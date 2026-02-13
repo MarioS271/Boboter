@@ -14,11 +14,11 @@ namespace Device {
         robot(robot),
         inverse_direction{ true, false }
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
     Motors::~Motors() {
-        LOGI("Destructor called");
+        LOGD("Destructor called");
 
         hard_stop(motor_id_t::LEFT);
         hard_stop(motor_id_t::RIGHT);
@@ -56,6 +56,8 @@ namespace Device {
                 }
             );
         }
+
+        LOGI("Initialized Device::Motors");
     }
 
     void Motors::stop(const motor_id_t motor_id, const uint16_t ramp_time) const {

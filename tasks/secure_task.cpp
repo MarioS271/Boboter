@@ -48,6 +48,7 @@ namespace Task {
                 }
             } else if (state != OK) {
                 state = OK;
+                robot.data->leds.status_led_mode = Robot::status_led_mode_t::ON;
             }
 
             if (state == WAITING && current_time - too_low_start_time >= ALERT_DELAY * 1000) {
@@ -55,7 +56,7 @@ namespace Task {
 
                 LOGW("Low battery warning (%d mV), robot will shut down in a few seconds!", voltage);
 
-                // Set LED to blinking
+                robot.data->leds.status_led_mode = Robot::status_led_mode_t::BLINK_FAST;
                 // Send sound to play:
                 // { {E5, 100}, {E4, 100}, {C5, 100}, {C4, 100} }
             }
@@ -67,4 +68,4 @@ namespace Task {
             delay(500);
         }
     }
-}
+

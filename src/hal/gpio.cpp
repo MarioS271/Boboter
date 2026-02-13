@@ -16,11 +16,11 @@ namespace HAL::GPIO {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex())
     {
-        LOGI("Constructor of HAL::GPIO::Controller called");
+        LOGD("Constructor called");
     }
 
     Controller::~Controller() {
-        LOGI("Destructor of HAL::GPIO::Controller called");
+        LOGD("Destructor called");
 
         shutdown();
 
@@ -39,7 +39,7 @@ namespace HAL::GPIO {
 
         registered_entries.clear();
 
-        LOGI("Shut down the HAL::GPIO::Controller");
+        LOGI("Shut down HAL::GPIO::Controller");
     }
 
     void Controller::add(const pin_config_t& entry) {
@@ -85,7 +85,7 @@ namespace HAL::GPIO {
             }
         );
 
-        LOGI("Initialized pin %d", pin_as_int);
+        LOGD("Initialized pin %d", pin_as_int);
     }
 
     void Controller::set_level(const gpio_num_t gpio_pin, const level_t level) const {

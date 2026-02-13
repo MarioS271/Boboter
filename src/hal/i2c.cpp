@@ -17,11 +17,11 @@ namespace HAL::I2C {
         config(),
         is_configured(false)
     {
-        LOGI("Constructor of HAL::I2C::Controller called");
+        LOGD("Constructor called");
     }
 
     Controller::~Controller() {
-        LOGI("Destructor of HAL::I2C::Controller called");
+        LOGD("Destructor called");
 
         shutdown();
 

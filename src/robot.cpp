@@ -22,15 +22,17 @@ Robot::Robot() :
     display(*this),
     buttons(*this),
     buzzer(*this),
-    motors(*this)
+    motors(*this),
+    bumpers(*this),
+    linefollower(*this)
 {
-    LOGI("Constructor called");
+    LOGD("Constructor called");
 }
 
 Robot::~Robot() {
     using enum HAL::GPIO::level_t;
 
-    LOGI("Destructor called");
+    LOGD("Destructor called");
 
     gpio.set_level(STATUS_LED_PIN, HIGH);
     gpio.set_level(BOTTOM_LED_PIN, LOW);
@@ -51,6 +53,7 @@ void Robot::create_task(const task_config_t& config) {
         config.created_task_handle,
         config.core_id
     );
+    LOGI("Created task \"%s\"", config.task_name);
 }
 
 void Robot::permanent_sleep() {
@@ -80,21 +83,15 @@ void Robot::permanent_sleep() {
 }
 
 void Robot::set_status_led(const bool state) const {
-    const auto locked_data = data.lock();
-    locked_data->leds.status_led_active = state;
-
     gpio.set_level(
         STATUS_LED_PIN,
-        static_cast<HAL::GPIO::level_t>(!locked_data->leds.status_led_active)
+        static_cast<HAL::GPIO::level_t>(!state)
     );
 }
 
 void Robot::set_bottom_led(const bool state) const {
-    const auto locked_data = data.lock();
-    locked_data->leds.bottom_led_active = state;
-
     gpio.set_level(
         BOTTOM_LED_PIN,
-        static_cast<HAL::GPIO::level_t>(locked_data->leds.bottom_led_active)
+        static_cast<HAL::GPIO::level_t>(state)
     );
 }

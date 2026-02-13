@@ -18,6 +18,8 @@
 #include "devices/buttons/buttons.h"
 #include "devices/buzzer/buzzer.h"
 #include "devices/motors/motors.h"
+#include "devices/bumpers/bumpers.h"
+#include "devices/linefollower/linefollower.h"
 
 /**
  * @brief Class containing all the components of the robot
@@ -43,6 +45,19 @@ public:
         const BaseType_t core_id;
     };
 
+    enum class robot_mode_t : uint8_t {
+        NONE = 0,
+        APP = 1,
+        GAMEPAD = 2
+    };
+
+    enum class status_led_mode_t : uint8_t {
+        OFF = 0,
+        ON = 1,
+        BLINK_SLOW = 2,
+        BLINK_FAST = 3,
+    };
+
     enum class rgb_leds_mode_t : uint8_t {
         OFF = 0,
         HEADLIGHTS = 1,
@@ -62,11 +77,14 @@ public:
     Device::Buttons buttons;
     Device::Buzzer buzzer;
     Device::Motors motors;
+    Device::Bumpers bumpers;
+    Device::Linefollower linefollower;
 
     struct data_struct {
+        robot_mode_t mode;
+
         struct leds_struct {
-            bool status_led_active;
-            bool bottom_led_active;
+            status_led_mode_t status_led_mode;
             rgb_leds_mode_t rgb_leds_mode;
         } leds{};
 

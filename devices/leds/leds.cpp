@@ -16,11 +16,11 @@ namespace Device {
         robot(robot),
         leds()
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
     Leds::~Leds() {
-        LOGI("Destructor called");
+        LOGD("Destructor called");
         shutdown();
     }
 

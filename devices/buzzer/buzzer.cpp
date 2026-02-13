@@ -15,11 +15,11 @@ namespace Device {
         current_frequency(INITIAL_FREQUENCY),
         turned_off(true)
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
     Buzzer::~Buzzer() {
-        LOGI("Destructor called");
+        LOGD("Destructor called");
         turn_off();
     }
 
@@ -42,6 +42,8 @@ namespace Device {
         );
 
         turn_off();
+
+        LOGI("Initialized Device::Buzzer");
     }
 
     void Buzzer::set_frequency(const uint16_t frequency) {

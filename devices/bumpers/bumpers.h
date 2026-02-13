@@ -1,5 +1,5 @@
 /**
- * @file bumper.h
+ * @file bumpers.h
  *
  * @authors MarioS271
  * @copyright AGPLv3 License
@@ -13,7 +13,7 @@
 class Robot;
 
 namespace Device {
-    class Bumper {
+    class Bumpers {
     private:
         static constexpr const char* TAG = "Device::Bumpers";
 
@@ -29,8 +29,8 @@ namespace Device {
         };
 
     public:
-        explicit Bumper(Robot& robot);
-        ~Bumper();
+        explicit Bumpers(Robot& robot);
+        ~Bumpers();
 
         /**
          * @brief Sets up the necessary GPIO pins
@@ -42,6 +42,6 @@ namespace Device {
          *
          * @return (bool) The state of the bumper (false -> not hit, true -> hit)
         */
-        bool is_hit(bumper_id_t bumper_id) const;
+        [[nodiscard]] bool is_hit(bumper_id_t bumper_id) const;
     };
 }

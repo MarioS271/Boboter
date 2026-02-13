@@ -16,11 +16,11 @@ namespace Device {
         primary_button_state(false),
         secondary_button_state(false)
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
     Buttons::~Buttons() {
-        LOGI("Destructor called");
+        LOGD("Destructor called");
     }
 
     void Buttons::initialize() {
@@ -41,6 +41,8 @@ namespace Device {
                 .intr_type = GPIO_INTR_DISABLE
             }
         );
+
+        LOGI("Initialized Device::Buttons");
     }
 
     void Buttons::update_button_states() {

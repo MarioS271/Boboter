@@ -30,7 +30,7 @@ static void render_to_serial(const esp_log_level_t level, const char* tag, const
         default:              log_level_char = '?'; break;
     }
 
-    if (Flags::ENABLE_COLOR_LOGGING) {
+    if constexpr (Flags::ENABLE_COLOR_LOGGING) {
         printf("%s%c %s[%s]%s %s\n", COLOR, log_level_char, DARKER, tag, RESET, buffer);
     } else {
         printf("%c [%s] %s\n", log_level_char, tag, buffer);
@@ -38,6 +38,10 @@ static void render_to_serial(const esp_log_level_t level, const char* tag, const
 }
 
 void Logger::custom_log(const esp_log_level_t level, const char* tag, const char* format, ...) const {
+    if (level > Flags::LOWEST_LOG_LEVEL) {
+        return;
+    }
+
     va_list args;
     va_start(args, format);
     char* buffer = nullptr;

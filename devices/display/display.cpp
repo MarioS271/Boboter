@@ -22,11 +22,11 @@ namespace Device {
         panel_handle(nullptr),
         io_handle(nullptr)
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
     Display::~Display() {
-        LOGI("Destructor called");
+        LOGD("Destructor called");
         shutdown();
     }
 
@@ -53,9 +53,9 @@ namespace Device {
         ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_handle, true));
         ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, true));
 
-        LOGI("Initialized Device::Display");
-
         clear();
+
+        LOGI("Initialized Device::Display");
     }
 
     void Display::shutdown() {

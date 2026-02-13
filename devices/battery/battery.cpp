@@ -17,11 +17,11 @@ namespace Device {
         percentage(0),
         voltage(0)
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
     Battery::~Battery() {
-        LOGI("Destructor called");
+        LOGD("Destructor called");
     }
 
     void Battery::initialize() {

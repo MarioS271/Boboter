@@ -1,27 +1,26 @@
 /**
- * @file bumper.cpp
+ * @file bumpers.cpp
  *
  * @authors MarioS271
  * @copyright AGPLv3 License
  */
 
-#include "bumper.h"
+#include "bumpers.h"
 
-#include "devices/ultrasonic/ultrasonic.h"
 #include "include/robot.h"
 
 namespace Device {
-    Bumper::Bumper(Robot& robot) :
+    Bumpers::Bumpers(Robot& robot) :
         robot(robot)
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
-    Bumper::~Bumper() {
-        LOGI("Destructor called");
+    Bumpers::~Bumpers() {
+        LOGD("Destructor called");
     }
 
-    void Bumper::initialize() {
+    void Bumpers::initialize() {
         robot.gpio.add(
             HAL::GPIO::pin_config_t{
                 .gpio_pin = LEFT_PIN,
@@ -39,9 +38,11 @@ namespace Device {
                 .intr_type = GPIO_INTR_DISABLE
             }
         );
+        
+        LOGI("Initialized Device::Bumpers");
     }
 
-    bool Bumper::is_hit(const bumper_id_t bumper_id) const {
+    bool Bumpers::is_hit(const bumper_id_t bumper_id) const {
         using enum bumper_id_t;
 
         gpio_num_t pin = GPIO_NUM_NC;

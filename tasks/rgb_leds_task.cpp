@@ -1,5 +1,5 @@
 /**
- * @file leds_task.cpp
+ * @file rgb_leds_task.cpp
  *
  * @authors MarioS271
  * @copyright AGPLv3 License
@@ -13,8 +13,8 @@
 #include "helpers/predef_colors.h"
 #include "lib/logger/logger.h"
 
-static constexpr const char* TAG = "Task::leds_task";
-static constexpr uint8_t POLLING_DELAY_WAIT_MS = 10;
+constexpr const char* TAG = "Task::rgb_leds_task";
+constexpr uint8_t POLLING_DELAY_WAIT_MS = 10;
 
 /**
  * @brief A function to wait while also periodically polling if the LED mode changed
@@ -57,10 +57,7 @@ static bool polling_delay_callback(const uint32_t ms, bool& changed) {
 
 
 namespace Task {
-    /**
-     * @brief Manages the NeoPixel RGB LEDs and executes lighting routines.
-     */
-    [[noreturn]] void leds_task(void* params) {
+    [[noreturn]] void rgb_leds_task(void* params) {
         Robot& robot = Robot::get_instance();
 
         Robot::rgb_leds_mode_t current_mode{};
@@ -74,7 +71,7 @@ namespace Task {
 
             if (changed) {
                 robot.leds.turn_all_off();
-                LOGI("LED mode changed");
+                LOGD("LED mode changed");
             }
 
             switch (current_mode) {

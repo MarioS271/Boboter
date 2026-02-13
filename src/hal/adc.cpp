@@ -19,11 +19,11 @@ namespace HAL::ADC {
         config(),
         is_configured(false)
     {
-        LOGI("Constructor of HAL::ADC::Controller called");
+        LOGD("Constructor called");
     }
 
     Controller::~Controller() {
-        LOGI("Deconstructor of HAL::ADC::Controller called");
+        LOGD("Deconstructor called");
 
         shutdown();
 
@@ -115,7 +115,7 @@ namespace HAL::ADC {
         ERROR_CHECK(adc_oneshot_config_channel(adc_handle, adc_channel, &channel_config));
 
         registered_channels.push_back(adc_channel);
-        LOGI("Initialized ADC channel %d of ADC1", adc_channel_number);
+        LOGD("Initialized ADC channel %d of ADC1", adc_channel_number);
     }
 
     uint16_t Controller::read_raw(const adc_channel_t adc_channel, const uint16_t samples) const {
