@@ -47,6 +47,11 @@ namespace HAL::GPIO {
 
         const auto pin_as_int = static_cast<uint8_t>(entry.gpio_pin);
 
+        if (pin_as_int < 0 || pin_as_int >= GPIO_NUM_MAX) {
+            LOGE("Invalid GPIO pin: %hhd", pin_as_int);
+            abort();
+        }
+
         gpio_pullup_t pullup_mode = GPIO_PULLUP_DISABLE;
         gpio_pulldown_t pulldown_mode = GPIO_PULLDOWN_DISABLE;
 

@@ -9,7 +9,7 @@
 
 #include <rom/ets_sys.h>
 #include <esp_timer.h>
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "helpers/delay.h"
 
 namespace Device {
@@ -70,7 +70,9 @@ namespace Device {
         }
         int64_t echo_return_end_time = esp_timer_get_time();
 
-        const auto duration = static_cast<float>(echo_return_end_time - echo_return_start_time);
-        distance = duration / 58.0f;  // 343 m/s
+        const auto echo_time = static_cast<float>(echo_return_end_time - echo_return_start_time);
+        distance = echo_time / 58.0f;  // 343 m/s
+
+        LOGV("Measured distance of %f cm (echo_time=%f)", distance, echo_time);
     }
 }

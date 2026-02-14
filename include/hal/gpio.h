@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
 #include <driver/gpio.h>
 #include <freertos/FreeRTOS.h>
@@ -17,7 +18,6 @@
 namespace HAL::GPIO {
     using bitmask_t = uint64_t;
 
-    // TODO: Change to bitmask instead of pure gpio_num_t?
     struct pin_config_t {
         gpio_num_t gpio_pin;
         gpio_mode_t mode;

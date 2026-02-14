@@ -6,7 +6,7 @@
  */
 
 #include <esp_sleep.h>
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"

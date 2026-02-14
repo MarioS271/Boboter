@@ -7,7 +7,7 @@
 
 #include "battery.h"
 
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "helpers/map_value.h"
 #include "lib/logger/logger.h"
 
@@ -30,14 +30,13 @@ namespace Device {
     }
 
     void Battery::update() {
-        uint16_t voltage = robot.adc.read_millivolts(ADC_CHANNEL, NUM_SAMPLES);
-        voltage = voltage * 147 / 100;
+        voltage = robot.adc.read_millivolts(ADC_CHANNEL, NUM_SAMPLES) * 147 / 100;
 
-        auto percentage = static_cast<int8_t>(map_value(voltage, 3300, 4200, 0, 100));
-        if (percentage > 100)
+        percentage = static_cast<int8_t>(map_value(voltage, 3300, 4200, 0, 100));
+        if (percentage > 100) {
             percentage = 100;
+        }
 
-        this->percentage = percentage;
-        this->voltage = voltage;
+        LOGV("Measured %hhd%% (%f V) battery remaining", percentage, static_cast<float>(voltage) / 1000.0f);
     }
 }

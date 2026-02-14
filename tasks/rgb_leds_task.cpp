@@ -8,7 +8,7 @@
 #include "tasks/tasks.h"
 
 #include <esp_random.h>
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "helpers/delay.h"
 #include "helpers/predef_colors.h"
 #include "lib/logger/logger.h"

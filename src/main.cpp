@@ -7,7 +7,7 @@
 
 #include "include/flags.h"
 #include "include/constants.h"
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "lib/logger/logger.h"
 #include "tasks/tasks.h"
 
@@ -59,7 +59,6 @@ extern "C" void app_main() {
         }
     );
 
-    robot.set_status_led(true);
     robot.set_bottom_led(false);
 
     robot.battery.initialize();
@@ -68,7 +67,7 @@ extern "C" void app_main() {
     robot.buttons.initialize();
     robot.buzzer.initialize();
     robot.motors.initialize();
-    // robot.bumpers.initialize();
+    robot.bumpers.initialize();
     robot.linefollower.initialize();
 
     LOGI("Switching logging mode from real mode to queue mode");
@@ -76,7 +75,10 @@ extern "C" void app_main() {
         xQueueCreate(64, sizeof(Logger::log_item))
     );
 
-    robot.data->leds.rgb_leds_mode = Robot::rgb_leds_mode_t::RANDOM_COLORS;
+    auto locked_data = robot.data.lock();
+    locked_data->leds.status_led_mode = Robot::status_led_mode_t::ON;
+    locked_data->leds.rgb_leds_mode = Robot::rgb_leds_mode_t::POLICE;
+    locked_data.unlock();
 
     // Secure Task
     robot.create_task(

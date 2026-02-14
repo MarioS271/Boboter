@@ -7,7 +7,7 @@
 
 #include "tasks/tasks.h"
 
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
 
@@ -22,6 +22,19 @@ enum class secure_task_state_t : uint8_t {
     ALERTING = 2,
     SHUTDOWN = 3
 };
+
+/**
+ * @brief Helper function to convert @c secure_task_state_t enum class to string for logging
+ */
+const char* secure_task_state_enum_to_string(const secure_task_state_t state) {
+    switch (state) {
+        case secure_task_state_t::OK: return "OK";
+        case secure_task_state_t::WAITING: return "WAITING";
+        case secure_task_state_t::ALERTING: return "ALERTING";
+        case secure_task_state_t::SHUTDOWN: return "SHUTDOWN";
+        default: return nullptr;
+    }
+}
 
 namespace Task {
     [[noreturn]] void secure_task(void* params) {
@@ -68,4 +81,4 @@ namespace Task {
             delay(500);
         }
     }
-
+}

@@ -33,5 +33,5 @@ namespace Flags {
      * @brief Enable logging of debug messages
      * @note Default Value: @c ESP_LOG_INFO
      */
-    constexpr esp_log_level_t LOWEST_LOG_LEVEL = ESP_LOG_DEBUG;
+    constexpr esp_log_level_t LOWEST_LOG_LEVEL = ESP_LOG_VERBOSE;
 }

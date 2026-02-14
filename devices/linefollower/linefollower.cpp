@@ -7,10 +7,11 @@
 
 #include "linefollower.h"
 
-#include "include/robot.h"
-#include "lib/logger/logger.h"
+#include <rom/ets_sys.h>
 
-// FIXME: only one of the sensors is lighting up and both always output white
+#include "include/robot/robot.h"
+#include "helpers/delay.h"
+#include "lib/logger/logger.h"
 
 namespace Device {
     Linefollower::Linefollower(Robot& robot) :
@@ -40,21 +41,25 @@ namespace Device {
         LOGI("Initialized Device::Linefollower");
     }
 
+    // FIXME: only one of the sensors is lighting up and both always output white
     void Linefollower::measure() {
         using enum linefollower_id_t;
         using enum linefollower_result_t;
 
         for (uint8_t i = 0; i < 2; ++i) {
             robot.gpio.set_level(LF_RIGHT_LEFT_PIN, static_cast<HAL::GPIO::level_t>(i));
+            delay(10);
 
-            const int reading = robot.adc.read_raw(ADC_CHANNEL);
+            const uint16_t reading = robot.adc.read_raw(ADC_CHANNEL);
 
             linefollower_result_t result;
-            if (reading < REFLECTIVITY_THRESHOLD) {
+            if (reading > REFLECTIVITY_THRESHOLD) {
                 result = BLACK;
             } else {
                 result = WHITE;
             }
+
+            LOGV("Measured %s (%hd) for %s sensor", result == BLACK ? "BLACK" : "WHITE", reading, i == 1 ? "LEFT" : "RIGHT");
 
             if (static_cast<linefollower_id_t>(i) == LEFT) {
                 left_sensor_color = result;

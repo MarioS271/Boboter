@@ -7,7 +7,7 @@
 
 #include "bumpers.h"
 
-#include "include/robot.h"
+#include "include/robot/robot.h"
 
 namespace Device {
     Bumpers::Bumpers(Robot& robot) :
@@ -53,6 +53,9 @@ namespace Device {
             default: break;
         }
 
-        return static_cast<bool>(robot.gpio.get_level(pin));
+        const bool result = static_cast<bool>(robot.gpio.get_level(pin));
+
+        LOGV("%s bumper is hit: %s", bumper_id == LEFT ? "LEFT" : "RIGHT", result ? "true" : "false");
+        return result;
     }
 }

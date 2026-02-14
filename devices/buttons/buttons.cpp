@@ -7,7 +7,7 @@
 
 #include "buttons.h"
 
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "lib/logger/logger.h"
 
 namespace Device {
@@ -48,5 +48,9 @@ namespace Device {
     void Buttons::update_button_states() {
         primary_button_state = static_cast<bool>(robot.gpio.get_level(BUTTON_PRIMARY_PIN));
         secondary_button_state = static_cast<bool>(robot.gpio.get_level(BUTTON_SECONDARY_PIN));
+
+        LOGV("Updated button states: primary_button_pressed=%s secondary_button_pressed=%s",
+            primary_button_state ? "true" : "false",
+            secondary_button_state ? "true" : "false");
     }
 }

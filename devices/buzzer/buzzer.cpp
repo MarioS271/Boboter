@@ -7,7 +7,7 @@
 
 #include "buzzer.h"
 
-#include "include/robot.h"
+#include "include/robot/robot.h"
 
 namespace Device {
     Buzzer::Buzzer(Robot& robot) :
@@ -62,11 +62,14 @@ namespace Device {
             turned_off = false;
             robot.ledc.set_duty(LEDC_CHANNEL, DUTY_CYCLE);
         }
+
+        LOGV("Buzzer set to frequency of %hd Hz", current_frequency);
     }
 
     void Buzzer::turn_off() {
         turned_off = true;
-
         robot.ledc.set_duty(LEDC_CHANNEL, 0);
+
+        LOGV("Buzzer turned off");
     }
 }

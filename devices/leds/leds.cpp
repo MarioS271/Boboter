@@ -7,7 +7,7 @@
 
 #include "leds.h"
 
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "helpers/predef_colors.h"
 #include "lib/logger/logger.h"
 
@@ -50,15 +50,24 @@ namespace Device {
 
     void Leds::shutdown() {
         turn_all_off();
+        LOGI("Shut down Device::Leds");
     }
 
     void Leds::update() const {
         for (int i = 0; i < 4; ++i) send_byte(0x00);
-        for (int i = 0; i < NUM_LEDS; ++i) send_frame(leds[i]);
+        for (const auto led : leds) send_frame(led);
         for (int i = 0; i < 4; ++i) send_byte(0xFF);
+
+        LOGV("Set RGB LEDs to: FRONT_LEFT #%02x%02x%02x | FRONT_RIGHT #%02x%02x%02x | BACK_LEFT #%02x%02x%02x | BACK_RIGHT #%02x%02x%02x",
+             leds[0].r, leds[0].g, leds[0].b,
+             leds[1].r, leds[1].g, leds[1].b,
+             leds[2].r, leds[2].g, leds[2].b,
+             leds[3].r, leds[3].g, leds[3].b);
     }
 
     void Leds::set_color(const led_id_t led_id, const rgb_color_t color, const bool do_update) {
+        using enum led_id_t;
+
         leds[static_cast<uint8_t>(led_id)] = color;
         if (do_update) {
             update();

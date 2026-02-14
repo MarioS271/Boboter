@@ -9,7 +9,7 @@
 
 #include <esp_lcd_panel_ops.h>
 #include <esp_lcd_panel_io.h>
-#include "include/robot.h"
+#include "include/robot/robot.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
@@ -73,6 +73,8 @@ namespace Device {
 
         delete[] display_buffer;
         display_buffer = nullptr;
+
+        LOGI("Shut down Device::Display");
     }
 
     void Display::clear() {
@@ -86,6 +88,8 @@ namespace Device {
 
         cursor_x = 0;
         cursor_y = 0;
+
+        LOGV("Cleared display");
     }
 
     void Display::write_text(const char* text) {
@@ -102,8 +106,8 @@ namespace Device {
         uint8_t x = cursor_x;
         uint8_t y = cursor_y;
 
-        for (short i = 0; i < strlen(text); ++i) {
-            uint8_t glyph = static_cast<uint8_t>(text[i]);
+        for (size_t i = 0; i < strlen(text); ++i) {
+            auto glyph = static_cast<uint8_t>(text[i]);
 
             if (glyph >= 128)
                 glyph = '?';
@@ -125,6 +129,7 @@ namespace Device {
         }
 
         WARN_CHECK(esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, WIDTH, HEIGHT, display_buffer));
+        LOGV("Wrote text to display: \"%s\"", text);
     }
 
     void Display::set_cursor_position(uint8_t x, uint8_t y) {
@@ -137,5 +142,7 @@ namespace Device {
 
         cursor_x = x;
         cursor_y = y;
+
+        LOGV("Cursor position set to x=%hhd y=%hhd", x, y);
     }
 }
