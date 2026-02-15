@@ -37,6 +37,6 @@ namespace Device {
             percentage = 100;
         }
 
-        LOGV("Measured %hhd%% (%f V) battery remaining", percentage, static_cast<float>(voltage) / 1000.0f);
+        LOGV("Measured %hhu%% (%f V) battery remaining", percentage, static_cast<float>(voltage) / 1000.0f);
     }
 }

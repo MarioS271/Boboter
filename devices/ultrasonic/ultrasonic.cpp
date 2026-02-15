@@ -17,11 +17,11 @@ namespace Device {
         robot(robot),
         distance(-1)
     {
-        LOGI("Constructor called");
+        LOGD("Constructor called");
     }
 
     Ultrasonic::~Ultrasonic() {
-        LOGI("Destructor called");
+        LOGD("Destructor called");
     }
 
     void Ultrasonic::initialize() {
@@ -42,6 +42,8 @@ namespace Device {
                 .intr_type = GPIO_INTR_DISABLE
             }
         );
+
+        LOGI("Initialized Device::Ultrasonic");
     }
 
     void Ultrasonic::measure() {

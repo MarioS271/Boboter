@@ -12,6 +12,7 @@
 #include <esp_adc/adc_oneshot.h>
 #include <esp_adc/adc_cali.h>
 #include <freertos/FreeRTOS.h>
+#include "include/log_sources.h"
 
 /**
  * @brief A namespace containing all components of the ADC hardware abstraction layer
@@ -30,6 +31,7 @@ namespace HAL::ADC {
     class Controller {
     private:
         static constexpr const char* TAG = "HAL::ADC";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_HAL_ADC;
 
         mutable SemaphoreHandle_t mutex;
 

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <esp_log_level.h>
+#include "include/log_sources.h"
 
 /**
  * @brief A namespace containing flags for configuring the firmware
@@ -34,4 +35,10 @@ namespace Flags {
      * @note Default Value: @c ESP_LOG_INFO
      */
     constexpr esp_log_level_t LOWEST_LOG_LEVEL = ESP_LOG_VERBOSE;
+
+    /**
+     * @brief Enable specific modules to output verbose logs
+     * @note Default Value: @c LOG_SOURCE_NONE
+     */
+    constexpr log_source ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_LINEFOLLOWER;
 }

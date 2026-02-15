@@ -41,7 +41,6 @@ namespace Device {
         LOGI("Initialized Device::Linefollower");
     }
 
-    // FIXME: only one of the sensors is lighting up and both always output white
     void Linefollower::measure() {
         using enum linefollower_id_t;
         using enum linefollower_result_t;
@@ -59,7 +58,7 @@ namespace Device {
                 result = WHITE;
             }
 
-            LOGV("Measured %s (%hd) for %s sensor", result == BLACK ? "BLACK" : "WHITE", reading, i == 1 ? "LEFT" : "RIGHT");
+            LOGV("Measured %s (%hu) for %s sensor", result == BLACK ? "BLACK" : "WHITE", reading, i == 1 ? "LEFT" : "RIGHT");
 
             if (static_cast<linefollower_id_t>(i) == LEFT) {
                 left_sensor_color = result;

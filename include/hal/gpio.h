@@ -11,6 +11,7 @@
 #include <vector>
 #include <driver/gpio.h>
 #include <freertos/FreeRTOS.h>
+#include "include/log_sources.h"
 
 /**
  * @brief A namespace containing all components of the GPIO hardware abstraction layer
@@ -36,6 +37,7 @@ namespace HAL::GPIO {
     class Controller {
     private:
         static constexpr const char* TAG = "HAL::GPIO";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_HAL_GPIO;
 
         mutable SemaphoreHandle_t mutex;
 

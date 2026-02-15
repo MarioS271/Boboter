@@ -11,6 +11,7 @@
 #include <soc/gpio_num.h>
 #include <driver/i2c_master.h>
 #include <freertos/FreeRTOS.h>
+#include "include/log_sources.h"
 
 /**
  * @brief A namespace containing all components of the I2C hardware abstraction layer
@@ -34,6 +35,7 @@ namespace HAL::I2C {
     class Controller {
     private:
         static constexpr const char* TAG = "HAL::I2C";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_HAL_I2C;
 
         mutable SemaphoreHandle_t mutex;
 

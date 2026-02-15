@@ -19,7 +19,7 @@ namespace Device {
             std::clamp<uint16_t>(speed, 0, MAX_MOTOR_SPEED)
         );
 
-        LOGV("Set %s motor to speed %hd", motor_id == LEFT ? "LEFT" : "RIGHT", speed);
+        LOGV("Set %s motor to speed %hu", motor_id == LEFT ? "LEFT" : "RIGHT", speed);
     }
 
     void Motors::_set_direction(const motor_id_t motor_id, const motor_direction_t direction) const {

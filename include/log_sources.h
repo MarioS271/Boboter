@@ -1,0 +1,33 @@
+/**
+ * @file log_sources.h
+ *
+ * @authors MarioS271
+ * @copyright AGPLv3 License
+ */
+
+#pragma once
+
+#include <cstdint>
+
+enum log_source : uint32_t {
+    LOG_SOURCE_NONE = 0,
+    LOG_SOURCE_CLASS_ROBOT = 1 << 0,
+    LOG_SOURCE_HAL_GPIO = 1 << 1,
+    LOG_SOURCE_HAL_LEDC = 1 << 2,
+    LOG_SOURCE_HAL_ADC = 1 << 3,
+    LOG_SOURCE_HAL_I2C = 1 << 4,
+    LOG_SOURCE_DEVICE_BATTERY = 1 << 5,
+    LOG_SOURCE_DEVICE_LEDS = 1 << 6,
+    LOG_SOURCE_DEVICE_DISPLAY = 1 << 7,
+    LOG_SOURCE_DEVICE_BUTTONS = 1 << 8,
+    LOG_SOURCE_DEVICE_BUZZER = 1 << 9,
+    LOG_SOURCE_DEVICE_MOTORS = 1 << 10,
+    LOG_SOURCE_DEVICE_BUMPERS = 1 << 11,
+    LOG_SOURCE_DEVICE_ENCODER = 1 << 12,
+    LOG_SOURCE_DEVICE_ULTRASONIC = 1 << 13,
+    LOG_SOURCE_DEVICE_GYRO = 1 << 14,
+    LOG_SOURCE_DEVICE_MAGNETOMETER = 1 << 15,
+    LOG_SOURCE_DEVICE_COLORSENSOR = 1 << 16,
+    LOG_SOURCE_DEVICE_LINEFOLLOWER = 1 << 17,
+    LOG_SOURCE_ALL = 0xffffffff
+};

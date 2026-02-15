@@ -11,6 +11,7 @@
 #include <soc/gpio_num.h>
 #include <driver/ledc.h>
 #include <freertos/FreeRTOS.h>
+#include "include/log_sources.h"
 
 /**
  * @brief A namespace containing all components of the LEDC hardware abstraction layer
@@ -35,6 +36,7 @@ namespace HAL::LEDC {
     class Controller {
     private:
         static constexpr const char* TAG = "HAL::LEDC";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_HAL_LEDC;
 
         static constexpr ledc_mode_t SPEED_MODE = LEDC_LOW_SPEED_MODE;
 

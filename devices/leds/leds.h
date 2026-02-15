@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <soc/gpio_num.h>
 #include "types/rgb_color.h"
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -17,6 +18,7 @@ namespace Device {
     class Leds {
     private:
         static constexpr const char* TAG = "Device::Leds";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_LEDS;
 
         static constexpr uint8_t NUM_LEDS = 4;
         static constexpr gpio_num_t MOSI_PIN = GPIO_NUM_23;

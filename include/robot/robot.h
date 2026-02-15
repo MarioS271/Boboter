@@ -8,6 +8,7 @@
 #pragma once
 
 #include "types/protected_struct.h"
+#include "include/log_sources.h"
 #include "include/hal/gpio.h"
 #include "include/hal/ledc.h"
 #include "include/hal/adc.h"
@@ -19,6 +20,7 @@
 #include "devices/buzzer/buzzer.h"
 #include "devices/motors/motors.h"
 #include "devices/bumpers/bumpers.h"
+#include "devices/ultrasonic/ultrasonic.h"
 #include "devices/linefollower/linefollower.h"
 
 /**
@@ -27,6 +29,7 @@
 class Robot {
 private:
     static constexpr const char* TAG = "Robot";
+    static constexpr log_source LOG_SOURCE = LOG_SOURCE_CLASS_ROBOT;
 
     explicit Robot();
     ~Robot();
@@ -47,6 +50,7 @@ public:
     Device::Buzzer buzzer;
     Device::Motors motors;
     Device::Bumpers bumpers;
+    Device::Ultrasonic ultrasonic;
     Device::Linefollower linefollower;
 
     #include "data_struct.inc"

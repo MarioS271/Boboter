@@ -17,6 +17,11 @@ namespace HAL::I2C {
         config(),
         is_configured(false)
     {
+        if (mutex == nullptr) {
+            LOGE("Failed to create mutex");
+            abort();
+        }
+
         LOGD("Constructor called");
     }
 
@@ -122,6 +127,7 @@ namespace HAL::I2C {
 
         registered_devices.push_back(device_handle);
 
+        LOGD("Added device at address 0x%02x with a frequency of %lu Hz", config.address, config.clock_speed);
         return device_handle;
     }
 
@@ -131,6 +137,7 @@ namespace HAL::I2C {
         const size_t size,
         const int32_t timeout_ms) const
     {
+        LOGV("Writing %zu bytes to device %p", size, device_handle);
         ERROR_CHECK(i2c_master_transmit(device_handle, data, size, timeout_ms));
     }
 
@@ -140,6 +147,7 @@ namespace HAL::I2C {
         const size_t size,
         const int32_t timeout_ms) const
     {
+        LOGV("Reading %zu bytes from device %p", size, device_handle);
         ERROR_CHECK(i2c_master_receive(device_handle, buffer, size, timeout_ms));
     }
 
@@ -151,6 +159,7 @@ namespace HAL::I2C {
         const size_t read_size,
         const int32_t timeout_ms) const
     {
+        LOGV("Write-Read: %zu out, %zu in on device %p", write_size, read_size, device_handle);
         ERROR_CHECK(i2c_master_transmit_receive(device_handle, write_data, write_size, read_buffer, read_size, timeout_ms));
     }
 }

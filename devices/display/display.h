@@ -8,6 +8,7 @@
 #pragma once
 
 #include <esp_lcd_panel_ssd1306.h>
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -15,6 +16,7 @@ namespace Device {
     class Display {
     private:
         static constexpr const char* TAG = "Device::Display";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_DISPLAY;
 
         static constexpr uint8_t I2C_ADDRESS = 0x3C;
         static constexpr uint8_t WIDTH = 128;

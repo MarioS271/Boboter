@@ -63,7 +63,7 @@ namespace Device {
             robot.ledc.set_duty(LEDC_CHANNEL, DUTY_CYCLE);
         }
 
-        LOGV("Buzzer set to frequency of %hd Hz", current_frequency);
+        LOGV("Buzzer set to frequency of %hu Hz", current_frequency);
     }
 
     void Buzzer::turn_off() {

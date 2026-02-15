@@ -38,10 +38,6 @@ static void render_to_serial(const esp_log_level_t level, const char* tag, const
 }
 
 void Logger::custom_log(const esp_log_level_t level, const char* tag, const char* format, ...) const {
-    if (level > Flags::LOWEST_LOG_LEVEL) {
-        return;
-    }
-
     va_list args;
     va_start(args, format);
     char* buffer = nullptr;

@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <soc/gpio_num.h>
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -16,6 +17,7 @@ namespace Device {
     class Ultrasonic {
     private:
         static constexpr const char* TAG = "Device::Ultrasonic";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_ULTRASONIC;
 
         static constexpr gpio_num_t TRIGGER_PIN = GPIO_NUM_25;
         static constexpr gpio_num_t ECHO_PIN = GPIO_NUM_26;

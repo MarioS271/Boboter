@@ -9,6 +9,7 @@
 
 #include <hal/ledc_types.h>
 #include <soc/gpio_num.h>
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -16,6 +17,7 @@ namespace Device {
     class Buzzer {
     private:
         static constexpr const char* TAG = "Device::Buzzer";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_BUZZER;
 
         static constexpr gpio_num_t BUZZER_PIN = GPIO_NUM_19;
         static constexpr ledc_timer_t LEDC_TIMER = LEDC_TIMER_1;

@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <soc/gpio_num.h>
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -16,6 +17,7 @@ namespace Device {
     class Bumpers {
     private:
         static constexpr const char* TAG = "Device::Bumpers";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_BUMPERS;
 
         static constexpr gpio_num_t LEFT_PIN = GPIO_NUM_35;
         static constexpr gpio_num_t RIGHT_PIN = GPIO_NUM_34;

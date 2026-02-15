@@ -10,6 +10,7 @@
 #include <iosfwd>
 #include <soc/gpio_num.h>
 #include <esp_adc/adc_oneshot.h>
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -20,6 +21,7 @@ namespace Device {
 
     private:
         static constexpr const char* TAG = "Device::Linefollower";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_LINEFOLLOWER;
 
         static constexpr gpio_num_t LF_RIGHT_LEFT_PIN = GPIO_NUM_12;
         static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_0;

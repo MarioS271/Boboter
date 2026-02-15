@@ -143,6 +143,6 @@ namespace Device {
         cursor_x = x;
         cursor_y = y;
 
-        LOGV("Cursor position set to x=%hhd y=%hhd", x, y);
+        LOGV("Cursor position set to x=%hhu y=%hhu", x, y);
     }
 }

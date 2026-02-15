@@ -8,6 +8,7 @@
 #pragma once
 
 #include <esp_adc/adc_oneshot.h>
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -15,6 +16,7 @@ namespace Device {
     class Battery {
     private:
         static constexpr const char* TAG = "Device::Battery";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_BATTERY;
 
         static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_3;  // GPIO 39
         static constexpr uint8_t NUM_SAMPLES = 50;

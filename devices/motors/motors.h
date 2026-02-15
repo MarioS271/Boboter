@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <soc/gpio_num.h>
 #include <driver/ledc.h>
+#include "include/log_sources.h"
 
 class Robot;
 
@@ -17,6 +18,7 @@ namespace Device {
     class Motors {
     private:
         static constexpr const char* TAG = "Device::Motors";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_MOTORS;
 
         static constexpr gpio_num_t LEFT_SPEED_PIN = GPIO_NUM_32;
         static constexpr gpio_num_t LEFT_DIRECTION_PIN = GPIO_NUM_33;

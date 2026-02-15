@@ -16,6 +16,11 @@ namespace HAL::GPIO {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex())
     {
+        if (mutex == nullptr) {
+            LOGE("Failed to create mutex");
+            abort();
+        }
+
         LOGD("Constructor called");
     }
 
@@ -47,8 +52,8 @@ namespace HAL::GPIO {
 
         const auto pin_as_int = static_cast<uint8_t>(entry.gpio_pin);
 
-        if (pin_as_int < 0 || pin_as_int >= GPIO_NUM_MAX) {
-            LOGE("Invalid GPIO pin: %hhd", pin_as_int);
+        if (pin_as_int >= GPIO_NUM_MAX) {
+            LOGE("Invalid GPIO pin: %hhu", pin_as_int);
             abort();
         }
 
@@ -72,7 +77,9 @@ namespace HAL::GPIO {
             default: break;
         }
 
-        ERROR_CHECK(gpio_hold_dis(entry.gpio_pin));
+        if (GPIO_IS_VALID_OUTPUT_GPIO(entry.gpio_pin)) {
+            ERROR_CHECK(gpio_hold_dis(entry.gpio_pin));
+        }
 
         const gpio_config_t config = {
             .pin_bit_mask = (1ULL << pin_as_int),
@@ -110,6 +117,8 @@ namespace HAL::GPIO {
             LOGE("Unable to set GPIO pin level, invalid pin");
             abort();
         }
+
+        LOGV("Set pin %hhu to %s", gpio_pin, level == level_t::HIGH ? "HIGH" : "LOW");
     }
 
     level_t Controller::get_level(const gpio_num_t gpio_pin) const {
@@ -124,7 +133,10 @@ namespace HAL::GPIO {
         );
 
         if (entry != registered_entries.end() && entry->mode & GPIO_MODE_DEF_INPUT) {
-            return static_cast<level_t>(gpio_get_level(gpio_pin));
+            const auto level = static_cast<level_t>(gpio_get_level(gpio_pin));
+
+            LOGV("Read state %s from pin %hhu", level == level_t::HIGH ? "HIGH" : "LOW",  gpio_pin);
+            return level;
         }
 
         LOGE("Unable to get GPIO pin level, invalid pin");

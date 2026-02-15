@@ -16,6 +16,11 @@ namespace HAL::LEDC {
     Controller::Controller() :
         mutex(xSemaphoreCreateMutex())
     {
+        if (mutex == nullptr) {
+            LOGE("Failed to create mutex");
+            abort();
+        }
+
         LOGD("Constructor called");
     }
 
@@ -68,12 +73,16 @@ namespace HAL::LEDC {
 
         ERROR_CHECK(ledc_timer_config(&timer_config));
         registered_timers.push_back(config.timer);
+
+        LOGD("Registered timer %hhu", config.timer);
     }
 
     void Controller::add_channel(const channel_config_t& config) {
         smart_mutex lock(mutex);
 
-        WARN_CHECK(gpio_hold_dis(config.gpio_pin));
+        if (GPIO_IS_VALID_OUTPUT_GPIO(config.gpio_pin)) {
+            ERROR_CHECK(gpio_hold_dis(config.gpio_pin));
+        }
 
         const ledc_channel_config_t channel_config = {
             .gpio_num = config.gpio_pin,
@@ -95,12 +104,14 @@ namespace HAL::LEDC {
             }
         );
 
-        LOGD("Registered LEDC channel %d on GPIO %d with timer %d", config.channel, config.gpio_pin, config.timer);
+        LOGD("Registered channel %hhu on GPIO %hhu with timer %hhu", config.channel, config.gpio_pin, config.timer);
     }
 
     void Controller::set_frequency(const ledc_timer_t ledc_timer, const uint32_t frequency) const {
         smart_mutex lock(mutex);
         ERROR_CHECK(ledc_set_freq(SPEED_MODE, ledc_timer, frequency));
+
+        LOGV("Set timer %hhu to frequency %lu", ledc_timer, frequency);
     }
 
     void Controller::set_duty(const ledc_channel_t ledc_channel, const uint32_t duty) const {
@@ -108,5 +119,7 @@ namespace HAL::LEDC {
 
         ERROR_CHECK(ledc_set_duty(SPEED_MODE, ledc_channel, duty));
         ERROR_CHECK(ledc_update_duty(SPEED_MODE, ledc_channel));
+
+        LOGV("Set channel %hhu to duty %lu", ledc_channel, duty);
     }
 }

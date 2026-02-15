@@ -19,6 +19,11 @@ namespace HAL::ADC {
         config(),
         is_configured(false)
     {
+        if (mutex == nullptr) {
+            LOGE("Failed to create mutex");
+            abort();
+        }
+
         LOGD("Constructor called");
     }
 
@@ -146,6 +151,7 @@ namespace HAL::ADC {
 
         average_value /= samples;
 
+        LOGV("Read a raw value of %lu using %hu sample(s)", average_value, samples);
         return static_cast<uint16_t>(average_value);
     }
 
@@ -188,6 +194,7 @@ namespace HAL::ADC {
             voltage_mv = static_cast<uint16_t>(scaled_voltage / (1 << bitwidth));
         }
 
+        LOGV("Read a voltage of %d mV", voltage_mv);
         return static_cast<uint16_t>(voltage_mv);
     }
 }

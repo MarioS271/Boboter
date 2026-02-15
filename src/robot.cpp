@@ -24,6 +24,7 @@ Robot::Robot() :
     buzzer(*this),
     motors(*this),
     bumpers(*this),
+    ultrasonic(*this),
     linefollower(*this)
 {
     LOGD("Constructor called");
