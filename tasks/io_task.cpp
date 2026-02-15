@@ -17,28 +17,27 @@ namespace Task {
     [[noreturn]] void io_task(void* params) {
         Robot& robot = Robot::get_instance();
 
-        // robot.display.write_text("Hello, World!");
+        robot.display.set_cursor_position(0, 0);
+        robot.display.write_text("Hello, World! :)");
 
         while (true) {
             char percentage_str[MAX_BATTERY_STRING_LENGTH];
             snprintf(percentage_str, sizeof(percentage_str), "%d%%  ", robot.battery.get_percentage());
 
-            robot.display.set_cursor_position(0, 0);
+            robot.display.set_cursor_position(0, 2);
+            robot.display.write_text("Battery: ");
             robot.display.write_text(percentage_str);
 
             multi_heap_info_t info;
             heap_caps_get_info(&info, MALLOC_CAP_8BIT);
-
             char buffer[32];
 
-            // Used Heap RAM
-            snprintf(buffer, sizeof(buffer), "Heap: %d KB", info.total_allocated_bytes / 1024);
-            robot.display.set_cursor_position(0, 30);
+            snprintf(buffer, sizeof(buffer), "Heap: %d KiB", info.total_allocated_bytes / 1024);
+            robot.display.set_cursor_position(0, 6);
             robot.display.write_text(buffer);
 
-            // Free Heap Ram
-            snprintf(buffer, sizeof(buffer), "Free: %d KB", info.total_free_bytes / 1024);
-            robot.display.set_cursor_position(0, 40);
+            snprintf(buffer, sizeof(buffer), "Free: %d KiB", info.total_free_bytes / 1024);
+            robot.display.set_cursor_position(0, 7);
             robot.display.write_text(buffer);
 
             delay(1000);

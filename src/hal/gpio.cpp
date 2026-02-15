@@ -35,6 +35,11 @@ namespace HAL::GPIO {
         }
     }
 
+    void Controller::enable_interrupts() const {
+        ERROR_CHECK(gpio_install_isr_service(0));
+        LOGI("Enabled GPIO per-pin interrupts");
+    }
+
     void Controller::shutdown() {
         smart_mutex lock(mutex);
 

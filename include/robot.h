@@ -20,6 +20,7 @@
 #include "devices/buzzer/buzzer.h"
 #include "devices/motors/motors.h"
 #include "devices/bumpers/bumpers.h"
+#include "devices/encoders/encoders.h"
 #include "devices/ultrasonic/ultrasonic.h"
 #include "devices/linefollower/linefollower.h"
 
@@ -81,6 +82,7 @@ public:
     Device::Buzzer buzzer;
     Device::Motors motors;
     Device::Bumpers bumpers;
+    Device::Encoders encoders;
     Device::Ultrasonic ultrasonic;
     Device::Linefollower linefollower;
 

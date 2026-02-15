@@ -16,7 +16,7 @@ Here is an overview of all tasks:
 | App Backend Task | 12       | 8192        | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Gamepad Task     | 11       | 8192        | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Log Task         | 7        | 4096        | Core 1        | Is always created                                  |
-| Status LED Task  | 5        | 2048        | Core 1        | Is always created                                  |
+| Status LED Task  | 5        | 1024        | Core 1        | Is always created                                  |
 | RGB LEDs Task    | 3        | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Buzzer Task      | 1        | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Test Task        | 20       | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |

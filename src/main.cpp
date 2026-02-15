@@ -12,7 +12,6 @@
 #include "include/robot.h"
 #include "tasks/tasks.h"
 
-
 extern "C" void app_main() {
     constexpr const char* TAG = "Main";
 
@@ -25,6 +24,7 @@ extern "C" void app_main() {
 
     Robot& robot = Robot::get_instance();
 
+    robot.gpio.enable_interrupts();
     robot.adc.configure(
         HAL::ADC::controller_config_t{
             .attenuation = ADC_ATTEN_DB_12,
@@ -58,6 +58,7 @@ extern "C" void app_main() {
             .intr_type = GPIO_INTR_DISABLE
         }
     );
+    LOGI("Initialized GPIO pins for status LED and bottom LED");
 
     robot.set_bottom_led(false);
 
@@ -68,6 +69,8 @@ extern "C" void app_main() {
     robot.buzzer.initialize();
     robot.motors.initialize();
     robot.bumpers.initialize();
+    robot.encoders.initialize();
+    robot.ultrasonic.initialize();
     robot.linefollower.initialize();
 
     LOGI("Switching logging mode from real mode to queue mode");
@@ -77,7 +80,7 @@ extern "C" void app_main() {
 
     auto locked_data = robot.data.lock();
     locked_data->leds.status_led_mode = Robot::status_led_mode_t::ON;
-    locked_data->leds.rgb_leds_mode = Robot::rgb_leds_mode_t::POLICE;
+    locked_data->leds.rgb_leds_mode = Robot::rgb_leds_mode_t::RANDOM_COLORS;
     locked_data.unlock();
 
     // Secure Task
@@ -85,7 +88,7 @@ extern "C" void app_main() {
         Robot::task_config_t{
             .task_function = Task::secure_task,
             .task_name = "SecureTask",
-            .stack_size = 2048,
+            .stack_size = 1024,
             .params_for_task = nullptr,
             .priority = 24,
             .created_task_handle = nullptr,
@@ -111,7 +114,7 @@ extern "C" void app_main() {
         Robot::task_config_t{
             .task_function = Task::status_led_task,
             .task_name = "StatusLedTask",
-            .stack_size = 2048,
+            .stack_size = 1024,
             .params_for_task = nullptr,
             .priority = 5,
             .created_task_handle = nullptr,

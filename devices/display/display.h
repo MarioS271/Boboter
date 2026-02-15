@@ -23,6 +23,8 @@ namespace Device {
         static constexpr uint8_t HEIGHT = 64;
         static constexpr uint8_t CHAR_WIDTH = 8;
         static constexpr uint8_t CHAR_HEIGHT = 8;
+        static constexpr uint8_t MAX_COLUMNS = WIDTH / CHAR_WIDTH;
+        static constexpr uint8_t MAX_ROWS = HEIGHT / CHAR_HEIGHT;
 
         static constexpr uint8_t font8x8[128][8] = {
             #include "display_font.inc"
@@ -31,8 +33,8 @@ namespace Device {
         Robot& robot;
 
         uint8_t* display_buffer;
-        uint8_t cursor_x;
-        uint8_t cursor_y;
+        uint8_t cursor_column;
+        uint8_t cursor_row;
 
         esp_lcd_panel_handle_t panel_handle;
         esp_lcd_panel_io_handle_t io_handle;
@@ -59,16 +61,16 @@ namespace Device {
         /**
          * @brief Writes text to the display at the current cursor position
          *
-         * @param text The text to write
+         * @param text The text to write to the display
          */
         void write_text(const char* text);
 
         /**
-         * @brief Sets the position of the cursor on the screen
+         * @brief Sets the position of the cursor
          *
-         * @param x The x coordinate
-         * @param y the y coordinate
+         * @param column The target column, ranging from 0 to 15
+         * @param row The target row, ranging from 0 to 7
          */
-        void set_cursor_position(uint8_t x, uint8_t y);
+        void set_cursor_position(uint8_t column, uint8_t row);
     };
 }

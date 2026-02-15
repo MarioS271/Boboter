@@ -66,6 +66,11 @@ namespace HAL::GPIO {
         }
 
         /**
+         * @brief Installs the ETS_GPIO_INTR_SOURCE ISR service to enable per-pin interrupts
+         */
+        void enable_interrupts() const;
+
+        /**
          * @brief Resets all pins and shuts down the controller
          */
         void shutdown();

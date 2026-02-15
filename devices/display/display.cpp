@@ -7,6 +7,7 @@
 
 #include "display.h"
 
+#include <cstring>
 #include <esp_lcd_panel_ops.h>
 #include <esp_lcd_panel_io.h>
 #include "include/robot.h"
@@ -17,8 +18,8 @@ namespace Device {
     Display::Display(Robot& robot) :
         robot(robot),
         display_buffer(nullptr),
-        cursor_x(0),
-        cursor_y(0),
+        cursor_column(0),
+        cursor_row(0),
         panel_handle(nullptr),
         io_handle(nullptr)
     {
@@ -83,66 +84,74 @@ namespace Device {
             return;
         }
 
-        std::fill_n(display_buffer, WIDTH * HEIGHT / 8, 0);
+        memset(display_buffer, 0, WIDTH * HEIGHT / 8);
         WARN_CHECK(esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, WIDTH, HEIGHT, display_buffer));
 
-        cursor_x = 0;
-        cursor_y = 0;
+        cursor_column = 0;
+        cursor_row = 0;
 
         LOGV("Cleared display");
     }
 
+    // TODO: change to partial update (?)
     void Display::write_text(const char* text) {
         if (panel_handle == nullptr) {
             LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
             return;
         }
 
-        if (strlen(text) == 0) {
-            LOGW("Unable to write to display, empty text string");
+        if (text[0] == '\0') {
+            LOGW("Unable to write to display, got empty text string");
             return;
         }
 
-        uint8_t x = cursor_x;
-        uint8_t y = cursor_y;
+        uint8_t column = cursor_column;
+        uint8_t row = cursor_row;
 
-        for (size_t i = 0; i < strlen(text); ++i) {
+        for (size_t i = 0; text[i] != '\0'; ++i) {
             auto glyph = static_cast<uint8_t>(text[i]);
 
-            if (glyph >= 128)
+            if (glyph >= 128) {
                 glyph = '?';
-
-            if (x + CHAR_WIDTH > WIDTH) {
-                x = 0;
-                y += CHAR_HEIGHT;
             }
 
-            if (y + CHAR_HEIGHT > HEIGHT)
+            if (column >= MAX_COLUMNS) {
+                column = 0;
+                ++row;
+            }
+
+            if (row >= MAX_ROWS) {
                 break;
+            }
 
-            const uint32_t buffer_base = (y / 8) * WIDTH + x;
+            const uint32_t buffer_base = (row * WIDTH) + (column * CHAR_WIDTH);
 
-            for (uint8_t col = 0; col < CHAR_WIDTH; ++col)
-                display_buffer[buffer_base + col] = font8x8[glyph][col];
+            for (uint8_t char_column = 0; char_column < CHAR_WIDTH; ++char_column) {
+                display_buffer[buffer_base + char_column] = font8x8[glyph][char_column];
+            }
 
-            x += CHAR_WIDTH;
+            ++column;
         }
 
         WARN_CHECK(esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, WIDTH, HEIGHT, display_buffer));
+
+        cursor_column = column;
+        cursor_row = row;
+
         LOGV("Wrote text to display: \"%s\"", text);
     }
 
-    void Display::set_cursor_position(uint8_t x, uint8_t y) {
-        if (x >= WIDTH) {
-            x = WIDTH - CHAR_WIDTH;
+    void Display::set_cursor_position(uint8_t column, uint8_t row) {
+        if (column >= MAX_COLUMNS) {
+            column = MAX_COLUMNS - 1;
         }
-        if (y >= HEIGHT) {
-            y = HEIGHT - CHAR_HEIGHT;
+        if (row >= MAX_ROWS) {
+            row = MAX_ROWS - 1;
         }
 
-        cursor_x = x;
-        cursor_y = y;
+        cursor_column = column;
+        cursor_row = row;
 
-        LOGV("Cursor position set to x=%hhu y=%hhu", x, y);
+        LOGV("Cursor grid position set to column=%hhu row=%hhu", column, row);
     }
 }
