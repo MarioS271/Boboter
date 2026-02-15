@@ -17,8 +17,6 @@
  * @brief A namespace containing all components of the GPIO hardware abstraction layer
  */
 namespace HAL::GPIO {
-    using bitmask_t = uint64_t;
-
     struct pin_config_t {
         gpio_num_t gpio_pin;
         gpio_mode_t mode;
