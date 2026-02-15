@@ -6,7 +6,7 @@
  */
 
 #include <esp_sleep.h>
-#include "include/robot/robot.h"
+#include "include/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
@@ -48,13 +48,16 @@ void Robot::create_task(const task_config_t& config) {
     xTaskCreatePinnedToCore(
         config.task_function,
         config.task_name,
-        config.stack_depth,
+        config.stack_size,
         config.params_for_task,
         config.priority,
         config.created_task_handle,
         config.core_id
     );
-    LOGI("Created task \"%s\"", config.task_name);
+    LOGI("Created task \"%s\" with priority %u and %lu KiB of stack memory",
+        config.task_name,
+        config.priority,
+        config.stack_size / 1024);
 }
 
 void Robot::permanent_sleep() {

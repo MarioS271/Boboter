@@ -7,7 +7,7 @@
 
 #include "buzzer.h"
 
-#include "include/robot/robot.h"
+#include "include/robot.h"
 
 namespace Device {
     Buzzer::Buzzer(Robot& robot) :

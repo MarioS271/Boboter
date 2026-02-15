@@ -7,7 +7,7 @@
 
 #include "motors.h"
 
-#include "include/robot/robot.h"
+#include "include/robot.h"
 
 namespace Device {
     Motors::Motors(Robot& robot) :

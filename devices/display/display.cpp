@@ -9,7 +9,7 @@
 
 #include <esp_lcd_panel_ops.h>
 #include <esp_lcd_panel_io.h>
-#include "include/robot/robot.h"
+#include "include/robot.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 

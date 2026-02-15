@@ -7,7 +7,7 @@
 
 #include "tasks/tasks.h"
 
-#include "include/robot/robot.h"
+#include "include/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
 
@@ -16,7 +16,6 @@ namespace Task {
         Robot& robot = Robot::get_instance();
 
         while (true) {
-            robot.linefollower.measure();
             delay(1000);
         }
     }

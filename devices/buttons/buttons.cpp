@@ -7,7 +7,7 @@
 
 #include "buttons.h"
 
-#include "include/robot/robot.h"
+#include "include/robot.h"
 #include "lib/logger/logger.h"
 
 namespace Device {

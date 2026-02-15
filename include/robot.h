@@ -35,7 +35,38 @@ private:
     ~Robot();
 
 public:
-    #include "public_defs.inc"
+    static constexpr gpio_num_t STATUS_LED_PIN = GPIO_NUM_5;
+    static constexpr gpio_num_t BOTTOM_LED_PIN = GPIO_NUM_13;
+
+    struct task_config_t {
+        TaskFunction_t task_function;
+        const char* task_name;
+        const uint32_t stack_size;
+        void* const params_for_task;
+        UBaseType_t priority;
+        TaskHandle_t* const created_task_handle;
+        const BaseType_t core_id;
+    };
+
+    enum class robot_mode_t : uint8_t {
+        NONE = 0,
+        APP = 1,
+        GAMEPAD = 2
+    };
+
+    enum class status_led_mode_t : uint8_t {
+        OFF = 0,
+        ON = 1,
+        BLINK_SLOW = 2,
+        BLINK_FAST = 3,
+    };
+
+    enum class rgb_leds_mode_t : uint8_t {
+        OFF = 0,
+        HEADLIGHTS = 1,
+        RANDOM_COLORS = 2,
+        POLICE = 3
+    };
 
 public:
     HAL::GPIO::Controller& gpio;
@@ -53,7 +84,24 @@ public:
     Device::Ultrasonic ultrasonic;
     Device::Linefollower linefollower;
 
-    #include "data_struct.inc"
+    struct data_struct {
+        robot_mode_t mode;
+
+        struct leds_struct {
+            status_led_mode_t status_led_mode;
+            rgb_leds_mode_t rgb_leds_mode;
+        } leds{};
+
+        struct motors_struct {
+            uint16_t target_speed_left;
+            uint16_t target_speed_right;
+            uint16_t ramp_time_left;
+            uint16_t ramp_time_right;
+            Device::Motors::motor_direction_t direction_left;
+            Device::Motors::motor_direction_t direction_right;
+        } motors{};
+    };
+    protected_struct<data_struct> data{};
 
 public:
     Robot(const Robot&) = delete;

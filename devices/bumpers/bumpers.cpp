@@ -7,7 +7,7 @@
 
 #include "bumpers.h"
 
-#include "include/robot/robot.h"
+#include "include/robot.h"
 
 namespace Device {
     Bumpers::Bumpers(Robot& robot) :
@@ -20,7 +20,6 @@ namespace Device {
         LOGD("Destructor called");
     }
 
-    // FIXME: crashes with LoadProhibited and EXCVADDR 0x00000000 (likely a nullptr exception)
     void Bumpers::initialize() {
         robot.gpio.add(
             HAL::GPIO::pin_config_t{

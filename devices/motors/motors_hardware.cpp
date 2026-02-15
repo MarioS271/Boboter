@@ -8,7 +8,7 @@
 #include "motors.h"
 
 #include <algorithm>
-#include "include/robot/robot.h"
+#include "include/robot.h"
 
 namespace Device {
     void Motors::_set_speed(const motor_id_t motor_id, const uint16_t speed) const {

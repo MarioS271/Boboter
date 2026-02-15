@@ -5,13 +5,13 @@
  * @copyright AGPLv3 License
  */
 
+#include "helpers/delay.h"
+#include "lib/logger/logger.h"
 #include "include/flags.h"
 #include "include/constants.h"
-#include "include/robot/robot.h"
-#include "lib/logger/logger.h"
+#include "include/robot.h"
 #include "tasks/tasks.h"
 
-#include "helpers/delay.h"
 
 extern "C" void app_main() {
     constexpr const char* TAG = "Main";
@@ -85,7 +85,7 @@ extern "C" void app_main() {
         Robot::task_config_t{
             .task_function = Task::secure_task,
             .task_name = "SecureTask",
-            .stack_depth = 2048,
+            .stack_size = 2048,
             .params_for_task = nullptr,
             .priority = 24,
             .created_task_handle = nullptr,
@@ -98,7 +98,7 @@ extern "C" void app_main() {
         Robot::task_config_t{
             .task_function = Task::log_task,
             .task_name = "LogTask",
-            .stack_depth = 4096,
+            .stack_size = 4096,
             .params_for_task = nullptr,
             .priority = 7,
             .created_task_handle = nullptr,
@@ -111,7 +111,7 @@ extern "C" void app_main() {
         Robot::task_config_t{
             .task_function = Task::status_led_task,
             .task_name = "StatusLedTask",
-            .stack_depth = 2048,
+            .stack_size = 2048,
             .params_for_task = nullptr,
             .priority = 5,
             .created_task_handle = nullptr,
@@ -125,7 +125,7 @@ extern "C" void app_main() {
             Robot::task_config_t{
                 .task_function = Task::pid_task,
                 .task_name = "PIDTask",
-                .stack_depth = 4096,
+                .stack_size = 4096,
                 .params_for_task = nullptr,
                 .priority = 19,
                 .created_task_handle = nullptr,
@@ -138,7 +138,7 @@ extern "C" void app_main() {
             Robot::task_config_t{
                 .task_function = Task::ramp_task,
                 .task_name = "RampTask",
-                .stack_depth = 2048,
+                .stack_size = 2048,
                 .params_for_task = nullptr,
                 .priority = 18,
                 .created_task_handle = nullptr,
@@ -151,7 +151,7 @@ extern "C" void app_main() {
             Robot::task_config_t{
                 .task_function = Task::io_task,
                 .task_name = "IOTask",
-                .stack_depth = 4096,
+                .stack_size = 4096,
                 .params_for_task = nullptr,
                 .priority = 15,
                 .created_task_handle = nullptr,
@@ -164,7 +164,7 @@ extern "C" void app_main() {
             Robot::task_config_t{
                 .task_function = Task::rgb_leds_task,
                 .task_name = "RgbLedsTask",
-                .stack_depth = 2048,
+                .stack_size = 2048,
                 .params_for_task = nullptr,
                 .priority = 3,
                 .created_task_handle = nullptr,
@@ -177,7 +177,7 @@ extern "C" void app_main() {
             Robot::task_config_t{
                 .task_function = Task::buzzer_task,
                 .task_name = "BuzzerTask",
-                .stack_depth = 2048,
+                .stack_size = 2048,
                 .params_for_task = nullptr,
                 .priority = 1,
                 .created_task_handle = nullptr,
@@ -189,7 +189,7 @@ extern "C" void app_main() {
             Robot::task_config_t{
                 .task_function = Task::test_task,
                 .task_name = "TestTask",
-                .stack_depth = 2048,
+                .stack_size = 2048,
                 .params_for_task = nullptr,
                 .priority = 20,
                 .created_task_handle = nullptr,

@@ -40,5 +40,5 @@ namespace Flags {
      * @brief Enable specific modules to output verbose logs
      * @note Default Value: @c LOG_SOURCE_NONE
      */
-    constexpr log_source ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_LINEFOLLOWER;
+    constexpr log_source ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_NONE;
 }

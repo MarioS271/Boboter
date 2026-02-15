@@ -9,7 +9,7 @@
 
 #include <rom/ets_sys.h>
 #include <esp_timer.h>
-#include "include/robot/robot.h"
+#include "include/robot.h"
 #include "helpers/delay.h"
 
 namespace Device {

@@ -7,7 +7,7 @@
 
 #include "tasks/tasks.h"
 
-#include "include/robot/robot.h"
+#include "include/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
 #include "devices/motors/motors.h"

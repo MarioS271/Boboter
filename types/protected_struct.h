@@ -19,6 +19,7 @@
  *          managed FreeRTOS mutex, which automatically locks on construction and unlocks on destruction
  *          (RAII-Principle).\n\n
  *          Ways to access members of the protected struct:\n
+ *          
  *          1) Single Access: Using the dereferenced pointer operator directly on the protected_struct instance
  *              @code
  *              protected_struct_instance->value = 5;
@@ -26,15 +27,16 @@
  *              This creates a temporary lock for the duration of the single expression. This is convenient for quick,
  *              atomic operations but can be inefficient for multiple accesses within a single logical block.
  *
- *          2) Full Scope Access: Using the @c get() method to obtain a locked guard object
+ *          2) Full Scope Access: Using the @c lock() method to obtain a mutex lock object
  *              @code
- *              auto locked_data = protected_struct_instance.get();
+ *              auto locked_data = protected_struct_instance.lock();
  *              locked_data->value = 5;
  *              // ... more operations on locked_data-> ...
  *              @endcode
  *              This acquires the mutex and locks the struct for the entire lifetime of the @c locked_data object.
- *              The mutex is automatically released when @c locked_data goes out of scope (RAII). This is efficient
+ *              The mutex is automatically released when @c locked_data goes out of scope. This is efficient
  *              for performing multiple operations on the protected struct within a single logical block.
+ *              You can also release the mutex early by calling @c locked_data.unlock()
  */
 template <typename struct_type>
 class protected_struct {
@@ -44,20 +46,28 @@ private:
     struct_type data;
     mutable SemaphoreHandle_t mutex;
 
-    struct locked_access_guard {
-        const protected_struct* parent;
+    class mutex_lock {
+    public:
+        protected_struct* parent;
 
-        explicit locked_access_guard(const protected_struct* parent) : parent(parent) {
-            if (parent->mutex == nullptr) {
-                parent->mutex = xSemaphoreCreateMutex();
+        explicit mutex_lock(const protected_struct* parent) :
+            parent(const_cast<protected_struct*>(parent))
+        {
+            if (xSemaphoreGetMutexHolder(parent->mutex) == xTaskGetCurrentTaskHandle()) {
+                LOGE("Mutex deadlock detected, aborting");
+                abort();
             }
+
             xSemaphoreTake(parent->mutex, portMAX_DELAY);
         }
 
-        ~locked_access_guard() {
+        ~mutex_lock() {
             unlock();
         }
 
+        /**
+         * @brief Unlocks the mutex ahead of scope-end
+         */
         void unlock() {
             if (parent != nullptr) {
                 xSemaphoreGive(parent->mutex);
@@ -65,17 +75,22 @@ private:
             }
         }
 
-        struct_type* operator->() const {
-            return (parent != nullptr) ? const_cast<struct_type*>(&parent->data) : nullptr;
+        struct_type* operator->() {
+            return parent != nullptr ? &parent->data : nullptr;
         }
 
-        operator struct_type&() const {
-            return *const_cast<struct_type*>(&parent->data);
+        operator struct_type&() {
+            return parent->data;
         }
     };
 
 public:
-    explicit protected_struct() : mutex() {}
+    explicit protected_struct() : mutex(xSemaphoreCreateMutex()) {
+        if (mutex == nullptr) {
+            LOGE("Mutex creation failed");
+            abort();
+        }
+    }
     ~protected_struct() {
         if (mutex != nullptr) {
             vSemaphoreDelete(mutex);
@@ -89,18 +104,18 @@ public:
      * @brief Overload of the get value from dereferenced pointer operator to make it
      *        possible to get a value using it
      *
-     * @return A temporary @c locked_access_guard object to hold the mutex and return the value
+     * @return A temporary @c mutex_lock object to hold the mutex and return the value
      */
-    locked_access_guard operator->() const {
-        return locked_access_guard(this);
+    mutex_lock operator->() const {
+        return mutex_lock(this);
     }
 
     /**
-     * @brief Locks the struct and holds the mutex for the returned guard's scope
+     * @brief Locks the struct and holds the mutex for the returned object's scope
      *
-     * @return A @c locked_access_guard object to hold the mutex and provide access to the protected data
+     * @return A @c mutex_lock object to hold the mutex and provide access to the protected data
      */
-    locked_access_guard lock() const {
-        return locked_access_guard(this);
+    mutex_lock lock() const {
+        return mutex_lock(this);
     }
 };

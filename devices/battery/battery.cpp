@@ -7,7 +7,7 @@
 
 #include "battery.h"
 
-#include "include/robot/robot.h"
+#include "include/robot.h"
 #include "helpers/map_value.h"
 #include "lib/logger/logger.h"
 
