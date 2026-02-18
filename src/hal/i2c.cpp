@@ -8,6 +8,7 @@
 #include "include/hal/i2c.h"
 
 #include "types/smart_mutex.h"
+#include "helpers/halt_execution.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
@@ -19,7 +20,7 @@ namespace HAL::I2C {
     {
         if (mutex == nullptr) {
             LOGE("Failed to create mutex");
-            abort();
+            halt_execution();
         }
 
         LOGD("Constructor called");

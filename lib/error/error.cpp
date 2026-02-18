@@ -6,6 +6,7 @@
  */
 
 #include "error.h"
+#include "helpers/halt_execution.h"
 #include "lib/logger/logger.h"
 
 void error_check_callback(const char* tag,
@@ -22,7 +23,7 @@ void error_check_callback(const char* tag,
     logger.custom_log(ESP_LOG_ERROR, tag, "  on line %lu", loc.line());
     logger.custom_log(ESP_LOG_ERROR, tag, "  in file %s", loc.file_name());
 
-    abort();
+    halt_execution();
 }
 
 void warn_check_callback(const char* tag,

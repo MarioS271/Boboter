@@ -9,6 +9,7 @@
 
 #include <algorithm>
 #include "types/smart_mutex.h"
+#include "helpers/halt_execution.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
@@ -18,7 +19,7 @@ namespace HAL::GPIO {
     {
         if (mutex == nullptr) {
             LOGE("Failed to create mutex");
-            abort();
+            halt_execution();
         }
 
         LOGD("Constructor called");
@@ -58,8 +59,8 @@ namespace HAL::GPIO {
         const auto pin_as_int = static_cast<uint8_t>(entry.gpio_pin);
 
         if (pin_as_int >= GPIO_NUM_MAX) {
-            LOGE("Invalid GPIO pin: %hhu", pin_as_int);
-            abort();
+            LOGE("Unable to register GPIO pin, invalid pin (out of range)");
+            halt_execution();
         }
 
         gpio_pullup_t pullup_mode = GPIO_PULLUP_DISABLE;
@@ -119,8 +120,8 @@ namespace HAL::GPIO {
         if (entry != registered_entries.end() && entry->mode & GPIO_MODE_DEF_OUTPUT) {
             WARN_CHECK(gpio_set_level(gpio_pin, static_cast<uint32_t>(level)));
         } else {
-            LOGE("Unable to set GPIO pin level, invalid pin");
-            abort();
+            LOGE("Unable to set GPIO pin level, invalid pin (either not an output pin or not registered)");
+            halt_execution();
         }
 
         LOGV("Set pin %hhu to %s", gpio_pin, level == level_t::HIGH ? "HIGH" : "LOW");
@@ -137,14 +138,14 @@ namespace HAL::GPIO {
             &saved_config_entry_t::gpio_pin
         );
 
-        if (entry != registered_entries.end() && entry->mode & GPIO_MODE_DEF_INPUT) {
-            const auto level = static_cast<level_t>(gpio_get_level(gpio_pin));
-
-            LOGV("Read state %s from pin %hhu", level == level_t::HIGH ? "HIGH" : "LOW",  gpio_pin);
-            return level;
+        if (!(entry != registered_entries.end() && entry->mode & GPIO_MODE_DEF_INPUT)) {
+            LOGE("Unable to get GPIO pin level, invalid pin (either not an input pin or not registered)");
+            halt_execution();
         }
 
-        LOGE("Unable to get GPIO pin level, invalid pin");
-        abort();
+        const auto level = static_cast<level_t>(gpio_get_level(gpio_pin));
+
+        LOGV("Read state %s from pin %hhu", level == level_t::HIGH ? "HIGH" : "LOW",  gpio_pin);
+        return level;
     }
 }

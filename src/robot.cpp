@@ -84,7 +84,7 @@ void Robot::permanent_sleep() {
     esp_deep_sleep_start();
 
     LOGE("Failed to enter deep sleep, aborting");
-    abort();
+    halt_execution();
 }
 
 void Robot::set_status_led(const bool state) const {

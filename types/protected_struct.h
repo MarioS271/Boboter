@@ -8,6 +8,7 @@
 #pragma once
 
 #include <freertos/FreeRTOS.h>
+#include "helpers/halt_execution.h"
 #include "lib/logger/logger.h"
 
 /**
@@ -55,7 +56,7 @@ private:
         {
             if (xSemaphoreGetMutexHolder(parent->mutex) == xTaskGetCurrentTaskHandle()) {
                 LOGE("Mutex deadlock detected, aborting");
-                abort();
+                halt_execution();
             }
 
             xSemaphoreTake(parent->mutex, portMAX_DELAY);
@@ -88,7 +89,7 @@ public:
     explicit protected_struct() : mutex(xSemaphoreCreateMutex()) {
         if (mutex == nullptr) {
             LOGE("Mutex creation failed");
-            abort();
+            halt_execution();
         }
     }
     ~protected_struct() {

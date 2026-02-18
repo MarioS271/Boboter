@@ -8,7 +8,6 @@
 #pragma once
 
 #include <driver/i2c_types.h>
-
 #include "types/rgb_color.h"
 #include "include/log_sources.h"
 

@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <driver/gpio.h>
 #include "types/smart_mutex.h"
+#include "helpers/halt_execution.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
 
@@ -21,7 +22,7 @@ namespace HAL::ADC {
     {
         if (mutex == nullptr) {
             LOGE("Failed to create mutex");
-            abort();
+            halt_execution();
         }
 
         LOGD("Constructor called");
@@ -138,7 +139,7 @@ namespace HAL::ADC {
 
         if (samples == 0) {
             LOGE("Unable to read raw value, illegal number of samples given");
-            abort();
+            halt_execution();
         }
 
         int raw_value = 0;

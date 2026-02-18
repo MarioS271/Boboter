@@ -7,8 +7,6 @@
 
 #include "linefollower.h"
 
-#include <rom/ets_sys.h>
-
 #include "include/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"

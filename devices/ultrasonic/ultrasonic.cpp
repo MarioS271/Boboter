@@ -55,22 +55,22 @@ namespace Device {
         ets_delay_us(10);
         robot.gpio.set_level(TRIGGER_PIN, LOW);
 
-        int64_t wait_start_time = esp_timer_get_time();
-        while (robot.gpio.get_level(TRIGGER_PIN) == LOW) {
+        const int64_t wait_start_time = esp_timer_get_time();
+        while (robot.gpio.get_level(ECHO_PIN) == LOW) {
             if (esp_timer_get_time() - wait_start_time > ECHO_TIMEOUT_MS) {
                 distance = -1;
                 return;
             }
         }
 
-        int64_t echo_return_start_time = esp_timer_get_time();
-        while (robot.gpio.get_level(TRIGGER_PIN) == HIGH) {
+        const int64_t echo_return_start_time = esp_timer_get_time();
+        while (robot.gpio.get_level(ECHO_PIN) == HIGH) {
             if (esp_timer_get_time() - echo_return_start_time > ECHO_TIMEOUT_MS) {
                 distance = -1;
                 return;
             }
         }
-        int64_t echo_return_end_time = esp_timer_get_time();
+        const int64_t echo_return_end_time = esp_timer_get_time();
 
         const auto echo_time = static_cast<float>(echo_return_end_time - echo_return_start_time);
         distance = echo_time / 58.0f;  // 343 m/s

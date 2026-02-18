@@ -8,6 +8,7 @@
 #pragma once
 
 #include "types/protected_struct.h"
+#include "helpers/halt_execution.h"
 #include "include/log_sources.h"
 #include "include/hal/gpio.h"
 #include "include/hal/ledc.h"

@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include <iosfwd>
 #include <soc/gpio_num.h>
 #include <esp_adc/adc_oneshot.h>
 #include "include/log_sources.h"
