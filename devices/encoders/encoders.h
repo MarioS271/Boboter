@@ -20,6 +20,7 @@ namespace Device {
         static constexpr const char* TAG = "Device::Encoders";
         static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_ENCODERS;
 
+        static constexpr uint8_t NUM_ENCODERS = 2;
         static constexpr gpio_num_t LEFT_ENCODER_PIN = GPIO_NUM_27;
         static constexpr gpio_num_t RIGHT_ENCODER_PIN = GPIO_NUM_14;
 
@@ -29,8 +30,8 @@ namespace Device {
         };
 
         Robot& robot;
-        std::atomic<int32_t> pulse_count[2];
-        isr_context_t isr_contexts[2];
+        std::atomic<int32_t> pulse_count[NUM_ENCODERS];
+        isr_context_t isr_contexts[NUM_ENCODERS];
 
     public:
         static void IRAM_ATTR encoder_isr_handler(void* arg);

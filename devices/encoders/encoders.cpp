@@ -26,11 +26,13 @@ namespace Device {
     void Encoders::encoder_isr_handler(void* arg) {
         const auto isr_context = static_cast<isr_context_t*>(arg);
         ++isr_context->instance->pulse_count[isr_context->encoder_index];
+
+        LOGV("Detected an encoder pulse on the %s encoder", isr_context->encoder_index == 0 ? "left" : "right");
     }
 
     void Encoders::initialize() {
-        constexpr gpio_num_t pins_to_initialize[2] = { LEFT_ENCODER_PIN, RIGHT_ENCODER_PIN };
-        for (uint8_t i = 0; i < 2; ++i) {
+        constexpr gpio_num_t pins_to_initialize[NUM_ENCODERS] = { LEFT_ENCODER_PIN, RIGHT_ENCODER_PIN };
+        for (uint8_t i = 0; i < NUM_ENCODERS; ++i) {
             robot.gpio.add(
                 HAL::GPIO::pin_config_t{
                     .gpio_pin = pins_to_initialize[i],
