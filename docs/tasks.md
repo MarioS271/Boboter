@@ -1,60 +1,65 @@
 # Tasks
 
-The firmware is segmented into a few FreeRTOS tasks to separate and categorize the individual workloads.
+The firmware is segmented into various FreeRTOS tasks, each with specific responsibilities, to efficiently
+manage and categorize workloads. For lighter, cooperative routines, refer to [subtasks.md](subtasks.md).
 
-Cores 0 and 1 are both used. While Core 0 is used for low-level system functionality and running the main modes,
-Core 1 is used for more general, higher level stuff such as I/O, PID, motor ramping and more.
+Cores 0 and 1 are both utilized. Core 0 is generally allocated for critical system functionality and higher-priority
+tasks, while Core 1 handles more general processing, communication, and management tasks.
 
-Here is an overview of all tasks:
+## Overview of FreeRTOS Tasks
 
-| Task Name        | Priority | Stack Depth | Assigned Core | On what condition is it created                    |
-|------------------|----------|-------------|---------------|----------------------------------------------------|
-| Secure Task      | 24       | 2048        | Core 0        | Is always created                                  |
-| PID Task         | 19       | 4096        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Ramp Task        | 18       | 2048        | Core 1        | Is always created                                  |
-| IO Task          | 15       | 4096        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| App Backend Task | 12       | 8192        | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Gamepad Task     | 11       | 8192        | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Log Task         | 7        | 4096        | Core 1        | Is always created                                  |
-| Status LED Task  | 5        | 1024        | Core 1        | Is always created                                  |
-| RGB LEDs Task    | 3        | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Buzzer Task      | 1        | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Test Task        | 20       | 2048        | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |
-
+| Task Name            | Priority | Stack Size | Assigned Core | On what condition is it created                    |
+|----------------------|----------|------------|---------------|----------------------------------------------------|
+| Secure Task          | 24       | 2048       | Core 0        | Is always created                                  |
+| PID Task             | 20       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Ramp Task            | 19       | 2048       | Core 1        | Is always created                                  |
+| Sensor Fusion Task   | 17       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Sensor Reader Task   | 16       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Action Task          | 14       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| App Backend Task     | 12       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Gamepad Task         | 11       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Log Task             | 9        | 4096       | Core 1        | Is always created                                  |
+| Subtask Handler Task | 7        | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Test Task            | 21       | 2048       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |
 
 ### Secure Task
-The secure task is for making sure that the system stays in good health,
-by for example making sure to prevent battery over-discharge.
+This critical task ensures system integrity and prevents hazardous conditions, such as battery over-discharge,
+by continuously monitoring vital parameters and initiating safety procedures.
 
 ### PID Task
-This task performs continuous PID calculations to minimize errors. It ensures the robot
-maintains a stable speed even under load or decreasing battery voltage. This task
-directly controls the `robot.motor` object which controls the hardware output to the motor driver.
+Performs continuous PID calculations to minimize control errors, ensuring the robot maintains stable speed and
+trajectory under varying loads. This task directly controls motor output.
 
 ### Ramp Task
-Responsible for smooth motor acceleration and deceleration. It gradually adjusts towards the
-target speed to prevent excessive acceleration and robot tipping.
+Manages smooth acceleration and deceleration of motors, gradually adjusting towards target speeds.
 
-### IO Task
-Manages user interaction via the SSD1306 OLED display and two buttons.
+### Sensor Fusion Task
+Processes and combines data from various sensors (e.g., gyroscope, accelerometer, magnetometer, encoders) to provide
+a robust and accurate estimate of the robot's state (position, orientation, velocity).
 
-### App Backend Task 
-Responsible for communicating with the **Boboter App**. It sends data and receives
-commands for the robot to execute.
-Only runs if `robot.data->mode` is set to `APP`.
+### Sensor Reader Task
+Responsible for performing resource-heavy or blocking sensor readings.
+It makes raw sensor data available for other tasks.
+
+### Action Task
+Executes complex robot behaviors and high-level logic, such as line following, obstacle avoidance, or navigation.
+This task interprets commands and translates them into sequences of robot actions.
+
+### App Backend Task
+Handles communication with the companion application. It sends telemetry data and receives control commands.
 
 ### Gamepad Task
-Responsible for communicating with a bluetooth gamepad to control the robot.
-Only runs if `robot.data->mode` is set to `GAMEPAD`.
+Manages and processes communication with a bluetooth gamepad for robot control via **Bluepad32**.
 
-### LEDs Task
-Manages the NeoPixel RGB LEDs and executes lighting routines.
+### Log Task
+Processes and outputs system log messages.
 
-### Buzzer Task
-This task is responsible for sending the buzzer signals and playing sounds or sound
-sequences.
+### Subtask Handler Task
+This task manages the execution of multiple lightweight, cooperative subtasks.
+It dispatches subtasks based on their requested timing, sharing its execution context to reduce overall RAM usage.
+See [subtasks.md](subtasks.md) for details on the subtasks it manages.
 
 ### Test Task
-This is a special task, which is only started if the flag `ENABLE_TEST_MODE` is set.
-It goes over the robot's devices (sensors, motors, ...), and tests them to make sure there are no
-hardware defects.
+A special diagnostic task only activated when `ENABLE_TEST_MODE` is true.
+It performs comprehensive checks on the robot's hardware components (sensors, motors, etc.) to
+verify functionality and detect defects.
