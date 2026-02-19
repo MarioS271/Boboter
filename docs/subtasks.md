@@ -1,11 +1,11 @@
-# Cooperative Subtasks
+# Subtasks
 
-This document details the cooperative subtasks, which are lightweight routines managed by the `Subtask Handler Task`
+This document details the subtasks, which are lightweight routines managed by the `Subtask Scheduler Task`
 (see [tasks.md](tasks.md)). These subtasks share the resources of their managing FreeRTOS task, significantly
 reducing RAM usage compared to individual FreeRTOS tasks. They are designed to be non-blocking and execute quickly,
-yielding control back to the `Subtask Handler Task` when they need to wait.
+yielding control back to the `Subtask Scheduler Task` when they need to wait.
 
-## Overview of Cooperative Subtasks
+## Overview of Subtasks
 | Task               | Run Condition                                             |
 |--------------------|-----------------------------------------------------------|
 | Display Subtask    | Only runs if the flag `ENABLE_DISPLAY` is set to **true** |

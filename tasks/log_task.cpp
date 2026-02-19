@@ -5,7 +5,8 @@
  * @copyright AGPLv3 License
  */
 
-#include "tasks/tasks.h"
+#include "tasks.h"
+
 #include "lib/logger/logger.h"
 
 namespace Task {

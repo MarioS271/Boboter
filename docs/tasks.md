@@ -8,25 +8,27 @@ tasks, while Core 1 handles more general processing, communication, and manageme
 
 ## Overview of FreeRTOS Tasks
 
-| Task Name            | Priority | Stack Size | Assigned Core | On what condition is it created                    |
-|----------------------|----------|------------|---------------|----------------------------------------------------|
-| Secure Task          | 24       | 2048       | Core 0        | Is always created                                  |
-| PID Task             | 20       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Ramp Task            | 19       | 2048       | Core 1        | Is always created                                  |
-| Sensor Fusion Task   | 17       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Sensor Reader Task   | 16       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Action Task          | 14       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| App Backend Task     | 12       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Gamepad Task         | 11       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Log Task             | 9        | 4096       | Core 1        | Is always created                                  |
-| Subtask Handler Task | 7        | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Test Task            | 21       | 2048       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |
+| Task Name              | Priority | Stack Size | Assigned Core | On what condition is it created                    |
+|------------------------|----------|------------|---------------|----------------------------------------------------|
+| Secure Task            | 24       | 2048       | Core 0        | Is always created                                  |
+| Drive Task             | 20       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Ramp Task              | 19       | 2048       | Core 1        | Is always created                                  |
+| Sensor Fusion Task     | 17       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Sensor Reader Task     | 16       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Action Task            | 14       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| App Backend Task       | 12       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Gamepad Task           | 11       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Log Task               | 9        | 4096       | Core 1        | Is always created                                  |
+| Subtask Scheduler Task | 7        | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Test Task              | 21       | 2048       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |
 
 ### Secure Task
 This critical task ensures system integrity and prevents hazardous conditions, such as battery over-discharge,
 by continuously monitoring vital parameters and initiating safety procedures.
 
-### PID Task
+### Drive Task
+Manages the robot's motors with built-in corrections (PID controller) which utilize the encoder, and, if present,
+the gyroscope, accelerometer and magnetometer.
 Performs continuous PID calculations to minimize control errors, ensuring the robot maintains stable speed and
 trajectory under varying loads. This task directly controls motor output.
 
@@ -34,8 +36,9 @@ trajectory under varying loads. This task directly controls motor output.
 Manages smooth acceleration and deceleration of motors, gradually adjusting towards target speeds.
 
 ### Sensor Fusion Task
-Processes and combines data from various sensors (e.g., gyroscope, accelerometer, magnetometer, encoders) to provide
-a robust and accurate estimate of the robot's state (position, orientation, velocity).
+Processes and combines data from various sensors (encoders, gyroscope, accelerometer, magnetometer) to provide
+reliable relative position data for the robot to correct its driving.
+It only uses the sensors specified as present in `include/flags.h`.
 
 ### Sensor Reader Task
 Responsible for performing resource-heavy or blocking sensor readings.
@@ -54,7 +57,7 @@ Manages and processes communication with a bluetooth gamepad for robot control v
 ### Log Task
 Processes and outputs system log messages.
 
-### Subtask Handler Task
+### Subtask Scheduler Task
 This task manages the execution of multiple lightweight, cooperative subtasks.
 It dispatches subtasks based on their requested timing, sharing its execution context to reduce overall RAM usage.
 See [subtasks.md](subtasks.md) for details on the subtasks it manages.

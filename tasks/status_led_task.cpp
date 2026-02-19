@@ -5,11 +5,11 @@
  * @copyright AGPLv3 License
  */
 
-#include "tasks/tasks.h"
+#include "tasks.h"
 
-#include "include/robot.h"
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
+#include "include/robot.h"
 
 constexpr const char* TAG = "Task::status_led_task";
 constexpr uint16_t FAST_BLINK_INTERVAL_MS = 500;
