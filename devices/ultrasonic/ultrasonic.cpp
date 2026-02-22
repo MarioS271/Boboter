@@ -58,17 +58,21 @@ namespace Device {
         const int64_t wait_start_time = esp_timer_get_time();
         while (robot.gpio.get_level(ECHO_PIN) == LOW) {
             if (esp_timer_get_time() - wait_start_time > ECHO_TIMEOUT_MS) {
+                LOGW("Timeout while waiting for echo pin to go high");
                 distance = -1;
                 return;
             }
+            delay(ECHO_POLL_DELAY_MS);
         }
 
         const int64_t echo_return_start_time = esp_timer_get_time();
         while (robot.gpio.get_level(ECHO_PIN) == HIGH) {
             if (esp_timer_get_time() - echo_return_start_time > ECHO_TIMEOUT_MS) {
+                LOGW("Timeout while waiting for the echo pin to go low");
                 distance = -1;
                 return;
             }
+            delay(ECHO_POLL_DELAY_MS);
         }
         const int64_t echo_return_end_time = esp_timer_get_time();
 

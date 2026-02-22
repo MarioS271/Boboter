@@ -10,8 +10,8 @@
 #include "include/robot.h"
 
 namespace Device {
-    void Colorsensor::write_register(uint8_t register_address, uint8_t value) const {
-        uint8_t buffer[2] = { static_cast<uint8_t>(COMMAND_BIT | register_address), value };
-        robot.i2c.write(device_handle, buffer, 2);
+    void Colorsensor::write_register(const uint8_t register_address, const uint8_t value) const {
+        const uint8_t buffer[2] = { static_cast<uint8_t>(COMMAND_BIT | register_address), value };
+        robot.i2c.write(device_handle, buffer, sizeof(buffer), 2);
     }
 }

@@ -22,7 +22,8 @@ namespace Device {
         static constexpr gpio_num_t TRIGGER_PIN = GPIO_NUM_25;
         static constexpr gpio_num_t ECHO_PIN = GPIO_NUM_26;
 
-        static constexpr uint16_t ECHO_TIMEOUT_MS = 1'000;
+        static constexpr uint16_t ECHO_TIMEOUT_MS = 500;
+        static constexpr uint8_t ECHO_POLL_DELAY_MS = 10;
 
         Robot& robot;
         float distance;
@@ -48,6 +49,6 @@ namespace Device {
          *
          * @return The distance in cm
          */
-        float get_distance() const { return distance; }
+        [[nodiscard]] float get_distance() const { return distance; }
     };
 }

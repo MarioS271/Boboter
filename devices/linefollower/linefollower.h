@@ -22,6 +22,7 @@ namespace Device {
         static constexpr const char* TAG = "Device::Linefollower";
         static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_LINEFOLLOWER;
 
+        static constexpr uint8_t NUM_LF_MODULES = 2;
         static constexpr gpio_num_t LF_RIGHT_LEFT_PIN = GPIO_NUM_12;
         static constexpr adc_channel_t ADC_CHANNEL = ADC_CHANNEL_0;
 

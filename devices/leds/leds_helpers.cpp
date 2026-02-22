@@ -11,11 +11,14 @@
 
 namespace Device {
     void Leds::send_bit(const bool bit) const {
-        using enum HAL::GPIO::level_t;
+        if (bit) {
+            *mosi_fast_path.set_register = mosi_fast_path.pin_mask;
+        } else {
+            *mosi_fast_path.clear_register = mosi_fast_path.pin_mask;
+        }
 
-        robot.gpio.set_level(MOSI_PIN, bit ? HIGH : LOW);
-        robot.gpio.set_level(SCK_PIN, HIGH);
-        robot.gpio.set_level(SCK_PIN, LOW);
+        *sck_fast_path.set_register = sck_fast_path.pin_mask;
+        *sck_fast_path.clear_register = sck_fast_path.pin_mask;
     }
 
     void Leds::send_byte(const uint8_t byte) const {

@@ -108,7 +108,10 @@ namespace HAL::I2C {
          * @param size Number of bytes to write
          * @param timeout_ms Operation timeout in milliseconds (default: -1)
          */
-        void write(i2c_master_dev_handle_t device_handle, const uint8_t* data, size_t size, int32_t timeout_ms = -1) const;
+        void write(i2c_master_dev_handle_t device_handle,
+                   const uint8_t* data,
+                   size_t size,
+                   int32_t timeout_ms = -1) const;
 
         /**
          * @brief Reads data from a specific device (For reading data, @c write_read should be preferred, this
@@ -119,7 +122,10 @@ namespace HAL::I2C {
          * @param size Number of bytes to read
          * @param timeout_ms Operation timeout in milliseconds (default: -1)
          */
-        void read(i2c_master_dev_handle_t device_handle, uint8_t* buffer, size_t size, int32_t timeout_ms = -1) const;
+        void read(i2c_master_dev_handle_t device_handle,
+                  uint8_t* buffer,
+                  size_t size,
+                  int32_t timeout_ms = -1) const;
 
         /**
          * @brief Write-read operation (Repeated Start, Recommended for reading on most devices)
@@ -131,7 +137,11 @@ namespace HAL::I2C {
          * @param read_size Number of bytes to read
          * @param timeout_ms Operation timeout in milliseconds (default: -1)
          */
-        void write_read(i2c_master_dev_handle_t device_handle, const uint8_t* write_data, size_t write_size, uint8_t* read_buffer, size_t
-                        read_size, int32_t timeout_ms = -1) const;
+        void write_read(i2c_master_dev_handle_t device_handle,
+                        const uint8_t* write_data,
+                        size_t write_size,
+                        uint8_t* read_buffer,
+                        size_t read_size,
+                        int32_t timeout_ms = -1) const;
     };
 }

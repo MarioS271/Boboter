@@ -22,9 +22,13 @@ namespace Device {
         static constexpr uint8_t I2C_ADDRESS = 0x68;
 
         Robot& robot;
+        i2c_master_dev_handle_t device_handle;
         vector3 gyro_values;
         vector3 accel_values;
         float temperature;
+
+    private:
+        #include "gyro_registers.inc"
 
     public:
         explicit Gyro(Robot& robot);

@@ -8,6 +8,7 @@
 #include "include/hal/gpio.h"
 
 #include <algorithm>
+#include <soc/gpio_struct.h>
 #include "types/smart_mutex.h"
 #include "helpers/halt_execution.h"
 #include "lib/logger/logger.h"
@@ -117,12 +118,12 @@ namespace HAL::GPIO {
             &saved_config_entry_t::gpio_pin
         );
 
-        if (entry != registered_entries.end() && entry->mode & GPIO_MODE_DEF_OUTPUT) {
-            WARN_CHECK(gpio_set_level(gpio_pin, static_cast<uint32_t>(level)));
-        } else {
+        if (entry == registered_entries.end() || !(entry->mode & GPIO_MODE_DEF_OUTPUT)) {
             LOGE("Unable to set GPIO pin level, invalid pin (either not an output pin or not registered)");
             halt_execution();
         }
+
+        WARN_CHECK(gpio_set_level(gpio_pin, static_cast<uint32_t>(level)));
 
         LOGV("Set pin %hhu to %s", gpio_pin, level == level_t::HIGH ? "HIGH" : "LOW");
     }
@@ -138,7 +139,7 @@ namespace HAL::GPIO {
             &saved_config_entry_t::gpio_pin
         );
 
-        if (!(entry != registered_entries.end() && entry->mode & GPIO_MODE_DEF_INPUT)) {
+        if (entry == registered_entries.end() || !(entry->mode & GPIO_MODE_DEF_INPUT)) {
             LOGE("Unable to get GPIO pin level, invalid pin (either not an input pin or not registered)");
             halt_execution();
         }
@@ -147,5 +148,37 @@ namespace HAL::GPIO {
 
         LOGV("Read state %s from pin %hhu", level == level_t::HIGH ? "HIGH" : "LOW",  gpio_pin);
         return level;
+    }
+
+    fast_gpio_path_t Controller::get_fast_path_data(gpio_num_t gpio_pin) const {
+        smart_mutex lock(mutex);
+
+        const auto entry = std::ranges::find_if(
+            registered_entries,
+            [gpio_pin](const gpio_num_t pin) {
+                return pin == gpio_pin;
+            },
+            &saved_config_entry_t::gpio_pin
+        );
+
+        if (entry == registered_entries.end() || !(entry->mode & GPIO_MODE_DEF_OUTPUT)) {
+            LOGE("Unable to get gpio fast path, invalid pin (either not an output pin or not registered)");
+            halt_execution();
+        }
+
+        fast_gpio_path_t path{};
+
+        if (gpio_pin < 32) {
+            path.set_register = &::GPIO.out_w1ts;
+            path.clear_register = &::GPIO.out_w1tc;
+            path.pin_mask = (1U << static_cast<uint32_t>(gpio_pin));
+        } else {
+            path.set_register = &::GPIO.out1_w1ts.val;
+            path.clear_register = &::GPIO.out1_w1tc.val;
+            path.pin_mask = (1U << (static_cast<uint32_t>(gpio_pin) - 32));
+        }
+
+        LOGV("Constructed gpio fast path struct for pin %hhu (bitmask 0x%08lx)", gpio_pin, path.pin_mask);
+        return path;
     }
 }

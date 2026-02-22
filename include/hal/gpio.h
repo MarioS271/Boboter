@@ -17,6 +17,11 @@
  * @brief A namespace containing all components of the GPIO hardware abstraction layer
  */
 namespace HAL::GPIO {
+    enum class level_t : uint8_t {
+        LOW = 0,
+        HIGH = 1
+    };
+
     struct pin_config_t {
         gpio_num_t gpio_pin;
         gpio_mode_t mode;
@@ -24,9 +29,10 @@ namespace HAL::GPIO {
         gpio_int_type_t intr_type;
     };
 
-    enum class level_t : uint8_t {
-        LOW = 0,
-        HIGH = 1
+    struct fast_gpio_path_t {
+        volatile uint32_t* set_register;
+        volatile uint32_t* clear_register;
+        uint32_t pin_mask;
     };
 
     /**
@@ -98,5 +104,15 @@ namespace HAL::GPIO {
          * @param gpio_pin The pin of which to get the level
          */
         [[nodiscard]] level_t get_level(gpio_num_t gpio_pin) const;
+
+        /**
+         * @brief Gets data like the pin bit mask and necessary register addresses to address a pin directly
+         *        for things like bit-banging
+         *
+         * @return A struct with pin bit mask and the set and clear registers
+         *
+         * @param gpio_pin The pin of which to get the information
+         */
+        [[nodiscard]] fast_gpio_path_t get_fast_path_data(gpio_num_t gpio_pin) const;
     };
 }

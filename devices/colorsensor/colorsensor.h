@@ -57,13 +57,13 @@ namespace Device {
          *
          * @return The color formatted as a @c rgb_color_t
          */
-        rgb_color_t get_color() const { return color; }
+        [[nodiscard]] rgb_color_t get_color() const { return color; }
 
         /**
          * @brief Measures the brightness seen on last measurement
          *
          * @return The brightness in lux
          */
-        uint16_t get_brightness() const { return brightness; }
+        [[nodiscard]] uint16_t get_brightness() const { return brightness; }
     };
 }

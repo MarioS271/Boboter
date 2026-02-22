@@ -26,7 +26,9 @@ Robot::Robot() :
     bumpers(*this),
     encoders(*this),
     ultrasonic(*this),
+    colorsensor(*this),
     linefollower(*this)
+
 {
     LOGD("Constructor called");
 }
@@ -61,6 +63,7 @@ void Robot::create_task(const task_config_t& config) {
         config.stack_size / 1024);
 }
 
+// TODO: shut down devices
 void Robot::permanent_sleep() {
     LOGW("permanent_sleep() called");
     LOGW("  -> Shutting down HALs");

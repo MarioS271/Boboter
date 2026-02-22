@@ -24,6 +24,8 @@ namespace Flags {
      */
     constexpr bool ENABLE_TEST_MODE = false;
 
+
+    ///// LOGGING OPTIONS /////
     /**
      * @brief Enable logging in color over the serial console
      * @note Default Value: @c true
@@ -40,5 +42,20 @@ namespace Flags {
      * @brief Enable specific modules to output verbose logs
      * @note Default Value: @c LOG_SOURCE_NONE
      */
-    constexpr log_source ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_NONE;
+    constexpr uint32_t ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_ENCODERS | LOG_SOURCE_DEVICE_ULTRASONIC;
+
+
+
+    ///// HARDWARE OPTIONS /////
+    /**
+     * @brief Enables or disables the SSD1306 OLED display
+     * @note Default Value: @c false
+     */
+    constexpr bool ENABLE_DISPLAY = true;
+
+    /**
+     * @brief Enables or disables the buzzer
+     * @note Default Value: @c false
+     */
+    constexpr bool ENABLE_BUZZER = true;
 }

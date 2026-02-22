@@ -71,6 +71,7 @@ extern "C" void app_main() {
     robot.bumpers.initialize();
     robot.encoders.initialize();
     robot.ultrasonic.initialize();
+    robot.colorsensor.initialize();
     robot.linefollower.initialize();
 
     LOGI("Switching logging mode from real mode to queue mode");
@@ -96,6 +97,19 @@ extern "C" void app_main() {
         }
     );
 
+    // Ramp Task
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::ramp_task,
+            .task_name = "RampTask",
+            .stack_size = 2048,
+            .params_for_task = nullptr,
+            .priority = 19,
+            .created_task_handle = nullptr,
+            .core_id = 1
+        }
+    );
+
     // Log Task
     robot.create_task(
         Robot::task_config_t{
@@ -103,86 +117,73 @@ extern "C" void app_main() {
             .task_name = "LogTask",
             .stack_size = 4096,
             .params_for_task = nullptr,
-            .priority = 7,
-            .created_task_handle = nullptr,
-            .core_id = 1
-        }
-    );
-
-    // Status LED Task
-    robot.create_task(
-        Robot::task_config_t{
-            .task_function = Task::status_led_task,
-            .task_name = "StatusLedTask",
-            .stack_size = 1024,
-            .params_for_task = nullptr,
-            .priority = 5,
+            .priority = 9,
             .created_task_handle = nullptr,
             .core_id = 1
         }
     );
 
     if constexpr (!Flags::ENABLE_TEST_MODE) {
-        // PID Task
+        // Drive Task
+        // robot.create_task(
+        //     Robot::task_config_t{
+        //         .task_function = Task::drive_task,
+        //         .task_name = "PIDTask",
+        //         .stack_size = 4096,
+        //         .params_for_task = nullptr,
+        //         .priority = 20,
+        //         .created_task_handle = nullptr,
+        //         .core_id = 1
+        //     }
+        // );
+
+        // Sensor Fusion Task
+        // robot.create_task(
+        //     Robot::task_config_t{
+        //         .task_function = Task::sensor_fusion_task,
+        //         .task_name = "SensorFusionTask",
+        //         .stack_size = 4096,
+        //         .params_for_task = nullptr,
+        //         .priority = 17,
+        //         .created_task_handle = nullptr,
+        //         .core_id = 1
+        //     }
+        // );
+
+        // Sensor Reader Task
+        // robot.create_task(
+        //     Robot::task_config_t{
+        //         .task_function = Task::sensor_reader_task,
+        //         .task_name = "SensorReaderTask",
+        //         .stack_size = 4096,
+        //         .params_for_task = nullptr,
+        //         .priority = 16,
+        //         .created_task_handle = nullptr,
+        //         .core_id = 1
+        //     }
+        // );
+
+        // Action Task
+        // robot.create_task(
+        //     Robot::task_config_t{
+        //         .task_function = Task::action_task,
+        //         .task_name = "ActionTask",
+        //         .stack_size = 4096,
+        //         .params_for_task = nullptr,
+        //         .priority = 14,
+        //         .created_task_handle = nullptr,
+        //         .core_id = 1
+        //     }
+        // );
+
+        // Subtask Scheduler Task
         robot.create_task(
             Robot::task_config_t{
-                .task_function = Task::pid_task,
-                .task_name = "PIDTask",
+                .task_function = Task::subtask_scheduler_task,
+                .task_name = "SubtaskSchedulerTask",
                 .stack_size = 4096,
                 .params_for_task = nullptr,
-                .priority = 19,
-                .created_task_handle = nullptr,
-                .core_id = 1
-            }
-        );
-
-        // Ramp Task
-        robot.create_task(
-            Robot::task_config_t{
-                .task_function = Task::ramp_task,
-                .task_name = "RampTask",
-                .stack_size = 2048,
-                .params_for_task = nullptr,
-                .priority = 18,
-                .created_task_handle = nullptr,
-                .core_id = 1
-            }
-        );
-
-        // IO Task
-        robot.create_task(
-            Robot::task_config_t{
-                .task_function = Task::io_task,
-                .task_name = "IOTask",
-                .stack_size = 4096,
-                .params_for_task = nullptr,
-                .priority = 15,
-                .created_task_handle = nullptr,
-                .core_id = 1
-            }
-        );
-
-        // RGB LEDs Task
-        robot.create_task(
-            Robot::task_config_t{
-                .task_function = Task::rgb_leds_task,
-                .task_name = "RgbLedsTask",
-                .stack_size = 2048,
-                .params_for_task = nullptr,
-                .priority = 3,
-                .created_task_handle = nullptr,
-                .core_id = 1
-            }
-        );
-
-        // Buzzer Task
-        robot.create_task(
-            Robot::task_config_t{
-                .task_function = Task::buzzer_task,
-                .task_name = "BuzzerTask",
-                .stack_size = 2048,
-                .params_for_task = nullptr,
-                .priority = 1,
+                .priority = 7,
                 .created_task_handle = nullptr,
                 .core_id = 1
             }
@@ -194,12 +195,25 @@ extern "C" void app_main() {
                 .task_name = "TestTask",
                 .stack_size = 2048,
                 .params_for_task = nullptr,
-                .priority = 20,
+                .priority = 21,
                 .created_task_handle = nullptr,
                 .core_id = 1
             }
         );
     }
+
+    // RGB LEDs Task
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::rgb_leds_task,
+            .task_name = "RgbLedsTask",
+            .stack_size = 2048,
+            .params_for_task = nullptr,
+            .priority = 1,
+            .created_task_handle = nullptr,
+            .core_id = 1
+        }
+    );
 
     LOGI("Created all tasks successfully");
     vTaskDelete(nullptr);

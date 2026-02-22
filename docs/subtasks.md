@@ -4,6 +4,7 @@ This document details the subtasks, which are lightweight routines managed by th
 (see [tasks.md](tasks.md)). These subtasks share the resources of their managing FreeRTOS task, significantly
 reducing RAM usage compared to individual FreeRTOS tasks. They are designed to be non-blocking and execute quickly,
 yielding control back to the `Subtask Scheduler Task` when they need to wait.
+The return value of the subtasks tells the scheduler how long it should wait until re-executing that subtask.
 
 ## Overview of Subtasks
 | Task               | Run Condition                                             |

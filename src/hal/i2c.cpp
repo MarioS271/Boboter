@@ -139,7 +139,7 @@ namespace HAL::I2C {
         const int32_t timeout_ms) const
     {
         LOGV("Writing %zu bytes to device %p", size, device_handle);
-        ERROR_CHECK(i2c_master_transmit(device_handle, data, size, timeout_ms));
+        WARN_CHECK(i2c_master_transmit(device_handle, data, size, timeout_ms));
     }
 
     void Controller::read(
@@ -149,7 +149,7 @@ namespace HAL::I2C {
         const int32_t timeout_ms) const
     {
         LOGV("Reading %zu bytes from device %p", size, device_handle);
-        ERROR_CHECK(i2c_master_receive(device_handle, buffer, size, timeout_ms));
+        WARN_CHECK(i2c_master_receive(device_handle, buffer, size, timeout_ms));
     }
 
     void Controller::write_read(
@@ -161,6 +161,6 @@ namespace HAL::I2C {
         const int32_t timeout_ms) const
     {
         LOGV("Write-Read: %zu out, %zu in on device %p", write_size, read_size, device_handle);
-        ERROR_CHECK(i2c_master_transmit_receive(device_handle, write_data, write_size, read_buffer, read_size, timeout_ms));
+        WARN_CHECK(i2c_master_transmit_receive(device_handle, write_data, write_size, read_buffer, read_size, timeout_ms));
     }
 }

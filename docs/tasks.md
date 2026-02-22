@@ -10,7 +10,7 @@ tasks, while Core 1 handles more general processing, communication, and manageme
 
 | Task Name              | Priority | Stack Size | Assigned Core | On what condition is it created                    |
 |------------------------|----------|------------|---------------|----------------------------------------------------|
-| Secure Task            | 24       | 2048       | Core 0        | Is always created                                  |
+| Secure Task            | 24       | 1024       | Core 0        | Is always created                                  |
 | Drive Task             | 20       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Ramp Task              | 19       | 2048       | Core 1        | Is always created                                  |
 | Sensor Fusion Task     | 17       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |

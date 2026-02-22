@@ -59,7 +59,8 @@ namespace Device {
         void clear();
 
         /**
-         * @brief Writes text to the display at the current cursor position
+         * @brief Writes text to the display buffer at the current cursor position
+         * @note This does not change anything on the display, only on the internal display buffer
          *
          * @param text The text to write to the display
          */
@@ -72,5 +73,10 @@ namespace Device {
          * @param row The target row, ranging from 0 to 7
          */
         void set_cursor_position(uint8_t column, uint8_t row);
+
+        /**
+         * @brief Writes the display buffer to the display
+         */
+        void write_buffer_to_display();
     };
 }

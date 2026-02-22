@@ -1,9 +1,9 @@
 /**
- * @file test_task.cpp
+ * @file drive_task.cpp
  *
  * @authors MarioS271
  * @copyright AGPLv3 License
-*/
+ */
 
 #include "tasks.h"
 
@@ -11,10 +11,10 @@
 #include "lib/logger/logger.h"
 #include "include/robot.h"
 
-constexpr const char* TAG = "Task::test_task";
+constexpr const char* TAG = "Task::drive_task";
 
 namespace Task {
-    [[noreturn]] void test_task(void* params) {
+    [[noreturn]] void drive_task(void* params) {
         Robot& robot = Robot::get_instance();
 
         while (true) {

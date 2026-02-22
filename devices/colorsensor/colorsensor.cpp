@@ -47,6 +47,21 @@ namespace Device {
             }
         );
 
+        // Read chip ID to verify communication
+        // uint8_t id_command = COMMAND_BIT | REG_ID;
+        // uint8_t chip_id = 0;
+        // esp_err_t err = robot.i2c.write_read(device_handle, &id_command, 1, &chip_id, 1);
+        // if (err == ESP_OK) {
+        //     LOGD("Color sensor ID: 0x%02x", chip_id);
+        //     if (chip_id != 0x44 && chip_id != 0x4D) { // Standard IDs for TCS34725/TCS34721
+        //         LOGE("Unexpected Color Sensor ID: 0x%02x. Expected 0x44 or 0x4D. Check sensor model.", chip_id);
+        //         // Optionally halt or return here if ID check is critical
+        //     }
+        // } else {
+        //     LOGE("Failed to read Color Sensor ID (0x%X). Check wiring, power, and I2C address.", err);
+        //     // Optionally halt or return here if device not found
+        // }
+
         write_register(REG_ENABLE, CMD_ENABLE_PON);
         delay(5);
         write_register(REG_ENABLE, CMD_ENABLE_PON | CMD_ENABLE_AEN);

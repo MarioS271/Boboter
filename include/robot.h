@@ -23,6 +23,7 @@
 #include "devices/bumpers/bumpers.h"
 #include "devices/encoders/encoders.h"
 #include "devices/ultrasonic/ultrasonic.h"
+#include "devices/colorsensor/colorsensor.h"
 #include "devices/linefollower/linefollower.h"
 
 /**
@@ -85,6 +86,7 @@ public:
     Device::Bumpers bumpers;
     Device::Encoders encoders;
     Device::Ultrasonic ultrasonic;
+    Device::Colorsensor colorsensor;
     Device::Linefollower linefollower;
 
     struct data_struct {

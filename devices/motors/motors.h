@@ -95,6 +95,7 @@ namespace Device {
     // Hardware Functions
         /**
          * @brief Physically sets the speed of the given motor
+         * @warning Should never be used by any task except the ramp task
          * @note The motor will immediately begin turning at that exact speed
          *
          * @param motor_id The id of the motor of which to set the speed
@@ -104,12 +105,14 @@ namespace Device {
 
         /**
          * @brief Physically sets the direction of the given motor
+         * @warning Should never be used by any task except the ramp task
          *
          * @param motor_id The id of the motor of which to set the direction
          * @param direction The target direction to set the motor to
          */
         void _set_direction(motor_id_t motor_id, motor_direction_t direction) const;
 
+    private:
         /**
          * @brief Gets the true physical motor direction which is computed using
          *        the @c inverse_direction modifier

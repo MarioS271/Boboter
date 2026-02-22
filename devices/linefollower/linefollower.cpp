@@ -43,7 +43,7 @@ namespace Device {
         using enum linefollower_id_t;
         using enum linefollower_result_t;
 
-        for (uint8_t i = 0; i < 2; ++i) {
+        for (uint8_t i = 0; i < NUM_LF_MODULES; ++i) {
             robot.gpio.set_level(LF_RIGHT_LEFT_PIN, static_cast<HAL::GPIO::level_t>(i));
             delay(10);
 

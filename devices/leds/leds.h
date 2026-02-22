@@ -7,8 +7,9 @@
 
 #pragma once
 
-#include <cstdint>
 #include <soc/gpio_num.h>
+
+#include "include/hal/gpio.h"
 #include "types/rgb_color.h"
 #include "include/log_sources.h"
 
@@ -26,6 +27,8 @@ namespace Device {
 
         Robot& robot;
         rgb_color_t leds[NUM_LEDS];
+        HAL::GPIO::fast_gpio_path_t mosi_fast_path;
+        HAL::GPIO::fast_gpio_path_t sck_fast_path;
 
     private:
         void send_bit(bool bit) const;              ///< @brief Sends a single bit
@@ -65,9 +68,9 @@ namespace Device {
          *
          * @param led_id The ID of the LED of which to set the color
          * @param color The color to set that LED to
-         * @param do_update Decides if the function automatically updates the LEDs or not (default: true)
+         * @param do_update Decides if the function automatically updates the LEDs or not (default: false)
          */
-        void set_color(led_id_t led_id, rgb_color_t color, bool do_update = true);
+        void set_color(led_id_t led_id, rgb_color_t color, bool do_update = false);
 
         /**
          * @brief Sets the color of all LEDs

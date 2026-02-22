@@ -43,6 +43,9 @@ namespace Device {
             }
         );
 
+        mosi_fast_path = robot.gpio.get_fast_path_data(MOSI_PIN);
+        sck_fast_path = robot.gpio.get_fast_path_data(SCK_PIN);
+
         turn_all_off();
 
         LOGI("Initialized Device::Leds");

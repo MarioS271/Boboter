@@ -38,7 +38,7 @@ namespace Device {
                     .gpio_pin = pins_to_initialize[i],
                     .mode = GPIO_MODE_INPUT,
                     .pull_mode = GPIO_FLOATING,
-                    .intr_type = GPIO_INTR_POSEDGE
+                    .intr_type = GPIO_INTR_NEGEDGE
                 }
             );
 

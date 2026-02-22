@@ -93,7 +93,6 @@ namespace Device {
         LOGV("Cleared display");
     }
 
-    // TODO: change to partial update (?)
     void Display::write_text(const char* text) {
         if (panel_handle == nullptr) {
             LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
@@ -133,8 +132,6 @@ namespace Device {
             ++column;
         }
 
-        WARN_CHECK(esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, WIDTH, HEIGHT, display_buffer));
-
         cursor_column = column;
         cursor_row = row;
 
@@ -153,5 +150,9 @@ namespace Device {
         cursor_row = row;
 
         LOGV("Cursor grid position set to column=%hhu row=%hhu", column, row);
+    }
+
+    void Display::write_buffer_to_display() {
+        WARN_CHECK(esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, WIDTH, HEIGHT, display_buffer));
     }
 }
