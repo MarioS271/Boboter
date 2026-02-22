@@ -71,7 +71,7 @@ namespace Task::Subtask {
             }
 
             case POLICE: {
-
+                // TODO: implement police rgb leds mode
                 return POLL_DELAY_MS;
             }
         }

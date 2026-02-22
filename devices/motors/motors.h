@@ -92,6 +92,11 @@ namespace Device {
          */
         void set_direction(motor_id_t motor_id, motor_direction_t direction, uint16_t ramp_time = DEFAULT_RAMP_TIME_MS) const;
 
+        /**
+         * @brief Sets up the motor speed pins to stay low when the ESP32 goes into deep sleep mode
+         */
+        static void enable_deep_sleep_hold();
+
     // Hardware Functions
         /**
          * @brief Physically sets the speed of the given motor

@@ -5,11 +5,13 @@
  * @copyright AGPLv3 License
  */
 
+#include <esp_rom_sys.h>
 #include <esp_sleep.h>
-#include "include/robot.h"
+#include <freertos/FreeRTOS.h>
 #include "helpers/delay.h"
 #include "lib/logger/logger.h"
 #include "lib/error/error.h"
+#include "include/robot.h"
 
 Robot::Robot() :
     gpio(HAL::GPIO::Controller::get_instance()),
@@ -63,9 +65,8 @@ void Robot::create_task(const task_config_t& config) {
         config.stack_size / 1024);
 }
 
-// TODO: shut down devices
-void Robot::permanent_sleep() {
-    LOGW("permanent_sleep() called");
+void Robot::enter_permanent_sleep() {
+    LOGW("Robot::enter_permanent_sleep() called");
     LOGW("  -> Shutting down HALs");
 
     leds.shutdown();
@@ -75,6 +76,8 @@ void Robot::permanent_sleep() {
     ledc.shutdown();
     adc.shutdown();
     i2c.shutdown();
+
+    Device::Motors::enable_deep_sleep_hold();
 
     LOGW("  -> Preparing for deep sleep");
 
@@ -86,7 +89,7 @@ void Robot::permanent_sleep() {
     delay(100);
     esp_deep_sleep_start();
 
-    LOGE("Failed to enter deep sleep, aborting");
+    LOGW("Failed to enter deep sleep, aborting");
     halt_execution();
 }
 

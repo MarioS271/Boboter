@@ -89,7 +89,7 @@ extern "C" void app_main() {
         Robot::task_config_t{
             .task_function = Task::secure_task,
             .task_name = "SecureTask",
-            .stack_size = 1024,
+            .stack_size = 2048,
             .params_for_task = nullptr,
             .priority = 24,
             .created_task_handle = nullptr,
@@ -189,6 +189,7 @@ extern "C" void app_main() {
             }
         );
     } else {
+        // Test task
         robot.create_task(
             Robot::task_config_t{
                 .task_function = Task::test_task,
@@ -201,19 +202,6 @@ extern "C" void app_main() {
             }
         );
     }
-
-    // RGB LEDs Task
-    robot.create_task(
-        Robot::task_config_t{
-            .task_function = Task::rgb_leds_task,
-            .task_name = "RgbLedsTask",
-            .stack_size = 2048,
-            .params_for_task = nullptr,
-            .priority = 1,
-            .created_task_handle = nullptr,
-            .core_id = 1
-        }
-    );
 
     LOGI("Created all tasks successfully");
     vTaskDelete(nullptr);

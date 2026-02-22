@@ -114,4 +114,12 @@ namespace Device {
             locked_data->motors.direction_right = direction;
         }
     }
+
+    void Motors::enable_deep_sleep_hold() {
+        gpio_set_pull_mode(LEFT_SPEED_PIN, GPIO_PULLDOWN_ONLY);
+        gpio_set_pull_mode(RIGHT_SPEED_PIN, GPIO_PULLDOWN_ONLY);
+
+        gpio_hold_en(LEFT_SPEED_PIN);
+        gpio_hold_en(RIGHT_SPEED_PIN);
+    }
 }

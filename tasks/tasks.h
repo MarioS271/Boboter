@@ -23,7 +23,4 @@ namespace Task {
     [[noreturn]] void subtask_scheduler_task(void* params);
 
     [[noreturn]] void test_task(void* params);
-
-
-    [[noreturn]] void rgb_leds_task(void* params);
 }

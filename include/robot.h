@@ -133,7 +133,7 @@ public:
     /**
      * @brief Shuts down all HALs, pulls down a few pins and puts the ESP32 into deep sleep mode
      */
-    void permanent_sleep();
+    void enter_permanent_sleep();
 
     /**
      * @brief Sets the status LED

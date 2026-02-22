@@ -62,7 +62,7 @@ namespace Task {
             }
 
             if (state == ALERTING && current_time - too_low_start_time >= (SHUTDOWN_DELAY + ALERT_DELAY) * 1000) {
-                robot.permanent_sleep();
+                robot.enter_permanent_sleep();
             }
 
             delay(500);
