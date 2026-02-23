@@ -2,11 +2,11 @@ PROJECT_NAME = "Boboter"
 OUTPUT_DIRECTORY = ./docs/doxygen
 GENERATE_LATEX = NO
 
-INPUT = devices helpers include lib src tasks types README.md
+INPUT = devices helpers include lib src tasks types README.md AUTHORS.md CONTRIBUTING.md docs
 EXCLUDE = doxygen-1.15.0 .pio .idea
 RECURSIVE = YES
 EXTRACT_ALL = YES
-FILE_PATTERNS = *.cpp *.h
+FILE_PATTERNS = *.cpp *.h *.md
 
 HTML_OUTPUT = .
 USE_MDFILE_AS_MAINPAGE = README.md

@@ -12,7 +12,7 @@ The return value of the subtasks tells the scheduler how long it should wait unt
 | Display Subtask    | Only runs if the flag `ENABLE_DISPLAY` is set to **true** |
 | Status LED Subtask | Always runs                                               |
 | RGB LEDs Subtask   | Always runs                                               |
-| Buzzer Subtask     | Always runs                                               |
+| Buzzer Subtask     | Only runs if the flag `ENABLE_BUZZER` is set to **true**  |
 
 ### Display Subtask
 Manages the built-in display and interaction with it via the two buttons

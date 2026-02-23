@@ -54,20 +54,20 @@ namespace Device {
          *
          * @return A 3D vector struct of the x, y and z components of the gyroscope
          */
-        vector3 get_gyro_values();
+        vector3 get_gyro_values() const { return gyro_values; }
 
         /**
          * @brief Retrieves the accel values from the last measurement
          *
          * @return A 3D vector struct of the x, y and z components of the accelerometer
          */
-        vector3 get_accel_values();
+        vector3 get_accel_values() const { return accel_values; }
 
         /**
          * @brief Retrieves the temperature value from the last measurement
          *
          * @return A floating point number of the temperature in °C (celsius)
          */
-        float get_temperature();
+        float get_temperature() const { return temperature; }
     };
 }
