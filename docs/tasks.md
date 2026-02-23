@@ -34,11 +34,6 @@ trajectory under varying loads. This task directly controls motor output.
 ### Ramp Task
 Manages smooth acceleration and deceleration of motors, gradually adjusting towards target speeds.
 
-### Sensor Fusion Task
-Processes and combines data from various sensors (encoders, gyroscope, accelerometer, magnetometer) to provide
-reliable relative position data for the robot to correct its driving.
-It only uses the sensors specified as present in `include/flags.h`.
-
 ### Sensor Reader Task
 Responsible for performing resource-heavy or blocking sensor readings.
 It makes raw sensor data available for other tasks.
