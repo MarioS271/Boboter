@@ -71,6 +71,7 @@ extern "C" void app_main() {
     robot.bumpers.initialize();
     robot.encoders.initialize();
     robot.ultrasonic.initialize();
+    robot.gyro.initialize();
     robot.colorsensor.initialize();
     robot.linefollower.initialize();
 
@@ -125,30 +126,17 @@ extern "C" void app_main() {
 
     if constexpr (!Flags::ENABLE_TEST_MODE) {
         // Drive Task
-        // robot.create_task(
-        //     Robot::task_config_t{
-        //         .task_function = Task::drive_task,
-        //         .task_name = "PIDTask",
-        //         .stack_size = 4096,
-        //         .params_for_task = nullptr,
-        //         .priority = 20,
-        //         .created_task_handle = nullptr,
-        //         .core_id = 1
-        //     }
-        // );
-
-        // Sensor Fusion Task
-        // robot.create_task(
-        //     Robot::task_config_t{
-        //         .task_function = Task::sensor_fusion_task,
-        //         .task_name = "SensorFusionTask",
-        //         .stack_size = 4096,
-        //         .params_for_task = nullptr,
-        //         .priority = 17,
-        //         .created_task_handle = nullptr,
-        //         .core_id = 1
-        //     }
-        // );
+        robot.create_task(
+            Robot::task_config_t{
+                .task_function = Task::drive_task,
+                .task_name = "PIDTask",
+                .stack_size = 4096,
+                .params_for_task = nullptr,
+                .priority = 20,
+                .created_task_handle = nullptr,
+                .core_id = 1
+            }
+        );
 
         // Sensor Reader Task
         robot.create_task(
@@ -164,17 +152,17 @@ extern "C" void app_main() {
         );
 
         // Action Task
-        // robot.create_task(
-        //     Robot::task_config_t{
-        //         .task_function = Task::action_task,
-        //         .task_name = "ActionTask",
-        //         .stack_size = 4096,
-        //         .params_for_task = nullptr,
-        //         .priority = 14,
-        //         .created_task_handle = nullptr,
-        //         .core_id = 1
-        //     }
-        // );
+        robot.create_task(
+            Robot::task_config_t{
+                .task_function = Task::action_task,
+                .task_name = "ActionTask",
+                .stack_size = 4096,
+                .params_for_task = nullptr,
+                .priority = 14,
+                .created_task_handle = nullptr,
+                .core_id = 1
+            }
+        );
 
         // Subtask Scheduler Task
         robot.create_task(

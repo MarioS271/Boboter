@@ -8,7 +8,6 @@
 #pragma once
 
 #include "types/protected_struct.h"
-#include "helpers/halt_execution.h"
 #include "include/log_sources.h"
 #include "include/hal/gpio.h"
 #include "include/hal/ledc.h"
@@ -23,6 +22,7 @@
 #include "devices/bumpers/bumpers.h"
 #include "devices/encoders/encoders.h"
 #include "devices/ultrasonic/ultrasonic.h"
+#include "devices/gyro/gyro.h"
 #include "devices/colorsensor/colorsensor.h"
 #include "devices/linefollower/linefollower.h"
 
@@ -86,6 +86,7 @@ public:
     Device::Bumpers bumpers;
     Device::Encoders encoders;
     Device::Ultrasonic ultrasonic;
+    Device::Gyro gyro;
     Device::Colorsensor colorsensor;
     Device::Linefollower linefollower;
 

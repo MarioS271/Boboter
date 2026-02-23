@@ -36,9 +36,9 @@ namespace Device {
         void write_register(uint8_t register_address, uint8_t value) const;
 
         /**
-         * @brief Reads a single byte from a register.
+         * @brief Reads a single byte from a register
          *
-         * @return The value read from the register.
+         * @return The value read from the register
          *
          * @param register_address The address of the register to read from
          */

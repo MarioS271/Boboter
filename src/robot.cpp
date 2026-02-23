@@ -28,6 +28,7 @@ Robot::Robot() :
     bumpers(*this),
     encoders(*this),
     ultrasonic(*this),
+    gyro(*this),
     colorsensor(*this),
     linefollower(*this)
 {

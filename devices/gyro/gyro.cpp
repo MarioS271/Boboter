@@ -36,23 +36,13 @@ namespace Device {
             }
         );
 
-        // uint8_t read_buffer;
-        // uint8_t write_buffer = { REG_POWER_MANAGEMENT_1, 0x03 };
-        // robot.i2c.write(device_handle, &write_buffer, sizeof(write_buffer));
-        //
-        // write_buffer = { REG_WHO_AM_I };
-        // robot.i2c.write_read(
-        //     device_handle,
-        //     &write_buffer,
-        //     sizeof(write_buffer),
-        //     &read_buffer,
-        //     sizeof(read_buffer)
-        // );
-        //
-        // if (read_buffer != I2C_ADDRESS) {
-        //     LOGE("Device at 0x%02x is not an MPU6050", read_buffer);
-        //     halt_execution();
-        // }
+        write_register(REG_POWER_MANAGEMENT_1, 0x03);
+        const uint8_t device_id = read_register(REG_WHO_AM_I);
+
+        if (device_id != MPU6050_DEVICE_ID) {
+            LOGE("MPU6050 not found! Expected 0x%02x, got 0x%02x", MPU6050_DEVICE_ID, device_id);
+        }
+        LOGI("MPU6050 with id 0x%02x found", device_id);
 
         LOGI("Initialized Device::Gyro");
     }

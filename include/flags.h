@@ -66,7 +66,7 @@ namespace Flags {
     constexpr bool ENABLE_GYRO = true;
 
     /**
-     * @brief Enables the GY-271 magnetometer
+     * @brief Enables the QMC5883 magnetometer
      * @note Default Value: @c false
      */
     constexpr bool ENABLE_MAGNETOMETER = true;

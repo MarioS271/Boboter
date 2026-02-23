@@ -13,8 +13,7 @@ tasks, while Core 1 handles more general processing, communication, and manageme
 | Secure Task            | 24       | 2048       | Core 0        | Is always created                                  |
 | Drive Task             | 20       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Ramp Task              | 19       | 2048       | Core 1        | Is always created                                  |
-| Sensor Fusion Task     | 17       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
-| Sensor Reader Task     | 16       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Sensor Reader Task     | 17       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Action Task            | 14       | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | App Backend Task       | 12       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Gamepad Task           | 11       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |

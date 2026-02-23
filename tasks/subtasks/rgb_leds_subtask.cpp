@@ -18,8 +18,6 @@ namespace Task::Subtask {
     void rgb_leds_subtask_init() {}
 
     uint32_t rgb_leds_subtask() {
-        return 1000;
-
         using enum Robot::rgb_leds_mode_t;
         using enum Device::Leds::led_id_t;
 

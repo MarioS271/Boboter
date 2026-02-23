@@ -44,10 +44,10 @@ namespace Device {
 
         const uint8_t device_id = read_register(REG_ID);
         if (device_id != TCS34725_DEVICE_ID) {
-            LOGE("TCS34725 not found! Expected id 0x44, got 0x%02x", device_id);
+            LOGE("TCS34725 not found! Expected id 0x%02x, got 0x%02x", TCS34725_DEVICE_ID, device_id);
             halt_execution();
         }
-        LOGI("TCS34725 with id 0x%02x detected", device_id);
+        LOGI("TCS34725 with id 0x%02x found", device_id);
 
         write_register(REG_ATIME, 0xEB);        // 100ms integration time
         write_register(REG_CONTROL, GAIN_16X);  // 16x gain
