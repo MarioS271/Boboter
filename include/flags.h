@@ -42,20 +42,32 @@ namespace Flags {
      * @brief Enable specific modules to output verbose logs
      * @note Default Value: @c LOG_SOURCE_NONE
      */
-    constexpr uint32_t ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_ENCODERS | LOG_SOURCE_DEVICE_ULTRASONIC;
+    constexpr uint32_t ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_ENCODERS | LOG_SOURCE_DEVICE_ULTRASONIC | LOG_SOURCE_DEVICE_COLORSENSOR;
 
 
 
     ///// HARDWARE OPTIONS /////
     /**
-     * @brief Enables or disables the SSD1306 OLED display
+     * @brief Enables the SSD1306 OLED display
      * @note Default Value: @c false
      */
     constexpr bool ENABLE_DISPLAY = true;
 
     /**
-     * @brief Enables or disables the buzzer
+     * @brief Enables the buzzer
      * @note Default Value: @c false
      */
     constexpr bool ENABLE_BUZZER = true;
+
+    /**
+     * @brief Enables the MPU6050 gyroscope and accelerometer
+     * @note Default Value: @c false
+     */
+    constexpr bool ENABLE_GYRO = true;
+
+    /**
+     * @brief Enables the GY-271 magnetometer
+     * @note Default Value: @c false
+     */
+    constexpr bool ENABLE_MAGNETOMETER = true;
 }

@@ -60,7 +60,7 @@ extern "C" void app_main() {
     );
     LOGI("Initialized GPIO pins for status LED and bottom LED");
 
-    robot.set_bottom_led(false);
+    robot.set_bottom_led(true);
 
     robot.battery.initialize();
     robot.leds.initialize();
@@ -151,17 +151,17 @@ extern "C" void app_main() {
         // );
 
         // Sensor Reader Task
-        // robot.create_task(
-        //     Robot::task_config_t{
-        //         .task_function = Task::sensor_reader_task,
-        //         .task_name = "SensorReaderTask",
-        //         .stack_size = 4096,
-        //         .params_for_task = nullptr,
-        //         .priority = 16,
-        //         .created_task_handle = nullptr,
-        //         .core_id = 1
-        //     }
-        // );
+        robot.create_task(
+            Robot::task_config_t{
+                .task_function = Task::sensor_reader_task,
+                .task_name = "SensorReaderTask",
+                .stack_size = 4096,
+                .params_for_task = nullptr,
+                .priority = 16,
+                .created_task_handle = nullptr,
+                .core_id = 1
+            }
+        );
 
         // Action Task
         // robot.create_task(

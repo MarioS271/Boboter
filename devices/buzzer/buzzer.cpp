@@ -24,6 +24,11 @@ namespace Device {
     }
 
     void Buzzer::initialize() {
+        if constexpr (!Flags::ENABLE_BUZZER) {
+            LOGW("Flags::ENABLE_BUZZER is set to false, skipping buzzer initialization");
+            return;
+        }
+
         robot.ledc.add_timer(
             HAL::LEDC::timer_config_t{
                 .timer = LEDC_TIMER,
@@ -47,6 +52,10 @@ namespace Device {
     }
 
     void Buzzer::set_frequency(const uint16_t frequency) {
+        if constexpr (!Flags::ENABLE_BUZZER) {
+            return;
+        }
+
         if (frequency < FREQUENCY_MIN || frequency > FREQUENCY_MAX) {
             LOGW("Frequency is out of reasonable range, stopping buzzer output");
             turn_off();
@@ -67,6 +76,10 @@ namespace Device {
     }
 
     void Buzzer::turn_off() {
+        if constexpr (!Flags::ENABLE_BUZZER) {
+            return;
+        }
+
         turned_off = true;
         robot.ledc.set_duty(LEDC_CHANNEL, 0);
 

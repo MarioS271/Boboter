@@ -32,6 +32,11 @@ namespace Device {
     }
 
     void Display::initialize() {
+        if constexpr (!Flags::ENABLE_DISPLAY) {
+            LOGW("Flags::ENABLE_DISPLAY is set to false, skipping display initialization");
+            return;
+        }
+
         display_buffer = new uint8_t[WIDTH * HEIGHT / 8]();
 
         const esp_lcd_panel_io_i2c_config_t io_config = {
@@ -60,6 +65,10 @@ namespace Device {
     }
 
     void Display::shutdown() {
+        if (panel_handle == nullptr) {
+            LOGW("Cannot shut down display, invalid panel handle (not initialized or disabled?)");
+        }
+
         clear();
         WARN_CHECK(esp_lcd_panel_disp_on_off(panel_handle, false));
 
@@ -139,6 +148,11 @@ namespace Device {
     }
 
     void Display::set_cursor_position(uint8_t column, uint8_t row) {
+        if (panel_handle == nullptr) {
+            LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
+            return;
+        }
+
         if (column >= MAX_COLUMNS) {
             column = MAX_COLUMNS - 1;
         }
@@ -153,6 +167,11 @@ namespace Device {
     }
 
     void Display::write_buffer_to_display() {
+        if (panel_handle == nullptr) {
+            LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
+            return;
+        }
+
         WARN_CHECK(esp_lcd_panel_draw_bitmap(panel_handle, 0, 0, WIDTH, HEIGHT, display_buffer));
     }
 }

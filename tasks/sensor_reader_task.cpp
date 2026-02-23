@@ -18,7 +18,9 @@ namespace Task {
         Robot& robot = Robot::get_instance();
 
         while (true) {
-            delay(1000);
+            robot.colorsensor.measure();
+            robot.leds.set_color_all(robot.colorsensor.get_color());
+            delay(100);
         }
     }
 }

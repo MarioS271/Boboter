@@ -30,7 +30,6 @@ Robot::Robot() :
     ultrasonic(*this),
     colorsensor(*this),
     linefollower(*this)
-
 {
     LOGD("Constructor called");
 }
@@ -68,6 +67,8 @@ void Robot::create_task(const task_config_t& config) {
 void Robot::enter_permanent_sleep() {
     LOGW("Robot::enter_permanent_sleep() called");
     LOGW("  -> Shutting down HALs");
+
+    set_bottom_led(false);
 
     leds.shutdown();
     display.shutdown();

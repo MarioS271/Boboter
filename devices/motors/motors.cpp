@@ -27,7 +27,7 @@ namespace Device {
     void Motors::initialize() {
         using enum motor_id_t;
 
-        const motor_id_t motors_to_initialize[] = { LEFT, RIGHT };
+        constexpr motor_id_t motors_to_initialize[] = { LEFT, RIGHT };
 
         robot.ledc.add_timer(
             HAL::LEDC::timer_config_t{

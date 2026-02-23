@@ -31,7 +31,7 @@ namespace Device {
         // This sets maximum brightness, as we don't need to regulate it (brightness can already be
         // done through the RGB color value)
         // Equivalent to (0xE0 | 0x1F); 0xE0 is the first three marker bits for frame start,
-        // 0x1F is last five bits for maximum brightness
+        //                              0x1F is last five bits for maximum brightness
         send_byte(0xFF);
 
         send_byte(color.r);

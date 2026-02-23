@@ -15,6 +15,7 @@
 namespace Device {
     Gyro::Gyro(Robot& robot) :
         robot(robot),
+        device_handle(nullptr),
         gyro_values{},
         accel_values{},
         temperature(-1.0f)

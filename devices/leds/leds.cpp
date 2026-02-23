@@ -86,7 +86,7 @@ namespace Device {
     }
 
     void Leds::turn_off(const led_id_t led_id, const bool do_update) {
-        leds[static_cast<uint8_t>(led_id)] = Colors::OFF;
+        leds[static_cast<uint8_t>(led_id)] = Colors::BLACK;
         if (do_update) {
             update();
         }
@@ -94,7 +94,7 @@ namespace Device {
 
     void Leds::turn_all_off() {
         for (auto& led : leds) {
-            led = Colors::OFF;
+            led = Colors::BLACK;
         }
 
         update();

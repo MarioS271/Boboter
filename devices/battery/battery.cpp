@@ -30,13 +30,13 @@ namespace Device {
     }
 
     void Battery::update() {
-        voltage = robot.adc.read_millivolts(ADC_CHANNEL, NUM_SAMPLES) * 147 / 100;
+        this->voltage = robot.adc.read_millivolts(ADC_CHANNEL, NUM_SAMPLES) * 147 / 100;
 
-        percentage = static_cast<int8_t>(map_value(voltage, 3300, 4200, 0, 100));
-        if (percentage > 100) {
-            percentage = 100;
+        this->percentage = static_cast<int8_t>(map_value(static_cast<int32_t>(this->voltage), 3300, 4200, 0, 100));
+        if (this->percentage > 100) {
+            this->percentage = 100;
         }
 
-        LOGV("Measured %hhu%% (%f V) battery remaining", percentage, static_cast<float>(voltage) / 1000.0f);
+        LOGV("Measured %hhu%% (%.2f V) battery remaining", this->percentage, static_cast<float>(this->voltage) / 1000.0f);
     }
 }

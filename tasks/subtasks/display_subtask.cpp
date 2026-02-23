@@ -34,7 +34,7 @@ namespace Task::Subtask {
 
         char buffer[32];
 
-        robot.ultrasonic.measure();
+        // robot.ultrasonic.measure();
         snprintf(buffer, sizeof(buffer), "L%2ld R%2ld  D%2.1f",
             robot.encoders.get_pulse_count(Device::Encoders::encoder_id_t::LEFT),
             robot.encoders.get_pulse_count(Device::Encoders::encoder_id_t::RIGHT),
