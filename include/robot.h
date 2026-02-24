@@ -22,7 +22,7 @@
 #include "devices/bumpers/bumpers.h"
 #include "devices/encoders/encoders.h"
 #include "devices/ultrasonic/ultrasonic.h"
-#include "devices/gyro/gyro.h"
+#include "devices/imu/imu.h"
 #include "devices/colorsensor/colorsensor.h"
 #include "devices/linefollower/linefollower.h"
 
@@ -86,7 +86,7 @@ public:
     Device::Bumpers bumpers;
     Device::Encoders encoders;
     Device::Ultrasonic ultrasonic;
-    Device::Gyro gyro;
+    Device::Imu imu;
     Device::Colorsensor colorsensor;
     Device::Linefollower linefollower;
 

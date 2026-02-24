@@ -27,7 +27,7 @@ by continuously monitoring vital parameters and initiating safety procedures.
 
 ### Drive Task
 Manages the robot's motors with built-in corrections (PID controller) which utilize the encoder, and, if present,
-the gyroscope, accelerometer and magnetometer.
+the imuscope, accelerometer and magnetometer.
 Performs continuous PID calculations to minimize control errors, ensuring the robot maintains stable speed and
 trajectory under varying loads. This task directly controls motor output.
 

@@ -65,6 +65,10 @@ namespace Device {
     }
 
     void Display::shutdown() {
+        if constexpr (!Flags::ENABLE_DISPLAY) {
+            return;
+        }
+
         if (panel_handle == nullptr) {
             LOGW("Cannot shut down display, invalid panel handle (not initialized or disabled?)");
         }
@@ -88,6 +92,10 @@ namespace Device {
     }
 
     void Display::clear() {
+        if constexpr (!Flags::ENABLE_DISPLAY) {
+            return;
+        }
+
         if (panel_handle == nullptr) {
             LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
             return;
@@ -103,6 +111,10 @@ namespace Device {
     }
 
     void Display::write_text(const char* text) {
+        if constexpr (!Flags::ENABLE_DISPLAY) {
+            return;
+        }
+
         if (panel_handle == nullptr) {
             LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
             return;
@@ -148,6 +160,10 @@ namespace Device {
     }
 
     void Display::set_cursor_position(uint8_t column, uint8_t row) {
+        if constexpr (!Flags::ENABLE_DISPLAY) {
+            return;
+        }
+
         if (panel_handle == nullptr) {
             LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
             return;
@@ -167,6 +183,10 @@ namespace Device {
     }
 
     void Display::write_buffer_to_display() {
+        if constexpr (!Flags::ENABLE_DISPLAY) {
+            return;
+        }
+
         if (panel_handle == nullptr) {
             LOGW("Unable to write to display, invalid panel handle (panel not initialized?)");
             return;

@@ -34,8 +34,8 @@ namespace Device {
         static constexpr uint16_t REFLECTIVITY_THRESHOLD = 2300;
 
         enum class linefollower_id_t : uint8_t {
-            LEFT = 1,
-            RIGHT = 0
+            LEFT = 0,
+            RIGHT = 1
         };
 
         enum class linefollower_result_t : uint8_t {
@@ -69,6 +69,6 @@ namespace Device {
          *
          * @return The color last measured by the right sensor
          */
-        [[nodiscard]] linefollower_result_t get_right_sensor_color() const { return left_sensor_color; }
+        [[nodiscard]] linefollower_result_t get_right_sensor_color() const { return right_sensor_color; }
     };
 }

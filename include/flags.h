@@ -22,7 +22,8 @@ namespace Flags {
      *          test task, which goes through most of the robot's devices and tests
      *          them one by one.
      */
-    constexpr bool ENABLE_TEST_MODE = false;
+    constexpr bool ENABLE_TEST_MODE = true;
+
 
 
     ///// LOGGING OPTIONS /////
@@ -42,7 +43,7 @@ namespace Flags {
      * @brief Enable specific modules to output verbose logs
      * @note Default Value: @c LOG_SOURCE_NONE
      */
-    constexpr uint32_t ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_ENCODERS | LOG_SOURCE_DEVICE_ULTRASONIC | LOG_SOURCE_DEVICE_COLORSENSOR;
+    constexpr uint32_t ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_IMU | LOG_SOURCE_DEVICE_ULTRASONIC;
 
 
 
@@ -60,14 +61,8 @@ namespace Flags {
     constexpr bool ENABLE_BUZZER = true;
 
     /**
-     * @brief Enables the MPU6050 gyroscope and accelerometer
+     * @brief Enables the MPU6050 IMU and DMP
      * @note Default Value: @c false
      */
-    constexpr bool ENABLE_GYRO = true;
-
-    /**
-     * @brief Enables the QMC5883 magnetometer
-     * @note Default Value: @c false
-     */
-    constexpr bool ENABLE_MAGNETOMETER = true;
+    constexpr bool ENABLE_IMU = true;
 }

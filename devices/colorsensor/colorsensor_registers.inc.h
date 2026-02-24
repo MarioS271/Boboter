@@ -1,5 +1,5 @@
 /**
- * @file colorsensor_registers.inc
+ * @file colorsensor_registers.inc.h
  *
  * @authors MarioS271
  * @copyright AGPLv3 License

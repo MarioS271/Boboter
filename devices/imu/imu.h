@@ -1,5 +1,5 @@
 /**
- * @file gyro.h
+ * @file imu.h
  *
  * @authors MarioS271
  * @copyright AGPLv3 License
@@ -9,24 +9,26 @@
 
 #include <driver/i2c_types.h>
 #include "types/vector3.h"
+#include "types/quaternion.h"
 #include "include/log_sources.h"
 
 class Robot;
 
 namespace Device {
-    class Gyro {
+    class Imu {
     private:
-        static constexpr const char* TAG = "Device::Gyro";
-        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_GYRO;
+        static constexpr const char* TAG = "Device::Imu";
+        static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_IMU;
 
         static constexpr uint8_t I2C_ADDRESS = 0x68;
+        static constexpr uint32_t I2C_CLOCK_SPEED = 100'000;
         static constexpr uint8_t MPU6050_DEVICE_ID = 0x68;
+        static constexpr uint8_t FIFO_BUFFER_SIZE = 42;
 
         Robot& robot;
         i2c_master_dev_handle_t device_handle;
+        quaternion quaternion_values;
         vector3 gyro_values;
-        vector3 accel_values;
-        float temperature;
 
     private:
         /**
@@ -47,11 +49,12 @@ namespace Device {
         [[nodiscard]] uint8_t read_register(uint8_t register_address) const;
 
     private:
-        #include "gyro_registers.inc"
+        #include "imu_registers.inc.h"
+        #include "imu_dmp_firmware.inc.h"
 
     public:
-        explicit Gyro(Robot& robot);
-        ~Gyro();
+        explicit Imu(Robot& robot);
+        ~Imu();
 
         /**
          * @brief Sets up the necessary I2C channel
@@ -59,14 +62,16 @@ namespace Device {
         void initialize();
 
         /**
-         * @brief Calibrates the gyro
+         * @brief Reads the current FIFO buffer from the IMUs DMP (digital motion processor)
          */
-        void calibrate();
+        void read_fifo_buffer();
 
         /**
-         * @brief Reads the current values from the gyro
+         * @brief Retrieves the quaternion from the last measurement
+         *
+         * @return The last read quaternion
          */
-        void measure();
+        [[nodiscard]] quaternion get_quaternion() const { return quaternion_values; }
 
         /**
          * @brief Retrieves the gyro values from the last measurement
@@ -74,19 +79,5 @@ namespace Device {
          * @return A 3D vector struct of the x, y and z components of the gyroscope
          */
         [[nodiscard]] vector3 get_gyro_values() const { return gyro_values; }
-
-        /**
-         * @brief Retrieves the accel values from the last measurement
-         *
-         * @return A 3D vector struct of the x, y and z components of the accelerometer
-         */
-        [[nodiscard]] vector3 get_accel_values() const { return accel_values; }
-
-        /**
-         * @brief Retrieves the temperature value from the last measurement
-         *
-         * @return A floating point number of the temperature in °C (celsius)
-         */
-        [[nodiscard]] float get_temperature() const { return temperature; }
     };
 }

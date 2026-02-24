@@ -138,6 +138,8 @@ namespace HAL::I2C {
         const size_t size,
         const int32_t timeout_ms) const
     {
+        smart_mutex lock(mutex);
+
         LOGV("Writing %zu bytes to device %p", size, device_handle);
         WARN_CHECK(i2c_master_transmit(device_handle, data, size, timeout_ms));
     }
@@ -148,6 +150,8 @@ namespace HAL::I2C {
         const size_t size,
         const int32_t timeout_ms) const
     {
+        smart_mutex lock(mutex);
+
         LOGV("Reading %zu bytes from device %p", size, device_handle);
         WARN_CHECK(i2c_master_receive(device_handle, buffer, size, timeout_ms));
     }
@@ -160,6 +164,8 @@ namespace HAL::I2C {
         const size_t read_size,
         const int32_t timeout_ms) const
     {
+        smart_mutex lock(mutex);
+
         LOGV("Write-Read: %zu out, %zu in on device %p", write_size, read_size, device_handle);
         WARN_CHECK(i2c_master_transmit_receive(device_handle, write_data, write_size, read_buffer, read_size, timeout_ms));
     }

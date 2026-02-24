@@ -1,5 +1,5 @@
 /**
- * @file display_font.inc
+ * @file display_font.inc.h
  *
  * @authors MarioS271
  * @copyright AGPLv3 License

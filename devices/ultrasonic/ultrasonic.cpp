@@ -50,35 +50,42 @@ namespace Device {
         using enum HAL::GPIO::level_t;
 
         robot.gpio.set_level(TRIGGER_PIN, LOW);
-        ets_delay_us(1000);
+        delay(2);
         robot.gpio.set_level(TRIGGER_PIN, HIGH);
         ets_delay_us(10);
         robot.gpio.set_level(TRIGGER_PIN, LOW);
 
-        const int64_t wait_start_time = esp_timer_get_time();
+        const int64_t wait_for_echo_time = esp_timer_get_time();
+
         while (robot.gpio.get_level(ECHO_PIN) == LOW) {
-            if (esp_timer_get_time() - wait_start_time > ECHO_TIMEOUT_MS) {
+            if (esp_timer_get_time() - wait_for_echo_time > ECHO_TIMEOUT_US) {
                 LOGW("Timeout while waiting for echo pin to go high");
-                distance = -1;
                 return;
             }
-            delay(ECHO_POLL_DELAY_MS);
+            taskYIELD();
         }
 
-        const int64_t echo_return_start_time = esp_timer_get_time();
+        const int64_t echo_start_time = esp_timer_get_time();
+
         while (robot.gpio.get_level(ECHO_PIN) == HIGH) {
-            if (esp_timer_get_time() - echo_return_start_time > ECHO_TIMEOUT_MS) {
+            if (esp_timer_get_time() - echo_start_time > ECHO_TIMEOUT_US) {
                 LOGW("Timeout while waiting for the echo pin to go low");
-                distance = -1;
                 return;
             }
-            delay(ECHO_POLL_DELAY_MS);
+            taskYIELD();
         }
-        const int64_t echo_return_end_time = esp_timer_get_time();
 
-        const auto echo_time = static_cast<float>(echo_return_end_time - echo_return_start_time);
-        distance = echo_time / 58.0f;  // 343 m/s
+        const int64_t echo_end_time = esp_timer_get_time();
 
-        LOGV("Measured distance of %f cm (echo_time=%f)", distance, echo_time);
+        const auto echo_time = static_cast<float>(echo_end_time - echo_start_time);
+        const float measured_distance = echo_time / 58.0f;  // 343 m/s
+
+        if (measured_distance > MAX_DISTANCE) {
+            this->distance = 999.0f;
+        } else {
+            this->distance = measured_distance;
+        }
+
+        LOGV("Measured distance of %f cm (echo_time=%f)", this->distance, echo_time);
     }
 }

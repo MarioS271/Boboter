@@ -27,7 +27,7 @@ namespace Device {
         static constexpr uint8_t MAX_ROWS = HEIGHT / CHAR_HEIGHT;
 
         static constexpr uint8_t font8x8[128][8] = {
-            #include "display_font.inc"
+            #include "display_font.inc.h"
         };
 
         Robot& robot;

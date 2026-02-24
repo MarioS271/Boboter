@@ -71,7 +71,7 @@ extern "C" void app_main() {
     robot.bumpers.initialize();
     robot.encoders.initialize();
     robot.ultrasonic.initialize();
-    robot.gyro.initialize();
+    robot.imu.initialize();
     robot.colorsensor.initialize();
     robot.linefollower.initialize();
 

@@ -32,7 +32,7 @@ namespace Device {
         device_handle = robot.i2c.add_device(
             HAL::I2C::device_config_t{
                 .address = I2C_ADDRESS,
-                .clock_speed = 400'000,
+                .clock_speed = I2C_CLOCK_SPEED,
                 .address_bit_length = I2C_ADDR_BIT_LEN_7
             }
         );

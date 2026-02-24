@@ -20,6 +20,7 @@ namespace Device {
         static constexpr log_source LOG_SOURCE = LOG_SOURCE_DEVICE_COLORSENSOR;
 
         static constexpr uint8_t I2C_ADDRESS = 0x29;
+        static constexpr uint32_t I2C_CLOCK_SPEED = 400'000;
         static constexpr uint8_t TCS34725_DEVICE_ID = 0x44;
 
         Robot& robot;
@@ -45,7 +46,8 @@ namespace Device {
         [[nodiscard]] uint8_t read_register(uint8_t register_address) const;
 
     private:
-        #include "colorsensor_registers.inc"
+        #include "colorsensor_registers.inc.h"
+
 
     public:
         explicit Colorsensor(Robot& robot);
