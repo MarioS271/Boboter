@@ -33,7 +33,7 @@ namespace Device {
 
     void Display::initialize() {
         if constexpr (!Flags::ENABLE_DISPLAY) {
-            LOGW("Flags::ENABLE_DISPLAY is set to false, skipping display initialization");
+            LOGI("Flags::ENABLE_DISPLAY is set to false, skipping display initialization");
             return;
         }
 

@@ -28,7 +28,7 @@ namespace Device {
 
     void Imu::initialize() {
         if constexpr (!Flags::ENABLE_IMU) {
-            LOGW("Flags::ENABLE_IMU is set to false, skipping IMU initialization");
+            LOGI("Flags::ENABLE_IMU is set to false, skipping IMU initialization");
             return;
         }
 

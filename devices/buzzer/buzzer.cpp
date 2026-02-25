@@ -25,7 +25,7 @@ namespace Device {
 
     void Buzzer::initialize() {
         if constexpr (!Flags::ENABLE_BUZZER) {
-            LOGW("Flags::ENABLE_BUZZER is set to false, skipping buzzer initialization");
+            LOGI("Flags::ENABLE_BUZZER is set to false, skipping buzzer initialization");
             return;
         }
 
