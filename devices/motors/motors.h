@@ -34,7 +34,7 @@ namespace Device {
 
     public:
         static constexpr uint8_t NUM_MOTORS = 2;
-        static constexpr uint16_t MAX_MOTOR_SPEED = 1023;
+        static constexpr uint16_t MAX_MOTOR_SPEED = 820;  // Limited to 80% PWM cycle (2^10 * 0.8) to preserve motors
         static constexpr uint16_t DEFAULT_RAMP_TIME_MS = 1000;
         static constexpr uint16_t MIN_RAMP_TIME_MS = 100;
 
