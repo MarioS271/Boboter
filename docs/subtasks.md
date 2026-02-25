@@ -7,12 +7,12 @@ yielding control back to the `Subtask Scheduler Task` when they need to wait.
 The return value of the subtasks tells the scheduler how long it should wait until re-executing that subtask.
 
 ## Overview of Subtasks
-| Task               | Run Condition                                             |
-|--------------------|-----------------------------------------------------------|
-| Display Subtask    | Only runs if the flag `ENABLE_DISPLAY` is set to **true** |
-| Status LED Subtask | Always runs                                               |
-| RGB LEDs Subtask   | Always runs                                               |
-| Buzzer Subtask     | Only runs if the flag `ENABLE_BUZZER` is set to **true**  |
+| Task               | Run Condition                                                                |
+|--------------------|------------------------------------------------------------------------------|
+| Display Subtask    | If the flag `ENABLE_DISPLAY` is **true** and `ENABLE_TEST_MODE` is **false** |
+| Status LED Subtask | Always runs                                                                  |
+| RGB LEDs Subtask   | If the flag `ENABLE_TEST_MODE` is **false**                                  |
+| Buzzer Subtask     | If the flag `ENABLE_BUZZER` is **true** and `ENABLE_TEST_MODE` is **false**  |
 
 ### Display Subtask
 Manages the built-in display and interaction with it via the two buttons

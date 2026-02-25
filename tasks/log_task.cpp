@@ -13,6 +13,7 @@ namespace Task {
     [[noreturn]] void log_task(void* params) {
         while (true) {
             Logger::get_instance().process_log_queue();
+            taskYIELD();
         }
     }
 }

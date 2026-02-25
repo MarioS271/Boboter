@@ -124,6 +124,19 @@ extern "C" void app_main() {
         }
     );
 
+    // Subtask Scheduler Task
+    robot.create_task(
+        Robot::task_config_t{
+            .task_function = Task::subtask_scheduler_task,
+            .task_name = "SubtaskSchedulerTask",
+            .stack_size = 4096,
+            .params_for_task = nullptr,
+            .priority = 7,
+            .created_task_handle = nullptr,
+            .core_id = 1
+        }
+    );
+
     if constexpr (!Flags::ENABLE_TEST_MODE) {
         // Drive Task
         robot.create_task(
@@ -159,19 +172,6 @@ extern "C" void app_main() {
                 .stack_size = 4096,
                 .params_for_task = nullptr,
                 .priority = 14,
-                .created_task_handle = nullptr,
-                .core_id = 1
-            }
-        );
-
-        // Subtask Scheduler Task
-        robot.create_task(
-            Robot::task_config_t{
-                .task_function = Task::subtask_scheduler_task,
-                .task_name = "SubtaskSchedulerTask",
-                .stack_size = 4096,
-                .params_for_task = nullptr,
-                .priority = 7,
                 .created_task_handle = nullptr,
                 .core_id = 1
             }

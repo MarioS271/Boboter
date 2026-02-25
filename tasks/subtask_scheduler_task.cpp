@@ -17,7 +17,7 @@
 namespace Subtask = Task::Subtask;
 
 constexpr const char* TAG = "Task::subtask_scheduler_task";
-constexpr uint8_t SUBTASK_LOOP_YIELD_MS = 1;
+constexpr uint8_t SUBTASK_LOOP_YIELD_MS = 5;
 
 template <typename T>
 constexpr std::array<T, Subtask::subtask_count()> create_callback_array() {
@@ -26,23 +26,29 @@ constexpr std::array<T, Subtask::subtask_count()> create_callback_array() {
 
     if constexpr (std::is_same_v<T, Subtask::subtask_init_callback_t>) {
         callbacks[i++] = Subtask::status_led_subtask_init;
-        callbacks[i++] = Subtask::rgb_leds_subtask_init;
 
-        if constexpr (Flags::ENABLE_DISPLAY) {
-            callbacks[i++] = Subtask::display_subtask_init;
-        }
-        if constexpr (Flags::ENABLE_BUZZER) {
-            callbacks[i++] = Subtask::buzzer_subtask_init;
+        if constexpr (!Flags::ENABLE_TEST_MODE) {
+            callbacks[i++] = Subtask::rgb_leds_subtask_init;
+
+            if constexpr (Flags::ENABLE_DISPLAY) {
+                callbacks[i++] = Subtask::display_subtask_init;
+            }
+            if constexpr (Flags::ENABLE_BUZZER) {
+                callbacks[i++] = Subtask::buzzer_subtask_init;
+            }
         }
     } else {
         callbacks[i++] = Subtask::status_led_subtask;
-        callbacks[i++] = Subtask::rgb_leds_subtask;
 
-        if constexpr (Flags::ENABLE_DISPLAY) {
-            callbacks[i++] = Subtask::display_subtask;
-        }
-        if constexpr (Flags::ENABLE_BUZZER) {
-            callbacks[i++] = Subtask::buzzer_subtask;
+        if constexpr (!Flags::ENABLE_TEST_MODE) {
+            callbacks[i++] = Subtask::rgb_leds_subtask;
+
+            if constexpr (Flags::ENABLE_DISPLAY) {
+                callbacks[i++] = Subtask::display_subtask;
+            }
+            if constexpr (Flags::ENABLE_BUZZER) {
+                callbacks[i++] = Subtask::buzzer_subtask;
+            }
         }
     }
 
@@ -55,7 +61,7 @@ constexpr std::array<Subtask::subtask_callback_t, Subtask::subtask_count()> subt
 namespace Task {
     [[noreturn]] void subtask_scheduler_task(void* params) {
         using namespace Task::Subtask;
-
+        
         int64_t next_run_timestamps[subtask_count()]{};
 
         for (const auto& callback : subtask_init_callbacks) {

@@ -1,3 +1,5 @@
 .pio
 .idea
 docs/doxygen
+.gemini/
+gha-creds-*.json

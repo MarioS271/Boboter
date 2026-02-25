@@ -11,8 +11,8 @@
 #include "include/robot.h"
 
 constexpr uint8_t POLL_DELAY_MS = 50;
-constexpr uint32_t SLOW_BLINK_INTERVAL_US = 500'000;
-constexpr uint32_t FAST_BLINK_INTERVAL_US = 250'000;
+constexpr uint32_t SLOW_BLINK_PERIOD_US = 500'000;
+constexpr uint32_t FAST_BLINK_PERIOD_US = 200'000;
 
 namespace Task::Subtask {
     void status_led_subtask_init() {}
@@ -35,8 +35,14 @@ namespace Task::Subtask {
             switch (mode) {
                 case OFF: robot.set_status_led(false); break;
                 case ON: robot.set_status_led(true); break;
-                case BLINK_SLOW: interval = SLOW_BLINK_INTERVAL_US; break;
-                case BLINK_FAST: interval = FAST_BLINK_INTERVAL_US; break;
+                case BLINK_SLOW:
+                    interval = SLOW_BLINK_PERIOD_US / 2;
+                    last_blink_time = esp_timer_get_time();
+                    break;
+                case BLINK_FAST:
+                    interval = FAST_BLINK_PERIOD_US / 2;
+                    last_blink_time = esp_timer_get_time();
+                    break;
             }
         }
 

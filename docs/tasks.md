@@ -18,7 +18,7 @@ tasks, while Core 1 handles more general processing, communication, and manageme
 | App Backend Task       | 12       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Gamepad Task           | 11       | 8192       | Core 0        | If the flag `ENABLE_TEST_MODE` is set to **false** |
 | Log Task               | 9        | 4096       | Core 1        | Is always created                                  |
-| Subtask Scheduler Task | 7        | 4096       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **false** |
+| Subtask Scheduler Task | 7        | 4096       | Core 1        | Is always created                                  |
 | Test Task              | 21       | 2048       | Core 1        | If the flag `ENABLE_TEST_MODE` is set to **true**  |
 
 ### Secure Task

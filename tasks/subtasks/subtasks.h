@@ -15,16 +15,19 @@ namespace Task::Subtask {
     using subtask_init_callback_t = void(*)();
 
     constexpr uint8_t subtask_count() {
-        uint8_t num_tasks = 2;
+        uint8_t num_tasks = 1;
 
-        if constexpr (Flags::ENABLE_DISPLAY) {
+        if constexpr (!Flags::ENABLE_TEST_MODE) {
             ++num_tasks;
-        }
-        if constexpr (Flags::ENABLE_BUZZER) {
-            ++num_tasks;
+
+            if constexpr (Flags::ENABLE_DISPLAY) {
+                ++num_tasks;
+            }
+            if constexpr (Flags::ENABLE_BUZZER) {
+                ++num_tasks;
+            }
         }
 
-        return num_tasks;
         return num_tasks;
     }
 
