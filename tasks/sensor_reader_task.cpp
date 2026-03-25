@@ -18,7 +18,8 @@ namespace Task {
         Robot& robot = Robot::get_instance();
 
         while (true) {
-            delay(1000);
+            robot.imu.read_fifo_buffer();
+            delay(100);
         }
     }
 }

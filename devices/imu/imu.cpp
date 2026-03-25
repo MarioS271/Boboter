@@ -79,6 +79,18 @@ namespace Device {
         }
 
         LOGI("Finished uploading DMP firmware; %hu bytes written", written_bytes);
+
+        write_register(REG_DMP_START_H, static_cast<uint8_t>(DMP_START_ADDRESS >> 8));
+        write_register(REG_DMP_START_L, static_cast<uint8_t>(DMP_START_ADDRESS & 0xFF));
+
+        write_register(REG_SMPLRT_DIV, 0x63); // 1kHz / (1+99) = 10Hz
+
+        write_register(REG_INT_ENABLE, CMD_DMP_INT_EN);
+
+        write_register(REG_USER_CTRL, CMD_USER_CTRL_DMP_FIFO_RESET);
+        delay(50);
+        write_register(REG_USER_CTRL, CMD_USER_CTRL_DMP_FIFO_EN);
+
         LOGI("Initialized Device::Imu");
     }
 
@@ -90,20 +102,28 @@ namespace Device {
         uint8_t count_buffer[2];
 
         robot.i2c.write_read(device_handle, &REG_FIFO_COUNT_H, 1, count_buffer, 2, 100);
-        uint16_t count = (count_buffer[0] << 8) | count_buffer[1];
+        const uint16_t count = (count_buffer[0] << 8) | count_buffer[1];
 
-        if (count < FIFO_BUFFER_SIZE) {
+        const uint16_t available_packets = count / FIFO_BUFFER_SIZE;
+
+        if (available_packets == 0) {
             LOGW("FIFO buffer is too small (<42 bytes), cancelling read");
             return;
         }
 
-        if (count > 512) {
-            write_register(REG_USER_CTRL, CMD_DMP_EN | CMD_FIFO_EN | CMD_FIFO_RESET);
+        if (count > 1000) {
+            LOGW("FIFO buffer is too large (>1000 bytes), cancelling read and resetting DMP");
+            write_register(REG_USER_CTRL, CMD_USER_CTRL_DMP_FIFO_RESET);
+            delay(50);
+            write_register(REG_USER_CTRL, CMD_USER_CTRL_DMP_FIFO_EN);
             return;
         }
 
+        // Drain all complete packets; only the last one is kept for parsing
         uint8_t packet[FIFO_BUFFER_SIZE];
-        robot.i2c.write_read(device_handle, &REG_FIFO_R_W, 1, packet, FIFO_BUFFER_SIZE, 100);
+        for (uint16_t i = 0; i < available_packets; i++) {
+            robot.i2c.write_read(device_handle, &REG_FIFO_R_W, 1, packet, FIFO_BUFFER_SIZE, 100);
+        }
 
         auto parse_q30 = [&](const uint8_t offset) {
             const int32_t raw = (static_cast<int32_t>(packet[offset]) << 24) |
@@ -122,11 +142,11 @@ namespace Device {
             return static_cast<int16_t>((packet[offset] << 8) | packet[offset + 1]);
         };
 
-        gyro_values.x = parse_i16(24);
-        gyro_values.y = parse_i16(26);
-        gyro_values.z = parse_i16(28);
+        gyro_values.x = parse_i16(24) / GYRO_SCALE_FACTOR;
+        gyro_values.y = parse_i16(26) / GYRO_SCALE_FACTOR;
+        gyro_values.z = parse_i16(28) / GYRO_SCALE_FACTOR;
 
-        LOGV("Read quaternion of x=%ld y=%ld z=%ld w=%ld and a gyro vector3 of x=%.2f y=%.2f z=%.2f",
+        LOGV("Read quaternion x=%.4f y=%.4f z=%.4f w=%.4f | gyro x=%.2f y=%.2f z=%.2f",
             quaternion_values.x, quaternion_values.y, quaternion_values.z, quaternion_values.w,
             gyro_values.x, gyro_values.y, gyro_values.z);
     }

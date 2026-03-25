@@ -1,0 +1,10 @@
+.git/
+.github/
+.idea/
+.pio/
+docs/
+LICENSE
+*.md
+sdkconfig.*
+.gitignore
+Doxyfile

@@ -71,15 +71,15 @@ namespace Device {
 
         if (panel_handle == nullptr) {
             LOGW("Cannot shut down display, invalid panel handle (not initialized or disabled?)");
+            return;
         }
 
         clear();
         WARN_CHECK(esp_lcd_panel_disp_on_off(panel_handle, false));
 
-        if (panel_handle != nullptr) {
-            esp_lcd_panel_del(panel_handle);
-            panel_handle = nullptr;
-        }
+        esp_lcd_panel_del(panel_handle);
+        panel_handle = nullptr;
+
         if (io_handle != nullptr) {
             esp_lcd_panel_io_del(io_handle);
             io_handle = nullptr;

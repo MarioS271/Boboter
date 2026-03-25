@@ -22,8 +22,7 @@ namespace Flags {
      *          test task, which goes through most of the robot's devices and tests
      *          them one by one.
      */
-    constexpr bool ENABLE_TEST_MODE = true;
-
+    constexpr bool ENABLE_TEST_MODE = false;
 
 
     ///// LOGGING OPTIONS /////
@@ -37,13 +36,13 @@ namespace Flags {
      * @brief Enable logging of debug messages
      * @note Default Value: @c ESP_LOG_INFO
      */
-    constexpr esp_log_level_t LOWEST_LOG_LEVEL = ESP_LOG_INFO;
+    constexpr esp_log_level_t LOWEST_LOG_LEVEL = ESP_LOG_VERBOSE;
 
     /**
      * @brief Enable specific modules to output verbose logs
      * @note Default Value: @c LOG_SOURCE_NONE
      */
-    constexpr uint32_t ENABLED_VERBOSE_LOG_SOURCES = /*LOG_SOURCE_DEVICE_IMU | LOG_SOURCE_DEVICE_ULTRASONIC*/LOG_SOURCE_NONE;
+    constexpr uint32_t ENABLED_VERBOSE_LOG_SOURCES = LOG_SOURCE_DEVICE_IMU;
 
 
 
@@ -52,17 +51,17 @@ namespace Flags {
      * @brief Enables the SSD1306 OLED display
      * @note Default Value: @c false
      */
-    constexpr bool ENABLE_DISPLAY = false;
+    constexpr bool ENABLE_DISPLAY = true;
 
     /**
      * @brief Enables the buzzer
      * @note Default Value: @c false
      */
-    constexpr bool ENABLE_BUZZER = false;
+    constexpr bool ENABLE_BUZZER = true;
 
     /**
      * @brief Enables the MPU6050 IMU and DMP
      * @note Default Value: @c false
      */
-    constexpr bool ENABLE_IMU = false;
+    constexpr bool ENABLE_IMU = true;
 }

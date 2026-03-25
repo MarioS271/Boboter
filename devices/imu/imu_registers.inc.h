@@ -18,9 +18,17 @@ static constexpr uint8_t REG_FIFO_R_W      = 0x74;
 static constexpr uint8_t REG_DMP_START_H   = 0x70;
 static constexpr uint8_t REG_DMP_START_L   = 0x71;
 static constexpr uint8_t REG_SMPLRT_DIV    = 0x19;
+static constexpr uint8_t REG_CONFIG        = 0x1A;
 
 static constexpr uint8_t CMD_DEVICE_RESET       = 0x80;
 static constexpr uint8_t CMD_SET_CLK_TO_GYRO_X  = 0x01;
 static constexpr uint8_t CMD_DMP_EN             = 0x80;
 static constexpr uint8_t CMD_FIFO_EN            = 0x40;
 static constexpr uint8_t CMD_FIFO_RESET         = 0x04;
+
+static constexpr uint8_t  REG_INT_ENABLE                 = 0x38;
+static constexpr uint8_t  CMD_DMP_INT_EN                 = 0x02;
+static constexpr uint8_t  CMD_USER_CTRL_DMP_FIFO_EN      = 0xC0; // DMP_EN | FIFO_EN
+static constexpr uint8_t  CMD_USER_CTRL_DMP_FIFO_RESET   = 0xC4; // DMP_EN | FIFO_EN | FIFO_RESET
+static constexpr uint16_t DMP_START_ADDRESS              = 0x0400;
+static constexpr float    GYRO_SCALE_FACTOR              = 16.4f; // LSB/°/s at ±2000 dps
