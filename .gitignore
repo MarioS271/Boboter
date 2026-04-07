@@ -1,5 +1,6 @@
 .pio
 .idea
+.claude
+.obsidian
 docs/doxygen
-.gemini/
 gha-creds-*.json
