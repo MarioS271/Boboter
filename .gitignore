@@ -1,6 +1,5 @@
 .pio
 .idea
 .claude
-.obsidian
 docs/doxygen
 gha-creds-*.json
