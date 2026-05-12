@@ -2,7 +2,7 @@
  * @file square_value.h
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 #pragma once

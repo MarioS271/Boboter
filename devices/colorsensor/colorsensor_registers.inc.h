@@ -2,7 +2,7 @@
  * @file colorsensor_registers.inc.h
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 static constexpr uint8_t COMMAND_BIT = 0x80;

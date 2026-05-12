@@ -2,7 +2,7 @@
  * @file imu_registers.inc.h
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 static constexpr uint8_t REG_PWR_MGMT_1    = 0x6B;

@@ -2,7 +2,7 @@
  * @file leds_helpers.cpp
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 #include "leds.h"

@@ -2,7 +2,7 @@
  * @file imu.cpp
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 #include "imu.h"
@@ -83,7 +83,8 @@ namespace Device {
         write_register(REG_DMP_START_H, static_cast<uint8_t>(DMP_START_ADDRESS >> 8));
         write_register(REG_DMP_START_L, static_cast<uint8_t>(DMP_START_ADDRESS & 0xFF));
 
-        write_register(REG_SMPLRT_DIV, 0x63); // 1kHz / (1+99) = 10Hz
+        write_register(REG_CONFIG, 0x01);      // Enable DLPF
+        write_register(REG_SMPLRT_DIV, 0x63);  // 1kHz
 
         write_register(REG_INT_ENABLE, CMD_DMP_INT_EN);
 

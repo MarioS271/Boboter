@@ -2,7 +2,7 @@
  * @file display_font.inc.h
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  *
  * @note This is a modified version of Daniel Hepper's font8x8_basic.h
  * @note Original Header and copyright notice is included below

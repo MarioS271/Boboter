@@ -2,7 +2,7 @@
  * @file rgb_leds_subtask.cpp
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 #include "subtasks.h"

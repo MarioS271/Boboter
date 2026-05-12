@@ -2,7 +2,7 @@
  * @file display.cpp
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 #include "display.h"

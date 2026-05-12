@@ -2,7 +2,7 @@
  * @file protected_struct.h
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 #pragma once

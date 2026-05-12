@@ -2,7 +2,7 @@
  * @file imu_dmp_firmware.inc.h
  *
  * @authors MarioS271
- * @copyright AGPLv3 License
+ * @copyright GPLv3 License
  */
 
 static constexpr uint16_t DMP_FIRMWARE_SIZE = 1929;
